@@ -3,1164 +3,1805 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>職業安全衛生術科互動式題庫系統</title>
+  <title>職業安全衛生術科互動式必考題庫系統</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
     body {
-      font-family: 'Noto Sans TC', 'Microsoft JhengHei', sans-serif;
+      font-family: 'Noto Sans TC', sans-serif;
       background-color: #f1f5f9;
       color: #1e293b;
     }
-    .ghs-diamond {
-      width: 64px;
-      height: 64px;
+    /* Inline Select Pill Styling */
+    .blank-select {
+      appearance: none;
+      background-color: #f0f9ff;
+      border: 1.5px solid #bae6fd;
+      border-bottom: 2.5px solid #0e7490;
+      color: #0f172a;
+      font-weight: 700;
+      padding: 4px 28px 4px 10px;
+      border-radius: 6px;
+      margin: 2px 4px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%230e7490' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3E%3C/svg%3E");
+      background-position: right 6px center;
+      background-repeat: no-repeat;
+      background-size: 16px 16px;
+      min-width: 110px;
+      max-width: 100%;
+    }
+    .blank-select:focus {
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(14, 116, 144, 0.2);
+      border-color: #0e7490;
+    }
+    .blank-select.correct {
+      background-color: #dcfce7;
+      border-color: #86efac;
+      border-bottom-color: #15803d;
+      color: #14532d;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%2315803d' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M5 10l3 3 7-7'/%3E%3C/svg%3E");
+    }
+    .blank-select.wrong {
+      background-color: #fee2e2;
+      border-color: #fca5a5;
+      border-bottom-color: #b91c1c;
+      color: #7f1d1d;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3E%3Cpath stroke='%23b91c1c' stroke-linecap='round' stroke-linejoin='round' stroke-width='2.5' d='M6 6l8 8M14 6l-8 8'/%3E%3C/svg%3E");
+    }
+    .blank-select:disabled {
+      cursor: default;
+      opacity: 1;
+    }
+    /* Custom scrollbar for question grid */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-card {
+      animation: fadeSlideIn 0.25s ease-out;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-  <!-- Header -->
-  <header class="bg-[#0f4c81] text-white shadow-md sticky top-0 z-30">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div>
-        <h1 class="text-lg md:text-xl font-bold tracking-wide">職業安全衛生術科互動式題庫系統</h1>
-        <p class="text-xs text-sky-200">整合第一至第五單元完整題庫 ＋ 必考重點精選題庫池（共 <span id="total-count-badge">0</span> 題）</p>
+  <!-- Top Header -->
+  <header class="bg-gradient-to-r from-cyan-900 via-cyan-800 to-slate-900 text-white shadow-md sticky top-0 z-30">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-lg bg-amber-400 text-cyan-950 flex items-center justify-center font-black text-lg shadow">
+          安
+        </div>
+        <div>
+          <h1 class="text-lg sm:text-xl font-black tracking-wide leading-tight">職業安全衛生術科互動式必考題庫系統</h1>
+          <p class="text-xs text-cyan-200">全題庫收錄・選項填空模式・公式代號套入・即時批改解析</p>
+        </div>
       </div>
-      <div class="flex items-center gap-2">
-        <button id="btn-mode-practice" onclick="setMode('practice')" class="px-3 py-1.5 rounded-lg text-sm font-bold bg-white text-[#0f4c81] shadow transition">
-          ✍️ 互動練習模式
-        </button>
-        <button id="btn-mode-study" onclick="setMode('study')" class="px-3 py-1.5 rounded-lg text-sm font-bold bg-sky-800 text-white hover:bg-sky-700 transition">
-          📖 題解整合總覽
-        </button>
+
+      <!-- Score & Stats Pill -->
+      <div class="flex items-center gap-2 text-xs sm:text-sm bg-cyan-950/60 border border-cyan-700/60 px-3 py-1.5 rounded-lg self-start sm:self-auto">
+        <span class="text-cyan-200">進度：<strong id="stat-progress" class="text-white">0 / 0</strong></span>
+        <span class="text-cyan-600">|</span>
+        <span class="text-emerald-300">答對：<strong id="stat-correct" class="text-emerald-200">0</strong></span>
+        <span class="text-cyan-600">|</span>
+        <span class="text-amber-300">正確率：<strong id="stat-rate" class="text-amber-200">0%</strong></span>
       </div>
     </div>
   </header>
 
-  <!-- Control Bar -->
-  <div class="bg-white border-b border-slate-200 shadow-sm">
-    <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
-      <div class="flex flex-wrap items-center gap-2">
-        <label for="unit-filter" class="text-sm font-bold text-slate-700">題庫範圍：</label>
-        <select id="unit-filter" onchange="applyFilter()" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm bg-slate-50 font-medium focus:outline-none focus:ring-2 focus:ring-[#0f4c81]">
-          <option value="all">全部題庫池（全單元整合）</option>
-          <option value="u1">第一單元：法規基礎與基礎計算</option>
-          <option value="u2">第二單元：設備標準、共同作業與工程計算</option>
-          <option value="u3">第三單元：圖示配對、危害防護與管理理論</option>
-          <option value="u4">第四單元：設施安全基準與綜合職災統計分析</option>
-          <option value="u5">第五單元：環境監測、健康計畫與工程防護計算</option>
-          <option value="u6">第六單元：必考重點精選（組織/檢查/職業病/公式）</option>
-          <option value="calc">🔥 僅篩選計算題型</option>
-          <option value="wrong">❌ 錯題複習本 (<span id="wrong-count-opt">0</span>)</option>
+  <!-- Control Toolbar -->
+  <section class="bg-white border-b border-slate-200 shadow-sm">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <!-- Unit Filter -->
+      <div class="flex items-center gap-2 flex-1">
+        <label for="unit-filter" class="text-sm font-bold text-slate-700 whitespace-nowrap">題庫範圍：</label>
+        <select id="unit-filter" class="w-full md:w-auto flex-1 bg-slate-50 border border-slate-300 text-slate-800 text-sm font-bold rounded-lg px-3 py-2 focus:ring-2 focus:ring-cyan-600 focus:border-cyan-600">
+          <option value="ALL">全部題庫池 (共 67 題完整收錄)</option>
+          <option value="U1">第一單元：法規基礎與基礎計算 (15 題)</option>
+          <option value="U2">第二單元：設備標準、共同作業與工程計算 (10 題・含計算三)</option>
+          <option value="U3">第三單元：圖示配對、危害防護與管理理論 (9 題・含圖示)</option>
+          <option value="U4">第四單元：設施安全基準與綜合職災統計 (11 題)</option>
+          <option value="U5">第五單元：環境監測、健康計畫與工程防護計算 (10 題)</option>
+          <option value="U6">第六單元：必考重點增補題庫 (職業病/限制族群/檢查/管理人員 12 題)</option>
         </select>
-
-        <input id="search-input" type="text" oninput="applyFilter()" placeholder="搜尋關鍵字（如：鍋爐、WBGT、漏電...）" class="border border-slate-300 rounded-lg px-3 py-1.5 text-sm w-56 md:w-64 focus:outline-none focus:ring-2 focus:ring-[#0f4c81]" />
       </div>
 
+      <!-- Mode & Navigator Buttons -->
       <div class="flex flex-wrap items-center gap-2">
-        <button id="btn-shuffle" onclick="shufflePool()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-100 text-amber-800 hover:bg-amber-200 transition">
-          🔀 隨機洗牌出題
+        <button id="btn-order-seq" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-cyan-800 text-white shadow-sm transition">
+          依序出題
         </button>
-        <button id="btn-toggle-all-ans" onclick="toggleAllStudyAnswers()" class="hidden px-3 py-1.5 rounded-lg text-xs font-bold bg-emerald-100 text-emerald-800 hover:bg-emerald-200 transition">
-          👁️ 隱藏／顯示全部答案
+        <button id="btn-order-rand" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+          隨機抽題
         </button>
-        <button onclick="resetProgress()" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
-          🔄 重置作答紀錄
+        <button id="btn-toggle-grid" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-amber-50 text-amber-800 border border-amber-300 hover:bg-amber-100 transition flex items-center gap-1">
+          <span>題號總覽</span>
+          <span id="grid-arrow">▼</span>
+        </button>
+        <button id="btn-reset" class="px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100 transition">
+          重設紀錄
         </button>
       </div>
     </div>
-  </div>
 
-  <!-- Stats Strip -->
-  <div class="max-w-6xl w-full mx-auto px-4 pt-4">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-3 rounded-xl border border-slate-200 shadow-sm text-center">
-      <div>
-        <div class="text-xs text-slate-500">目前篩選題數</div>
-        <div id="stat-filtered" class="text-lg font-bold text-[#0f4c81]">0</div>
-      </div>
-      <div>
-        <div class="text-xs text-slate-500">已作答題數</div>
-        <div id="stat-answered" class="text-lg font-bold text-slate-800">0</div>
-      </div>
-      <div>
-        <div class="text-xs text-slate-500">答對題數</div>
-        <div id="stat-correct" class="text-lg font-bold text-emerald-600">0</div>
-      </div>
-      <div>
-        <div class="text-xs text-slate-500">答對率 / 錯題數</div>
-        <div class="text-lg font-bold text-rose-600"><span id="stat-rate">0%</span> <span class="text-xs text-slate-400">(<span id="stat-wrong">0</span>錯)</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Main Content -->
-  <main class="max-w-6xl w-full mx-auto px-4 py-5 flex-1">
-    <!-- Practice Mode View -->
-    <div id="practice-view" class="space-y-4">
-      <div class="flex items-center justify-between bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-sm">
-        <button onclick="prevQuestion()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm font-bold text-slate-700">⬅ 上一題</button>
-        <div class="text-sm font-bold text-slate-700">
-          第 <span id="curr-index" class="text-[#0f4c81] text-base">1</span> / <span id="curr-total">0</span> 題
+    <!-- Collapsible Question Navigator Grid -->
+    <div id="question-grid-panel" class="hidden border-t border-slate-200 bg-slate-50">
+      <div class="max-w-5xl mx-auto px-4 py-3">
+        <div class="flex items-center justify-between mb-2 text-xs text-slate-500">
+          <span>點擊題號可直接切換至該題（綠色：答對／紅色：答錯／藍框：目前題目）</span>
+          <div class="flex items-center gap-3">
+            <span class="inline-flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></i>答對</span>
+            <span class="inline-flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></i>答錯</span>
+            <span class="inline-flex items-center gap-1"><i class="w-2.5 h-2.5 rounded-full bg-slate-300 inline-block"></i>未作答</span>
+          </div>
         </div>
-        <button onclick="nextQuestion()" class="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm font-bold text-slate-700">下一題 ➡</button>
+        <div id="question-grid" class="grid grid-cols-6 sm:grid-cols-10 md:grid-cols-14 gap-1.5 max-h-44 overflow-y-auto custom-scroll p-1"></div>
       </div>
+    </div>
+  </section>
 
-      <div id="single-question-container"></div>
+  <!-- Main Single-Question Workspace -->
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6 flex flex-col justify-between">
+    <div id="card-container" class="animate-card">
+      <!-- Dynamic Question Card Injected Here -->
     </div>
 
-    <!-- Study Mode View (All Questions + Answers Integrated) -->
-    <div id="study-view" class="hidden space-y-4"></div>
+    <!-- Bottom Prev / Next Switching Controls -->
+    <div class="mt-6 flex items-center justify-between gap-4 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+      <button id="btn-prev" class="flex-1 sm:flex-none sm:w-36 py-2.5 px-4 rounded-lg font-bold text-sm bg-slate-100 text-slate-700 hover:bg-slate-200 disabled:opacity-40 disabled:cursor-not-allowed transition flex items-center justify-center gap-1.5">
+        <span>←</span>
+        <span>上一題</span>
+      </button>
+
+      <div class="text-center">
+        <span id="footer-counter" class="text-sm font-black text-cyan-900">第 1 題 / 共 67 題</span>
+        <div id="footer-unit-badge" class="text-xs text-slate-500 hidden sm:block">第一單元</div>
+      </div>
+
+      <button id="btn-next" class="flex-1 sm:flex-none sm:w-36 py-2.5 px-4 rounded-lg font-bold text-sm bg-cyan-800 text-white hover:bg-cyan-700 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm transition flex items-center justify-center gap-1.5">
+        <span>下一題</span>
+        <span>→</span>
+      </button>
+    </div>
   </main>
 
-  <footer class="bg-white border-t border-slate-200 py-3 text-center text-xs text-slate-500">
-    職業安全衛生術科練習題整合題庫池｜支援單選、複選、填空排序、圖示配對與計算題演練
-  </footer>
+  <script>
+    // ==========================================
+    // 1. High-Resolution Inline SVG Diagrams
+    // ==========================================
+    const GHS_SVGS = {
+      'G-01': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><path d="M50 22 C52 33 44 38 47 47 C43 43 40 37 42 32 C34 38 33 49 39 58 C34 55 31 50 32 45 C27 52 29 65 40 70 L60 70 C71 65 73 51 67 43 C67 48 64 53 60 56 C65 47 63 36 56 30 C57 35 55 41 51 44 C54 36 53 28 50 22 Z" fill="#0f172a"/><rect x="33" y="73" width="34" height="4.5" fill="#0f172a"/></svg>`,
+      'G-02': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><circle cx="50" cy="57" r="12" fill="none" stroke="#0f172a" stroke-width="4.5"/><path d="M50 20 C52 29 45 34 48 42 C43 38 41 32 43 28 C36 33 35 42 40 48 L60 48 C65 41 64 32 57 27 C58 32 56 37 52 40 C54 33 53 25 50 20 Z" fill="#0f172a"/><rect x="34" y="73" width="32" height="4.5" fill="#0f172a"/></svg>`,
+      'G-03': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><g transform="rotate(-22 50 50)"><rect x="23" y="42" width="42" height="16" rx="8" fill="#0f172a"/><rect x="63" y="46.5" width="13" height="7" rx="2" fill="#0f172a"/><rect x="74" y="44.5" width="3" height="11" fill="#0f172a"/></g></svg>`,
+      'G-04': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><rect x="27" y="34" width="18" height="6" rx="2" transform="rotate(-15 36 37)" fill="none" stroke="#0f172a" stroke-width="2.5"/><rect x="55" y="34" width="18" height="6" rx="2" transform="rotate(15 64 37)" fill="none" stroke="#0f172a" stroke-width="2.5"/><path d="M32 44 C30 48 34 48 32 44 Z M68 44 C66 48 70 48 68 44 Z" fill="#0f172a"/><path d="M24 58 L44 58 L44 63 L36 63 C34 60 30 60 28 63 L24 63 Z" fill="#0f172a"/><path d="M52 60 L72 60 C75 60 76 63 73 64 L64 64 L74 66 C76 67 75 69 72 69 L62 68 L71 71 C73 72 72 74 69 73 L55 70 C51 69 50 63 52 60 Z" fill="none" stroke="#0f172a" stroke-width="2.2"/><path d="M28 52 L26 48 M32 51 L32 47 M36 52 L38 48 M63 54 L61 50 M68 53 L68 49 M72 54 L74 50" stroke="#0f172a" stroke-width="1.8"/></svg>`,
+      'G-05': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><circle cx="44" cy="54" r="9" fill="#0f172a"/><path d="M44 54 L23 44 M44 54 L22 57 M44 54 L28 69 M44 54 L53 27 M44 54 L63 32 M44 54 L76 47 M44 54 L73 61 M44 54 L60 72" stroke="#0f172a" stroke-width="2.3"/><polygon points="65,38 70,35 69,41" fill="#0f172a"/><polygon points="57,26 61,23 61,29" fill="#0f172a"/><polygon points="73,54 78,53 76,58" fill="#0f172a"/><polygon points="26,39 30,37 30,42" fill="#0f172a"/></svg>`,
+      'G-06': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><path d="M38 38 C38 28 62 28 62 38 C62 44 58 47 57 51 L43 51 C42 47 38 44 38 38 Z" fill="none" stroke="#0f172a" stroke-width="3"/><circle cx="45" cy="40" r="3" fill="#0f172a"/><circle cx="55" cy="40" r="3" fill="#0f172a"/><polygon points="50,43 48,47 52,47" fill="#0f172a"/><path d="M30 60 L70 72 M70 60 L30 72" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/><circle cx="29" cy="59" r="3" fill="#0f172a"/><circle cx="71" cy="73" r="3" fill="#0f172a"/><circle cx="71" cy="59" r="3" fill="#0f172a"/><circle cx="29" cy="73" r="3" fill="#0f172a"/></svg>`,
+      'G-07': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><path d="M45 27 C45 24 55 24 55 27 L53 56 C53 58 47 58 47 56 Z" fill="#0f172a"/><circle cx="50" cy="68" r="5.5" fill="#0f172a"/></svg>`,
+      'G-08': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><circle cx="50" cy="31" r="8.5" fill="#0f172a"/><path d="M33 52 C33 44 41 42 50 42 C59 42 67 44 67 52 L65 65 L50 80 L35 65 Z" fill="#0f172a"/><polygon points="50,44 52,53 61,48 54,56 63,62 52,60 50,74 48,60 37,62 46,56 39,48 48,53" fill="#fff"/></svg>`,
+      'G-09': `<svg viewBox="0 0 100 100" class="w-20 h-20 mx-auto"><polygon points="50,5 95,50 50,95 5,50" fill="#fff" stroke="#ef4444" stroke-width="7"/><line x1="25" y1="62" x2="75" y2="62" stroke="#0f172a" stroke-width="2.5"/><path d="M40 62 L40 34 M40 46 L30 37 M40 42 L49 33 M40 52 L32 48 M40 49 L48 44" stroke="#0f172a" stroke-width="3" stroke-linecap="round"/><path d="M46 66 C53 55 64 52 71 54 L67 60 L72 64 C64 67 54 67 46 66 Z" fill="#fff" stroke="#0f172a" stroke-width="2.5"/><circle cx="64" cy="57" r="1.5" fill="#0f172a"/><path d="M30 70 L70 70 L62 76 L38 76 Z" fill="#0f172a"/></svg>`
+    };
 
-<script>
-// SVG Helpers for GHS & Pitot Diagrams
-const ghsSVGs = {
-  flame: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><path d="M50 22 C54 33 46 38 51 47 C55 41 60 36 59 29 C67 37 68 48 63 55 C68 52 71 47 71 42 C77 51 74 66 61 71 C64 65 61 59 56 57 C57 62 54 67 50 69 C46 67 43 62 44 57 C39 59 36 65 39 71 C26 66 23 51 29 42 C29 47 32 52 37 55 C32 48 33 37 41 29 C40 36 45 41 49 47 C54 38 46 33 50 22 Z" fill="#111"/><rect x="31" y="73" width="38" height="4" fill="#111"/></svg>`,
-  oxidizer: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><circle cx="50" cy="57" r="13" fill="none" stroke="#111" stroke-width="4.5"/><path d="M50 20 C53 28 47 33 51 40 C55 35 58 31 58 26 C64 33 64 42 59 47 C64 44 66 40 66 36 C70 43 68 52 62 55 C63 49 58 44 50 44 C42 44 37 49 38 55 C32 52 30 43 34 36 C34 40 36 44 41 47 C36 42 36 33 42 26 C42 31 45 35 49 40 C53 33 47 28 50 20 Z" fill="#111"/><rect x="32" y="73" width="36" height="4" fill="#111"/></svg>`,
-  gas: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><g transform="rotate(-18 50 50)"><rect x="24" y="43" width="40" height="14" rx="6" fill="#111"/><rect x="63" y="47" width="12" height="6" rx="2" fill="#111"/></g></svg>`,
-  corrosive: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><rect x="29" y="34" width="18" height="5" rx="2" transform="rotate(-12 38 36)" fill="none" stroke="#111" stroke-width="2"/><rect x="53" y="34" width="18" height="5" rx="2" transform="rotate(12 62 36)" fill="none" stroke="#111" stroke-width="2"/><circle cx="33" cy="46" r="2" fill="#111"/><circle cx="67" cy="46" r="2" fill="#111"/><path d="M23 56 H43 V61 H23 Z" fill="#111"/><path d="M54 57 Q63 53 74 56 Q76 59 68 60 H56 Z" fill="#111"/></svg>`,
-  explosive: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><circle cx="45" cy="54" r="9" fill="#111"/><path d="M45 54 L68 32 M45 54 L76 48 M45 54 L72 64 M45 54 L54 26 M45 54 L26 42 M45 54 L24 60" stroke="#111" stroke-width="2.5"/><polygon points="62,28 67,26 65,32" fill="#111"/><polygon points="73,41 78,43 74,47" fill="#111"/></svg>`,
-  skull: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><circle cx="50" cy="43" r="13" fill="none" stroke="#111" stroke-width="3"/><rect x="43" y="53" width="14" height="7" rx="2" fill="none" stroke="#111" stroke-width="2.5"/><circle cx="45" cy="43" r="3" fill="#111"/><circle cx="55" cy="43" r="3" fill="#111"/><line x1="28" y1="62" x2="72" y2="74" stroke="#111" stroke-width="3.5" stroke-linecap="round"/><line x1="72" y1="62" x2="28" y2="74" stroke="#111" stroke-width="3.5" stroke-linecap="round"/></svg>`,
-  exclamation: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><path d="M45 26 H55 L53 56 H47 Z" fill="#111"/><circle cx="50" cy="68" r="5" fill="#111"/></svg>`,
-  health: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><circle cx="50" cy="31" r="8" fill="#111"/><path d="M32 52 Q32 42 50 42 Q68 42 68 52 L64 72 H36 Z" fill="#111"/><polygon points="50,43 52,51 60,48 54,54 61,60 52,58 50,67 48,58 39,60 46,54 40,48 48,51" fill="#fff"/></svg>`,
-  env: `<svg viewBox="0 0 100 100" class="ghs-diamond mx-auto"><polygon points="50,4 96,50 50,96 4,50" fill="#fff" stroke="#e11d48" stroke-width="6"/><path d="M38 66 V42 M38 50 L28 40 M38 46 L48 36 M38 54 L30 48" stroke="#111" stroke-width="3" stroke-linecap="round"/><ellipse cx="60" cy="58" rx="11" ry="5" transform="rotate(-25 60 58)" fill="none" stroke="#111" stroke-width="2.5"/><line x1="26" y1="68" x2="74" y2="68" stroke="#111" stroke-width="3"/></svg>`
-};
+    const PITOT_SVGS = {
+      'A': `<svg viewBox="0 0 200 105" class="w-44 h-24 mx-auto bg-white rounded border border-slate-200 p-1"><line x1="15" y1="14" x2="155" y2="14" stroke="#0f172a" stroke-width="2.2"/><line x1="15" y1="50" x2="118" y2="50" stroke="#0f172a" stroke-width="2.2"/><line x1="127" y1="50" x2="155" y2="50" stroke="#0f172a" stroke-width="2.2"/><ellipse cx="15" cy="32" rx="5" ry="18" fill="none" stroke="#0f172a" stroke-width="2"/><ellipse cx="155" cy="32" rx="5" ry="18" fill="none" stroke="#0f172a" stroke-width="2"/><polygon points="34,27 60,27 60,22 73,32 60,42 60,37 34,37" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.8"/><polyline points="92,29 118,29 118,86 140,86 140,58" fill="none" stroke="#0f172a" stroke-width="1.8"/><polyline points="92,35 110,35 110,94 148,94 148,58" fill="none" stroke="#0f172a" stroke-width="1.8"/><path d="M111,76 L117,76 L117,87 L141,87 L141,65 L147,65 L147,93 L111,93 Z" fill="#0284c7"/><line x1="152" y1="65" x2="168" y2="65" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="2,2"/><line x1="152" y1="76" x2="168" y2="76" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="2,2"/><text x="171" y="74" font-size="12" fill="#dc2626" font-weight="bold">h</text></svg>`,
+      'B': `<svg viewBox="0 0 200 105" class="w-44 h-24 mx-auto bg-white rounded border border-slate-200 p-1"><line x1="15" y1="14" x2="155" y2="14" stroke="#0f172a" stroke-width="2.2"/><line x1="15" y1="50" x2="50" y2="50" stroke="#0f172a" stroke-width="2.2"/><line x1="58" y1="50" x2="155" y2="50" stroke="#0f172a" stroke-width="2.2"/><ellipse cx="15" cy="32" rx="5" ry="18" fill="none" stroke="#0f172a" stroke-width="2"/><ellipse cx="155" cy="32" rx="5" ry="18" fill="none" stroke="#0f172a" stroke-width="2"/><polygon points="72,27 104,27 104,22 118,32 104,42 104,37 72,37" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.8"/><polyline points="50,50 50,94 86,94 86,58" fill="none" stroke="#0f172a" stroke-width="1.8"/><polyline points="58,50 58,86 78,86 78,58" fill="none" stroke="#0f172a" stroke-width="1.8"/><path d="M51,65 L57,65 L57,87 L79,87 L79,76 L85,76 L85,93 L51,93 Z" fill="#0284c7"/><line x1="89" y1="65" x2="105" y2="65" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="2,2"/><line x1="89" y1="76" x2="105" y2="76" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="2,2"/><text x="108" y="74" font-size="12" fill="#dc2626" font-weight="bold">h</text></svg>`,
+      'C': `<svg viewBox="0 0 200 105" class="w-44 h-24 mx-auto bg-white rounded border border-slate-200 p-1"><line x1="15" y1="14" x2="155" y2="14" stroke="#0f172a" stroke-width="2.2"/><line x1="15" y1="50" x2="110" y2="50" stroke="#0f172a" stroke-width="2.2"/><line x1="118" y1="50" x2="136" y2="50" stroke="#0f172a" stroke-width="2.2"/><line x1="144" y1="50" x2="155" y2="50" stroke="#0f172a" stroke-width="2.2"/><ellipse cx="15" cy="32" rx="5" ry="18" fill="none" stroke="#0f172a" stroke-width="2"/><ellipse cx="155" cy="32" rx="5" ry="18" fill="none" stroke="#0f172a" stroke-width="2"/><polygon points="34,27 60,27 60,22 73,32 60,42 60,37 34,37" fill="#e0f2fe" stroke="#0284c7" stroke-width="1.8"/><polyline points="90,29 118,29 118,86 136,86 136,50" fill="none" stroke="#0f172a" stroke-width="1.8"/><polyline points="90,35 110,35 110,94 144,94 144,50" fill="none" stroke="#0f172a" stroke-width="1.8"/><path d="M111,78 L117,78 L117,87 L137,87 L137,63 L143,63 L143,93 L111,93 Z" fill="#0284c7"/><line x1="148" y1="63" x2="164" y2="63" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="2,2"/><line x1="148" y1="78" x2="164" y2="78" stroke="#dc2626" stroke-width="1.5" stroke-dasharray="2,2"/><text x="167" y="74" font-size="12" fill="#dc2626" font-weight="bold">h</text></svg>`
+    };
 
-const pitotDiagramHTML = `
-<div class="grid grid-cols-1 md:grid-cols-3 gap-3 my-3">
-  <div class="border border-slate-300 rounded-lg p-2 bg-slate-50 text-center">
-    <div class="font-bold text-sm mb-1">圖 (A)</div>
-    <svg width="160" height="86" viewBox="0 0 180 100" class="mx-auto">
-      <line x1="15" y1="14" x2="145" y2="14" stroke="#0f172a" stroke-width="2"/>
-      <line x1="15" y1="48" x2="112" y2="48" stroke="#0f172a" stroke-width="2"/>
-      <line x1="120" y1="48" x2="145" y2="48" stroke="#0f172a" stroke-width="2"/>
-      <ellipse cx="15" cy="31" rx="5" ry="17" fill="none" stroke="#0f172a" stroke-width="2"/>
-      <ellipse cx="145" cy="31" rx="5" ry="17" fill="none" stroke="#0f172a" stroke-width="2"/>
-      <polygon points="32,26 56,26 56,21 68,31 56,41 56,36 32,36" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <polyline points="88,28 112,28 112,82 132,82 132,56" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <polyline points="88,34 105,34 105,89 139,89 139,56" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <path d="M106,72 L111,72 L111,83 L133,83 L133,63 L138,63 L138,88 L106,88 Z" fill="#475569"/>
-    </svg>
-    <div class="text-xs text-slate-600">開口迎向氣流流向之正面取壓孔</div>
-  </div>
-  <div class="border border-slate-300 rounded-lg p-2 bg-slate-50 text-center">
-    <div class="font-bold text-sm mb-1">圖 (B)</div>
-    <svg width="160" height="86" viewBox="0 0 180 100" class="mx-auto">
-      <line x1="15" y1="14" x2="145" y2="14" stroke="#0f172a" stroke-width="2"/>
-      <line x1="15" y1="48" x2="48" y2="48" stroke="#0f172a" stroke-width="2"/>
-      <line x1="55" y1="48" x2="145" y2="48" stroke="#0f172a" stroke-width="2"/>
-      <ellipse cx="15" cy="31" rx="5" ry="17" fill="none" stroke="#0f172a" stroke-width="2"/>
-      <ellipse cx="145" cy="31" rx="5" ry="17" fill="none" stroke="#0f172a" stroke-width="2"/>
-      <polygon points="66,26 98,26 98,21 112,31 98,41 98,36 66,36" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <polyline points="48,48 48,89 82,89 82,56" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <polyline points="55,48 55,82 75,82 75,56" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <path d="M49,63 L54,63 L54,83 L76,83 L76,72 L81,72 L81,88 L49,88 Z" fill="#475569"/>
-    </svg>
-    <div class="text-xs text-slate-600">開口垂直於管壁之壁面取壓孔</div>
-  </div>
-  <div class="border border-slate-300 rounded-lg p-2 bg-slate-50 text-center">
-    <div class="font-bold text-sm mb-1">圖 (C)</div>
-    <svg width="160" height="86" viewBox="0 0 180 100" class="mx-auto">
-      <line x1="15" y1="14" x2="145" y2="14" stroke="#0f172a" stroke-width="2"/>
-      <line x1="15" y1="48" x2="105" y2="48" stroke="#0f172a" stroke-width="2"/>
-      <line x1="112" y1="48" x2="128" y2="48" stroke="#0f172a" stroke-width="2"/>
-      <line x1="135" y1="48" x2="145" y2="48" stroke="#0f172a" stroke-width="2"/>
-      <ellipse cx="15" cy="31" rx="5" ry="17" fill="none" stroke="#0f172a" stroke-width="2"/>
-      <ellipse cx="145" cy="31" rx="5" ry="17" fill="none" stroke="#0f172a" stroke-width="2"/>
-      <polygon points="32,26 56,26 56,21 68,31 56,41 56,36 32,36" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <polyline points="86,28 112,28 112,82 128,82 128,48" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <polyline points="86,34 105,34 105,89 135,89 135,48" fill="none" stroke="#0f172a" stroke-width="1.8"/>
-      <path d="M106,74 L111,74 L111,83 L129,83 L129,61 L134,61 L134,88 L106,88 Z" fill="#475569"/>
-    </svg>
-    <div class="text-xs text-slate-600">同時連接全壓孔與靜壓孔量測差壓</div>
-  </div>
-</div>`;
+    // ==========================================
+    // 2. Complete Question Bank Pool (67 Questions)
+    // ==========================================
+    const QUESTION_BANK = [
+      // ==================== 第一單元 (15題) ====================
+      {
+        id: 'U1-A', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'A. 勞檢結果通知與公告期限', score: '4分', type: 'fill',
+        segments: [
+          '勞動檢查員對於事業單位之檢查結果，應報由所屬勞動檢查機構依法處理；其有違反勞動法令規定事項者，勞動檢查機構並應 ',
+          { key: 'b1', answer: '10', options: ['5', '7', '10', '14', '15', '30'] },
+          ' 日內以書面通知事業單位立即改正或限期改善。事業單位對前項檢查結果，應於違規場所顯明易見處公告 ',
+          { key: 'b2', answer: '7', options: ['3', '5', '7', '10', '14', '30'] },
+          ' 日以上。'
+        ],
+        lawRef: '勞動檢查法第27條及同法施行細則第21條：勞動檢查機構應於「10」日內以書面通知事業單位；事業單位應於違規場所顯明易見處公告「7」日以上。'
+      },
+      {
+        id: 'U1-B', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'B. 高溫場所工作時間限制', score: '2分', type: 'single',
+        stem: '高溫場所工作之勞工，雇主不得使其每日工作時間超過多少小時？',
+        options: ['8 小時', '6 小時', '5 小時', '4 小時', '3 小時'],
+        answer: 1,
+        lawRef: '職業安全衛生法第19條、高溫作業勞工作息時間標準第4條：高溫場所工作之勞工，每日工作時間不得超過 6 小時。'
+      },
+      {
+        id: 'U1-C', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'C. 未滿十八歲不得從事之危險性或有害性工作（複選）', score: '8分', type: 'multi',
+        stem: '雇主不得使未滿十八歲者從事下列何種危險性或有害性工作？（請勾選所有正確選項）',
+        options: [
+          '坑內工作',
+          '處理爆炸性、氧化性等物質之工作',
+          '有害粉塵散布場所之工作',
+          '超過二百二十伏特動力線之銜接',
+          '鑿岩機及其他有顯著振動之工作',
+          '橡膠化合物及合成樹脂之滾輾工作',
+          '動力捲揚機、動力運搬機及索道之監督工作',
+          '一定重量以下之重物處理工作'
+        ],
+        answers: [0, 1, 2, 3, 4, 5],
+        lawRef: '職業安全衛生法第29條第1項。不選原因：法規規定為「運轉工作」而非「監督工作」；法規規定為「一定重量以上」而非「以下」。'
+      },
+      {
+        id: 'U1-D', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'D. 只能以型式檢定合格為限之機械設備器具（複選）', score: '10分', type: 'multi',
+        stem: '本法第七條第一項所稱中央主管機關指定之機械、設備或器具，下列哪些只能以型式檢定合格為限？（請勾選所有正確選項）',
+        options: [
+          '手推刨床',
+          '動力衝剪機械',
+          '動力堆高機',
+          '木材加工用圓盤鋸',
+          '研磨機',
+          '研磨輪',
+          '防爆電動機',
+          '防爆開關箱',
+          'CNC車床',
+          '銑床',
+          '搪床'
+        ],
+        answers: [0, 1, 2, 3, 4, 5, 6, 7],
+        lawRef: '職業安全衛生法第7條第2項、機械設備器具安全資訊申報登錄辦法。CNC車床、銑床、搪床屬於安全資訊申報登錄（自主宣告）範疇，非強制型式檢定合格品項。'
+      },
+      {
+        id: 'U1-E', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'E. 關於急救敘述有誤者（複選）', score: '4分', type: 'multi',
+        stem: '關於急救，下列敘述哪些「有誤」？（請勾選錯誤的敘述）',
+        options: [
+          '前臂嚴重出血，以直接加壓並抬高過心臟仍流血時，可壓迫近心端肱動脈止血',
+          '強酸、強鹼中毒時，應立即給患者喝大量水以稀釋毒物並進行催吐',
+          '休克是人的有效血循環量不足的一種情況，它會造成組織與器官血液灌注不足，因而影響細胞功能',
+          '2人前後抬搬運傷患時，前後抬者的步伐應盡量一致'
+        ],
+        answers: [1, 3],
+        lawRef: '① 腐蝕性毒物（強酸、強鹼）嚴禁催吐，避免造成消化道二次灼傷與穿孔破裂；② 2人前後抬搬運時，前後人員步伐應不一致（相反），以減少擔架晃動與共振。'
+      },
+      {
+        id: 'U1-F', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'F. 電壓類別定義', score: '2分', type: 'single',
+        stem: '皮卡丘身上所發出的電力為 18KV，而根據職業安全衛生法所定義之電壓，屬於何者？',
+        options: ['低壓', '高壓', '特高壓', '超高壓'],
+        answer: 1,
+        lawRef: '職業安全衛生設施規則第239條：高壓指超過 600 伏特至 25,000 伏特之電壓。18KV（18,000V）屬於「高壓」。'
+      },
+      {
+        id: 'U1-G', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'G. 粉碎機及混合機開口圍柵高度', score: '2分', type: 'single',
+        stem: '為防止勞工有自粉碎機及混合機之開口部分墜落之虞，雇主應有覆蓋、護圍、高度在多少公分以上之圍柵等必要設備？',
+        options: ['85 公分', '120 公分', '75 公分', '90 公分', '95 公分'],
+        answer: 3,
+        lawRef: '職業安全衛生設施規則第83條：圍柵高度應在 90 公分以上。'
+      },
+      {
+        id: 'U1-H', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'H. 堆高機特殊作業訓練噸位門檻', score: '4分', type: 'fill',
+        segments: [
+          '雇主對於荷重在 ',
+          { key: 'b1', answer: '1', options: ['0.5', '1', '1.5', '2', '3', '5'] },
+          ' 公噸以上之堆高機，應指派經特殊作業安全衛生教育訓練人員操作。'
+        ],
+        lawRef: '職業安全衛生教育訓練規則第14條第1項第4款：荷重在 1 公噸以上之堆高機。'
+      },
+      {
+        id: 'U1-I', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'I. 乙炔產生之表壓力上限', score: '4分', type: 'fill',
+        segments: [
+          '雇主對於使用乙炔熔接裝置或氧乙炔熔接裝置從事金屬之熔接、熔斷或加熱作業時，應規定其產生之乙炔壓力不得超過表壓力每平方公分 ',
+          { key: 'b1', answer: '1.3', options: ['1.0', '1.3', '1.5', '2.0', '2.5', '3.5'] },
+          ' 公斤以上。'
+        ],
+        lawRef: '職業安全衛生設施規則第196條第1款：表壓力每平方公分不得超過 1.3 公斤以上。'
+      },
+      {
+        id: 'U1-J', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'J. 呼吸防護措施實施程序排序', score: '12分', type: 'order',
+        stem: '雇主使勞工使用呼吸防護具時，應指派專人採取呼吸防護措施，請依序選擇正確的實施步驟：',
+        slots: [
+          { label: '第 1 步', answer: 'B. 危害辨識及暴露評估' },
+          { label: '第 2 步', answer: 'C. 防護具之選擇' },
+          { label: '第 3 步', answer: 'A. 防護具之使用' },
+          { label: '第 4 步', answer: 'F. 呼吸防護教育訓練' },
+          { label: '第 5 步', answer: 'E. 防護具之維護及管理' },
+          { label: '第 6 步', answer: 'D. 成效評估及改善' }
+        ],
+        pool: [
+          'A. 防護具之使用',
+          'B. 危害辨識及暴露評估',
+          'C. 防護具之選擇',
+          'D. 成效評估及改善',
+          'E. 防護具之維護及管理',
+          'F. 呼吸防護教育訓練'
+        ],
+        lawRef: '職業安全衛生設施規則第277條之1：正確順序代碼為 BCAFED（危害辨識及暴露評估 → 防護具之選擇 → 防護具之使用 → 呼吸防護教育訓練 → 防護具之維護及管理 → 成效評估及改善）。'
+      },
+      {
+        id: 'U1-K', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'K. 起重機載人試吊測試保持時間', score: '4分', type: 'fill',
+        segments: [
+          '起重機載人作業前，應先以預期最大荷重之荷物，進行試吊測試，將測試荷物置於搭乘設備上，吊升至最大作業高度，保持 ',
+          { key: 'b1', answer: '5', options: ['1', '3', '5', '10', '15', '30'] },
+          ' 分鐘以上，確認其平衡性及安全性無異常。'
+        ],
+        lawRef: '起重升降機具安全規則第39條之1第1項第7款：吊升至最大作業高度，保持 5 分鐘以上。'
+      },
+      {
+        id: 'U1-L', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: 'L. 雙手操作式安全裝置按鈕外側距離', score: '4分', type: 'fill',
+        segments: [
+          '雙手操作式安全裝置應符合其一按鈕之外側與其他按鈕之外側，至少距離 ',
+          { key: 'b1', answer: '300', options: ['150', '200', '250', '300', '350', '400'] },
+          ' 毫米以上。但按鈕設有護蓋、擋板或障礙物等，具有防止以單手及人體其他部位操作之同等安全性能者，其距離得酌減之。'
+        ],
+        lawRef: '機械設備器具安全標準第13條第4款：至少距離 300 毫米以上。'
+      },
+      {
+        id: 'U1-Calc1', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: '計算題一：綜合溫度熱指數（WBGT）', score: '12分', type: 'calc',
+        stem: '火燄山之 WBGT 如下：WBGT₁ = 27°C（t₁ = 10 分鐘）、WBGT₂ = 29°C（t₂ = 20 分鐘）、WBGT₃ = 31°C（t₃ = 30 分鐘）。試問綜合溫度熱指數 WBGT 為多少？（四捨五入到小數第2位數）',
+        formulaHtml: '時量平均 WBGT = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">Σ(WBGT<sub>i</sub> × t<sub>i</sub>) ÷ Σt<sub>i</sub></span>',
+        symbols: [
+          'WBGT<sub>i</sub>：第 i 時段之綜合溫度熱指數（°C）',
+          't<sub>i</sub>：第 i 時段之實際暴露時間（分鐘）',
+          'Σt<sub>i</sub>：總評估時間（分鐘，通常以 60 分鐘為基準）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（分子加權總和）：WBGT = ',
+            parts: [
+              { key: 'c1', answer: '(27×10 + 29×20 + 31×30)', options: ['(27 + 29 + 31)', '(27×10 + 29×20 + 31×30)', '(27×30 + 29×20 + 31×10)', '(27×10 × 29×20 × 31×30)'] },
+              ' ÷ ',
+              { key: 'c2', answer: '(10 + 20 + 30)', options: ['3', '60', '(10 + 20 + 30)', '100'] }
+            ]
+          },
+          {
+            label: '步驟 2（計算結果）：1780 ÷ 60 ≈ ',
+            parts: [
+              { key: 'c3', answer: '29.67', options: ['28.50', '29.00', '29.33', '29.67', '30.12'] },
+              ' °C'
+            ]
+          }
+        ],
+        lawRef: '計算解析：(27×10 + 29×20 + 31×30) ÷ (10+20+30) = (270 + 580 + 930) ÷ 60 = 1780 ÷ 60 ≈ 29.67°C。'
+      },
+      {
+        id: 'U1-Calc2', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: '計算題二：稀釋通風有害物濃度衰減', score: '16分', type: 'calc',
+        stem: '月桃作業環境的氣積為 800 m³，每小時換氣量為 200 m³/hr，有害物濃度為 300 ppm，請問 4 小時以後，有害物濃度剩下多少 ppm？（四捨五入到小數點第2位）',
+        formulaHtml: 'C<sub>t</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">C<sub>0</sub> × e<sup>−(Q ÷ V) × t</sup></span>　（其中換氣次數 N = Q ÷ V）',
+        symbols: [
+          'C<sub>t</sub>：經過時間 t 後之室內有害物濃度（ppm）',
+          'C<sub>0</sub>：初始有害物濃度（300 ppm）',
+          'Q：每小時新鮮空氣換氣量（200 m³/hr）',
+          'V：作業場所空間氣積（800 m³）',
+          't：經過時間（4 hr），e ≈ 2.71828'
+        ],
+        steps: [
+          {
+            label: '步驟 1（每小時換氣次數 N）：N = Q ÷ V = ',
+            parts: [
+              { key: 'c1', answer: '200 ÷ 800 = 0.25', options: ['800 ÷ 200 = 4.00', '200 ÷ 800 = 0.25', '300 ÷ 800 = 0.375', '200 ÷ 300 = 0.67'] },
+              ' hr⁻¹'
+            ]
+          },
+          {
+            label: '步驟 2（4小時後濃度）：C₄ = 300 × e<sup>−(0.25×4)</sup> = 300 ÷ 2.71828 ≈ ',
+            parts: [
+              { key: 'c2', answer: '110.36', options: ['75.00', '110.36', '150.00', '189.64', '225.00'] },
+              ' ppm'
+            ]
+          }
+        ],
+        lawRef: '計算解析：換氣次數 N = 200 ÷ 800 = 0.25 hr⁻¹；4小時總換氣次數 N×t = 0.25×4 = 1；C₄ = 300 × e⁻¹ = 300 ÷ 2.71828 ≈ 110.36 ppm。'
+      },
+      {
+        id: 'U1-Calc3', unit: 'U1', unitName: '第一單元：法規基礎與基礎計算', title: '計算題三：甲苯氣體容許濃度單位換算', score: '12分', type: 'calc',
+        stem: '有機溶劑甲苯於常溫常壓下，容許濃度為 80 ppm，其分子量為 92，若轉換成 mg/m³ 為多少？（四捨五入到小數第2位）',
+        formulaHtml: '濃度（mg/m³） = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(ppm × M) ÷ 24.45</span>',
+        symbols: [
+          'ppm：氣體體積濃度百萬分點（80 ppm）',
+          'M：該化學物質之分子量（甲苯 = 92）',
+          '24.45：常溫常壓（25°C、1 atm）下，1 莫耳理想氣體所佔體積（L/mol）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（代入公式）：濃度 = ( 80 × ',
+            parts: [
+              { key: 'c1', answer: '92', options: ['24.45', '78', '92', '106'] },
+              ' ) ÷ ',
+              { key: 'c2', answer: '24.45', options: ['22.4', '24.45', '273', '1000'] }
+            ]
+          },
+          {
+            label: '步驟 2（計算結果）：7360 ÷ 24.45 ≈ ',
+            parts: [
+              { key: 'c3', answer: '301.02', options: ['21.26', '275.40', '301.02', '328.57'] },
+              ' mg/m³'
+            ]
+          }
+        ],
+        lawRef: '計算解析：常溫常壓（25°C、1 atm）氣體莫耳體積為 24.45 L/mol，濃度 = (80 × 92) ÷ 24.45 = 7360 ÷ 24.45 ≈ 301.02 mg/m³。'
+      },
 
-const ghsGridHTML = `
-<div class="grid grid-cols-3 sm:grid-cols-5 gap-2 my-3 text-center text-xs">
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.flame}<div class="font-bold mt-1">G-01</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.oxidizer}<div class="font-bold mt-1">G-02</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.gas}<div class="font-bold mt-1">G-03</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.corrosive}<div class="font-bold mt-1">G-04</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.explosive}<div class="font-bold mt-1">G-05</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.skull}<div class="font-bold mt-1">G-06</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.exclamation}<div class="font-bold mt-1">G-07</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.health}<div class="font-bold mt-1">G-08</div></div>
-  <div class="border rounded p-1.5 bg-slate-50">${ghsSVGs.env}<div class="font-bold mt-1">G-09</div></div>
-</div>`;
+      // ==================== 第二單元 (10題 - 含補回計算三) ====================
+      {
+        id: 'U2-A', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: 'A. 危險性設備規格填空配對', score: '16分', type: 'fill',
+        segments: [
+          '針對危險性機械及設備安全檢查規則中規定，危險性設備中的蒸氣鍋爐，最高使用壓力超過每平方公分【1】 ',
+          { key: 'b1', answer: '1公斤', options: ['1公斤', '5公斤', '10公斤'] },
+          ' ，或傳熱面積超過【2】 ',
+          { key: 'b2', answer: '1平方公尺', options: ['1平方公尺', '5平方公尺', '8平方公尺', '10平方公尺'] },
+          ' 。熱水鍋爐水頭壓力超過【3】 ',
+          { key: 'b3', answer: '10公尺', options: ['5公尺', '10公尺', '15公尺'] },
+          ' ，或傳熱面積超過【4】 ',
+          { key: 'b4', answer: '8平方公尺', options: ['1平方公尺', '5平方公尺', '8平方公尺', '10平方公尺'] },
+          ' 。鍋爐中屬貫流式者，其最高使用壓力超過每平方公分【5】 ',
+          { key: 'b5', answer: '10公斤', options: ['1公斤', '5公斤', '10公斤'] },
+          ' ，或其傳熱面積超過【6】 ',
+          { key: 'b6', answer: '10平方公尺', options: ['1平方公尺', '5平方公尺', '8平方公尺', '10平方公尺'] },
+          ' 者。壓力容器是指最高使用壓力超過每平方公分【7】 ',
+          { key: 'b7', answer: '1公斤', options: ['1公斤', '5公斤', '10公斤'] },
+          ' ，且內容積超過【8】 ',
+          { key: 'b8', answer: '0.2立方公尺', options: ['0.1立方公尺', '0.2立方公尺', '0.5立方公尺', '1.0立方公尺'] },
+          ' 。'
+        ],
+        lawRef: '危險性機械及設備安全檢查規則第4條：【1】1公斤、【2】1平方公尺、【3】10公尺、【4】8平方公尺、【5】10公斤、【6】10平方公尺、【7】1公斤、【8】0.2立方公尺。'
+      },
+      {
+        id: 'U2-B', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: 'B. 職安法共同作業《A》與細則協議事項《B》歸屬', score: '18分', type: 'match',
+        stem: '「職業安全衛生法」規定之共同作業為《A》，「職業安全衛生法施行細則」之協議事項為《B》，請選擇下列各項敘述之正確歸屬：',
+        rows: [
+          { label: '1. 工作場所巡視', answer: 'A（職安法第27條共同作業）' },
+          { label: '2. 作業人員管制', answer: 'B（施行細則第37條協議事項）' },
+          { label: '3. 變更管理', answer: 'B（施行細則第37條協議事項）' },
+          { label: '4. 作業環境作業管制', answer: 'B（施行細則第37條協議事項）' },
+          { label: '5. 工作聯繫及調整', answer: 'A（職安法第27條共同作業）' },
+          { label: '6. 機械設備器具入場管制', answer: 'B（施行細則第37條協議事項）' },
+          { label: '7. 設置協議組織', answer: 'A（職安法第27條共同作業）' },
+          { label: '8. 危險作業管制', answer: 'B（施行細則第37條協議事項）' },
+          { label: '9. 安全衛生教育指導及協助', answer: 'A（職安法第27條共同作業）' }
+        ],
+        pool: ['A（職安法第27條共同作業）', 'B（施行細則第37條協議事項）'],
+        lawRef: '職業安全衛生法第27條（設置協議組織、工作聯繫及調整、工作場所巡視、安全衛生教育指導及協助）及同法施行細則第37條（人員/機具入場管制、危險作業管制、變更管理、作業環境管制等）。'
+      },
+      {
+        id: 'U2-C', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: 'C. 高壓水切割裝置安全標準', score: '15分', type: 'fill',
+        segments: [
+          '雇主對於使用水柱壓力達每平方公分【1】 ',
+          { key: 'b1', answer: '350', options: ['150', '250', '350', '500'] },
+          ' 以上之高壓水切割裝置，從事沖蝕、剝離、切除、疏通及沖擊等作業，應訂定安全衛生作業標準，並指定【2】 ',
+          { key: 'b2', answer: '專人', options: ['作業主管', '專人', '安全衛生人員'] },
+          ' 指揮監督勞工從事作業；於適當位置設置【3】 ',
+          { key: 'b3', answer: '壓力表', options: ['壓力表', '洩壓閥', '流量計'] },
+          ' 及能於緊急時立即遮斷動力之【4】 ',
+          { key: 'b4', answer: '立即遮斷動力', options: ['立即停止運轉', '立即遮斷動力', '緊急警報器'] },
+          ' ；並提供防止高壓水柱危害之個人防護具，使【5】 ',
+          { key: 'b5', answer: '作業勞工', options: ['作業勞工', '作業者', '現場人員'] },
+          ' 確實使用。'
+        ],
+        lawRef: '職業安全衛生設施規則第150條之1：【1】350、【2】專人、【3】壓力表、【4】立即遮斷動力（動力遮斷裝置）、【5】作業勞工。'
+      },
+      {
+        id: 'U2-D', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: 'D. 場所範圍大小排列（由小到大）', score: '5分', type: 'order',
+        stem: '職業安全衛生法中有 (1) 勞動場所、(2) 作業場所、(3) 工作場所，請依據各場所的範圍大小，「由小到大」排列：',
+        slots: [
+          { label: '最小範圍', answer: '(2) 作業場所' },
+          { label: '中間範圍', answer: '(3) 工作場所' },
+          { label: '最大範圍', answer: '(1) 勞動場所' }
+        ],
+        pool: ['(1) 勞動場所', '(2) 作業場所', '(3) 工作場所'],
+        lawRef: '職業安全衛生法施行細則第5條：範圍由小到大為「作業場所 → 工作場所 → 勞動場所」（代碼 231）。'
+      },
+      {
+        id: 'U2-E', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: 'E. 道路作業安全防護計畫事項排序', score: '6分', type: 'order',
+        stem: '日間封閉車道、路肩逾二小時或夜間封閉車道、路肩逾一小時者，應訂定安全防護計畫，請依序排列下列規定事項：',
+        slots: [
+          { label: '第 1 項', answer: '(2) 交通維持布設圖' },
+          { label: '第 2 項', answer: '(1) 使用道路作業可能危害之項目' },
+          { label: '第 3 項', answer: '(3) 可能危害之防止措施' },
+          { label: '第 4 項', answer: '(5) 提供防護設備、警示設備之檢點及維護方法' },
+          { label: '第 5 項', answer: '(4) 緊急應變處置措施' }
+        ],
+        pool: [
+          '(1) 使用道路作業可能危害之項目',
+          '(2) 交通維持布設圖',
+          '(3) 可能危害之防止措施',
+          '(4) 緊急應變處置措施',
+          '(5) 提供防護設備、警示設備之檢點及維護方法'
+        ],
+        lawRef: '職業安全衛生設施規則第21條之1第3項：正確順序代碼為 21354。'
+      },
+      {
+        id: 'U2-F', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: 'F. 定期檢查與重點檢查紀錄事項排序', score: '5分', type: 'order',
+        stem: '雇主規定實施之定期檢查、重點檢查應就下列事項記錄，請依序排列紀錄事項之順序：',
+        slots: [
+          { label: '第 1 項', answer: '(5) 檢查年月日' },
+          { label: '第 2 項', answer: '(2) 檢查方法' },
+          { label: '第 3 項', answer: '(1) 檢查部分' },
+          { label: '第 4 項', answer: '(6) 檢查結果' },
+          { label: '第 5 項', answer: '(3) 實施檢查者之姓名' },
+          { label: '第 6 項', answer: '(4) 依檢查結果應採取改善措施之內容' }
+        ],
+        pool: [
+          '(1) 檢查部分',
+          '(2) 檢查方法',
+          '(3) 實施檢查者之姓名',
+          '(4) 依檢查結果應採取改善措施之內容',
+          '(5) 檢查年月日',
+          '(6) 檢查結果'
+        ],
+        lawRef: '職業安全衛生管理辦法第80條：正確順序代碼為 521634。'
+      },
+      {
+        id: 'U2-G', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: 'G. 堆高機基準狀態規範', score: '15分', type: 'fill',
+        segments: [
+          '一、堆高機走行時基準負荷狀態：制動初速度 ',
+          { key: 'b1', answer: '10', options: ['10', '15', '20', '25'] },
+          ' km/h，停止距離 ',
+          { key: 'b2', answer: '2.5', options: ['1.5', '2.0', '2.5', '3.0'] },
+          ' m，且具有 ',
+          { key: 'b3', answer: '15', options: ['10', '15', '20', '25'] },
+          ' %之坡度地面，使堆高機停止之性能。<br>二、堆高機走行時基準無負荷狀態：制動初速度 ',
+          { key: 'b4', answer: '20', options: ['10', '15', '20', '25'] },
+          ' km/h，停止距離 ',
+          { key: 'b5', answer: '2.5', options: ['1.5', '2.0', '2.5', '3.0'] },
+          ' m，且具有 ',
+          { key: 'b6', answer: '15', options: ['10', '15', '20', '25'] },
+          ' %之坡度地面，使堆高機停止之性能。<br>三、堆高機走行時基準無負荷狀態定義為伸臂完全縮回，桅桿垂直，貨叉水平，貨叉上端距離地面 ',
+          { key: 'b7', answer: '30', options: ['15', '20', '25', '30', '40'] },
+          ' 公分。'
+        ],
+        lawRef: '機械設備器具安全標準第56條、第65條：基準負荷(10 km/h, 2.5 m, 15%)；基準無負荷(20 km/h, 2.5 m, 15%)；貨叉上端距地面 30 公分。'
+      },
+      {
+        id: 'U2-Calc1', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: '計算一：可燃性氣體爆炸危險性指數', score: '8分', type: 'calc',
+        stem: '有一可燃性氣體組成：乙烷（C₂H₆）爆炸界限 3.0～12.4%（30%）、丙烷（C₃H₈）爆炸界限 2.1～10.1%（30%）、丁烷（C₄H₁₀）爆炸界限 1.6～8.4%（40%）。試求各氣體之爆炸危險性（指數）（四捨五入至小數第二位）。',
+        formulaHtml: '爆炸危險性指數 H = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(UEL − LEL) ÷ LEL</span>',
+        symbols: [
+          'H：爆炸危險性指數（無因次，數值越大代表爆炸危險範圍相對越廣）',
+          'UEL：該可燃性氣體之爆炸上限（%）',
+          'LEL：該可燃性氣體之爆炸下限（%）'
+        ],
+        steps: [
+          {
+            label: '乙烷 H = (12.4 − 3.0) ÷ 3.0 = ',
+            parts: [{ key: 'c1', answer: '3.13', options: ['2.45', '3.13', '3.81', '4.13'] }]
+          },
+          {
+            label: '丙烷 H = (10.1 − 2.1) ÷ 2.1 = ',
+            parts: [{ key: 'c2', answer: '3.81', options: ['3.13', '3.52', '3.81', '4.25'] }]
+          },
+          {
+            label: '丁烷 H = (8.4 − 1.6) ÷ 1.6 = ',
+            parts: [{ key: 'c3', answer: '4.25', options: ['3.81', '4.00', '4.25', '5.25'] }]
+          }
+        ],
+        lawRef: '計算解析：乙烷 = (12.4−3.0)÷3.0 = 3.13；丙烷 = (10.1−2.1)÷2.1 = 3.81；丁烷 = (8.4−1.6)÷1.6 = 4.25。'
+      },
+      {
+        id: 'U2-Calc2', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: '計算二：混合可燃性氣體爆炸上下限（Le Chatelier 定律）', score: '6分', type: 'calc',
+        stem: '承上題氣體組成（乙烷 30%、丙烷 30%、丁烷 40%），依勒沙特列（Le Chatelier）定律，求混合可燃性氣體之爆炸上限（UEL）與爆炸下限（LEL）（四捨五入至小數第二位）。',
+        formulaHtml: '<span class="font-mono bg-amber-100 px-2 py-0.5 rounded">100 ÷ LEL<sub>m</sub> = Σ(V<sub>i</sub> ÷ LEL<sub>i</sub>)</span>　；　<span class="font-mono bg-amber-100 px-2 py-0.5 rounded">100 ÷ UEL<sub>m</sub> = Σ(V<sub>i</sub> ÷ UEL<sub>i</sub>)</span>',
+        symbols: [
+          'LEL<sub>m</sub>、UEL<sub>m</sub>：混合氣體之爆炸下限、爆炸上限（%）',
+          'V<sub>i</sub>：第 i 種可燃性氣體佔可燃性氣體總和之體積百分比（%）',
+          'LEL<sub>i</sub>、UEL<sub>i</sub>：第 i 種可燃性氣體單獨存在時之爆炸下限、上限（%）'
+        ],
+        steps: [
+          {
+            label: '混合爆炸上限 UEL<sub>m</sub> = 100 ÷ (30/12.4 + 30/10.1 + 40/8.4) = 100 ÷ 10.1516 ≈ ',
+            parts: [{ key: 'c1', answer: '9.85', options: ['8.95', '9.85', '10.15', '10.30'] }, ' %']
+          },
+          {
+            label: '混合爆炸下限 LEL<sub>m</sub> = 100 ÷ (30/3.0 + 30/2.1 + 40/1.6) = 100 ÷ 49.2857 ≈ ',
+            parts: [{ key: 'c2', answer: '2.03', options: ['1.85', '2.03', '2.23', '2.45'] }, ' %']
+          }
+        ],
+        lawRef: '計算解析：UELm = 100 ÷ (2.4194 + 2.9703 + 4.7619) = 100 ÷ 10.1516 ≈ 9.85%；LELm = 100 ÷ (10 + 14.2857 + 25) = 100 ÷ 49.2857 ≈ 2.03%。'
+      },
+      {
+        id: 'U2-Calc3', unit: 'U2', unitName: '第二單元：設備標準、共同作業與工程計算', title: '計算三：二氧化碳通風稀釋換氣量（補回原遺漏題）', score: '6分', type: 'calc',
+        stem: '柯南的工作場所之二氧化碳產生率為 11 m³/h，戶外二氧化碳濃度為 400 ppm。如欲使室內場所的二氧化碳濃度不超過 1500 ppm，則戶外空氣進氣量至少為多少 m³/h？（四捨五入至小數第2位）',
+        formulaHtml: '所需新鮮空氣進氣量 Q = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">G ÷ (C<sub>s</sub> − C<sub>0</sub>)</span>',
+        symbols: [
+          'Q：所需戶外新鮮空氣進氣量（m³/h）',
+          'G：室內二氧化碳產生率（11 m³/h）',
+          'C<sub>s</sub>：室內容許濃度上限之體積比（1500 ppm = 1500 × 10⁻⁶ = 0.0015）',
+          'C<sub>0</sub>：戶外新鮮空氣背景濃度之體積比（400 ppm = 400 × 10⁻⁶ = 0.0004）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（套入數值）：Q = ',
+            parts: [
+              { key: 'c1', answer: '11', options: ['11', '400', '1100', '1500'] },
+              ' ÷ ',
+              { key: 'c2', answer: '(1500 − 400) × 10⁻⁶', options: ['(1500 + 400) × 10⁻⁶', '(1500 − 400) × 10⁻⁶', '1500 × 10⁻⁶', '400 × 10⁻⁶'] }
+            ]
+          },
+          {
+            label: '步驟 2（計算結果）：11 ÷ 0.0011 = ',
+            parts: [
+              { key: 'c3', answer: '10000', options: ['1000', '5789.47', '7333.33', '10000', '27500'] },
+              ' m³/h'
+            ]
+          }
+        ],
+        lawRef: '計算解析：Q = G ÷ (Cs − C₀) = 11 ÷ [(1500 − 400) × 10⁻⁶] = 11 ÷ 0.0011 = 10,000 m³/h。'
+      },
 
-// Full Unified Question Pool (66 Questions)
-const questionPool = [
-  // ================= 第一單元 =================
-  {
-    id: "u1-A", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: false,
-    title: "A. 勞檢結果通知與公告期限（4分）",
-    stem: "勞動檢查員對於事業單位之檢查結果，應報由所屬勞動檢查機構依法處理；其有違反勞動法令規定事項者，勞動檢查機構並應【 】日內以書面通知事業單位立即改正或限期改善。事業單位對前項檢查結果，應於違規場所顯明易見處公告【 】日以上。（答案與答案之間請空一格）",
-    placeholder: "例如：10 7",
-    answer: "10 7",
-    law: "勞動檢查法第27條及同法施行細則第21條",
-    explanation: "勞動檢查機構應於「10」日內以書面通知事業單位；事業單位應於違規場所顯明易見處公告「7」日以上。"
-  },
-  {
-    id: "u1-B", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "single", isCalc: false,
-    title: "B. 高溫場所工作時間限制（2分）",
-    stem: "高溫場所工作之勞工，雇主不得使其每日工作時間超過【 】小時。",
-    options: ["8", "6", "5", "4", "3"],
-    answer: "6",
-    law: "職業安全衛生法第19條、高溫作業勞工作息時間標準第4條",
-    explanation: "高溫場所工作之勞工，每日工作時間不得超過 6 小時。"
-  },
-  {
-    id: "u1-C", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "multi", isCalc: false,
-    title: "C. 未滿十八歲不得從事之危險性或有害性工作（複選，8分）",
-    stem: "雇主不得使未滿十八歲者從事下列何種危險性或有害性工作，請選正確選項：",
-    options: [
-      "坑內工作",
-      "處理爆炸性、氧化性等物質之工作",
-      "有害粉塵散布場所之工作",
-      "超過二百二十伏特動力線之銜接",
-      "鑿岩機及其他有顯著振動之工作",
-      "橡膠化合物及合成樹脂之滾輾工作",
-      "動力捲揚機、動力運搬機及索道之監督工作",
-      "一定重量以下之重物處理工作"
-    ],
-    answer: [
-      "坑內工作",
-      "處理爆炸性、氧化性等物質之工作",
-      "有害粉塵散布場所之工作",
-      "超過二百二十伏特動力線之銜接",
-      "鑿岩機及其他有顯著振動之工作",
-      "橡膠化合物及合成樹脂之滾輾工作"
-    ],
-    law: "職業安全衛生法第29條第1項",
-    explanation: "前6項均為法定禁止工作；不選後兩項原因：法規規定為「運轉工作」而非「監督工作」，以及「一定重量以上」而非「以下」。"
-  },
-  {
-    id: "u1-D", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "multi", isCalc: false,
-    title: "D. 只能以型式檢定合格為限之機械設備器具（複選，10分）",
-    stem: "本法第七條第一項所稱中央主管機關指定之機械、設備或器具，下列哪些只能以型式檢定合格為限？",
-    options: [
-      "手推刨床", "動力衝剪機械", "動力堆高機", "木材加工用圓盤鋸",
-      "研磨機", "研磨輪", "防爆電動機", "防爆開關箱",
-      "CNC車床", "銑床", "搪床"
-    ],
-    answer: [
-      "手推刨床", "動力衝剪機械", "動力堆高機", "木材加工用圓盤鋸",
-      "研磨機", "研磨輪", "防爆電動機", "防爆開關箱"
-    ],
-    law: "職業安全衛生法第7條第2項、機械設備器具安全資訊申報登錄辦法",
-    explanation: "手推刨床、動力衝剪機械、動力堆高機、木材加工用圓盤鋸、研磨機、研磨輪、防爆電動機、防爆開關箱等需經型式檢定合格；CNC車床、銑床、搪床屬安全資訊申報登錄（自主宣告）範疇。"
-  },
-  {
-    id: "u1-E", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "multi", isCalc: false,
-    title: "E. 關於急救敘述有誤者（複選，4分）",
-    stem: "關於急救，下列敘述哪些有誤？",
-    options: [
-      "前臂嚴重出血，以直接加壓並抬高過心臟仍流血時，可壓迫近心端肱動脈止血",
-      "強酸、強鹼中毒時，應立即給患者喝大量水以稀釋毒物並進行催吐",
-      "休克是人的有效血循環量不足的一種情況，它會造成組織與器官血液灌注不足，因而影響細胞功能",
-      "2人前後抬搬運傷患時，前後抬者的步伐應盡量一致"
-    ],
-    answer: [
-      "強酸、強鹼中毒時，應立即給患者喝大量水以稀釋毒物並進行催吐",
-      "2人前後抬搬運傷患時，前後抬者的步伐應盡量一致"
-    ],
-    law: "急救學理與職場緊急應變規範",
-    explanation: "1. 腐蝕性毒物（強酸、強鹼）嚴禁催吐，避免造成消化道二次灼傷與穿孔破裂。\n2. 2人前後抬搬運傷患時，前後人員步伐應不一致（相反），以減少擔架晃動與共振。"
-  },
-  {
-    id: "u1-F", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "single", isCalc: false,
-    title: "F. 電壓類別定義（2分）",
-    stem: "皮卡丘身上所發出的電力為 18KV，而根據職業安全衛生法所定義之電壓，屬於何者？",
-    options: ["低壓", "高壓", "特高壓", "超高壓"],
-    answer: "高壓",
-    law: "職業安全衛生設施規則第239條",
-    explanation: "高壓指超過 600 伏特至 25,000 伏特之電壓。18KV（18,000V）屬於高壓。"
-  },
-  {
-    id: "u1-G", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "single", isCalc: false,
-    title: "G. 粉碎機及混合機開口圍柵高度（2分）",
-    stem: "為防止勞工有自粉碎機及混合機之開口部分墜落之虞，雇主應有覆蓋、護圍、高度在【 】公分以上之圍柵等必要設備。",
-    options: ["85", "120", "75", "90", "95"],
-    answer: "90",
-    law: "職業安全衛生設施規則第83條",
-    explanation: "圍柵高度應在 90 公分以上。"
-  },
-  {
-    id: "u1-H", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: false,
-    title: "H. 堆高機特殊作業訓練噸位門檻（4分）",
-    stem: "雇主對於荷重在【 】公噸以上之堆高機，應指派經特殊作業安全衛生教育訓練人員操作。",
-    placeholder: "請輸入數字，例如：1",
-    answer: "1",
-    law: "職業安全衛生教育訓練規則第14條第1項第4款",
-    explanation: "荷重在 1 公噸以上之堆高機操作人員需經特殊作業安全衛生教育訓練。"
-  },
-  {
-    id: "u1-I", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: false,
-    title: "I. 乙炔產生之表壓力上限（4分）",
-    stem: "雇主對於使用乙炔熔接裝置或氧乙炔熔接裝置從事金屬之熔接、熔斷或加熱作業時，應規定其產生之乙炔壓力不得超過表壓力每平方公分【 】公斤以上。",
-    placeholder: "請輸入數字，例如：1.3",
-    answer: "1.3",
-    law: "職業安全衛生設施規則第196條第1款",
-    explanation: "產生之乙炔壓力不得超過表壓力每平方公分 1.3 公斤以上。"
-  },
-  {
-    id: "u1-J", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: false,
-    title: "J. 呼吸防護措施實施程序排序（12分）",
-    stem: "雇主使勞工使用呼吸防護具時，應指派專人採取下列呼吸防護措施，請依序排列其措施（直接輸入6碼英文代號，不需空格）：\nA. 防護具之使用 ／ B. 危害辨識及暴露評估 ／ C. 防護具之選擇 ／ D. 成效評估及改善 ／ E. 防護具之維護及管理 ／ F. 呼吸防護教育訓練",
-    placeholder: "例如：BCAFED",
-    answer: "BCAFED",
-    law: "職業安全衛生設施規則第277條之1",
-    explanation: "正確順序：1.(B)危害辨識及暴露評估 → 2.(C)防護具之選擇 → 3.(A)防護具之使用 → 4.(F)呼吸防護教育訓練 → 5.(E)防護具之維護及管理 → 6.(D)成效評估及改善。"
-  },
-  {
-    id: "u1-K", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: false,
-    title: "K. 起重機載人試吊測試保持時間（4分）",
-    stem: "起重機載人作業前，應先以預期最大荷重之荷物，進行試吊測試，將測試荷物置於搭乘設備上，吊升至最大作業高度，保持【 】分鐘以上，確認其平衡性及安全性無異常。",
-    placeholder: "請輸入數字",
-    answer: "5",
-    law: "起重升降機具安全規則第39條之1第1項第7款",
-    explanation: "吊升至最大作業高度，保持 5 分鐘以上。"
-  },
-  {
-    id: "u1-L", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: false,
-    title: "L. 雙手操作式安全裝置按鈕外側距離（4分）",
-    stem: "雙手操作式安全裝置應符合其一按鈕之外側與其他按鈕之外側，至少距離【 】毫米以上。但按鈕設有護蓋、擋板或障礙物等，具有防止以單手及人體其他部位操作之同等安全性能者，其距離得酌減之。",
-    placeholder: "請輸入數字",
-    answer: "300",
-    law: "機械設備器具安全標準第13條第4款",
-    explanation: "至少距離 300 毫米以上。"
-  },
-  {
-    id: "u1-C1", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: true,
-    title: "計算題一：綜合溫度熱指數（WBGT）（12分）",
-    stem: "火燄山之 WBGT 如下：WBGT1 = 27°C（t1 = 10 分鐘）、WBGT2 = 29°C（t2 = 20 分鐘）、WBGT3 = 31°C（t3 = 30 分鐘）。試問綜合溫度熱指數 WBGT 為多少？（四捨五入到小數第2位數）",
-    placeholder: "例如：29.67",
-    answer: "29.67",
-    law: "高溫作業勞工作息時間標準",
-    explanation: "時量平均 WBGT = ∑(WBGTi × ti) ÷ ∑ti = (27×10 + 29×20 + 31×30) ÷ (10+20+30) = (270 + 580 + 930) ÷ 60 = 1780 ÷ 60 ≈ 29.67°C。"
-  },
-  {
-    id: "u1-C2", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: true,
-    title: "計算題二：稀釋通風有害物濃度衰減（16分）",
-    stem: "月桃作業環境的氣積為 800 m³，每小時換氣量為 200 m³/hr，有害物濃度為 300 ppm，請問 4 小時以後，有害物濃度剩下多少 ppm？（四捨五入到小數點第2位）",
-    placeholder: "例如：110.36",
-    answer: "110.36",
-    law: "工業通風稀釋衰減公式",
-    explanation: "1. 通風稀釋公式：Ct = C0 × e^(-(Q/V)×t)\n2. 每小時換氣次數 N = 200 ÷ 800 = 0.25 hr⁻¹\n3. 4小時總換氣次數 = 0.25 × 4 = 1\n4. C4 = 300 × e⁻¹ = 300 ÷ 2.71828 ≈ 110.36 ppm。"
-  },
-  {
-    id: "u1-C3", unit: "u1", unitName: "第一單元：法規基礎與基礎計算", type: "text", isCalc: true,
-    title: "計算題三：甲苯氣體容許濃度單位換算（12分）",
-    stem: "有機溶劑甲苯於常溫常壓下，容許濃度為 80 ppm，其分子量為 92，若轉換成 mg/m³ 為多少？（四捨五入到小數第2位）",
-    placeholder: "例如：301.02",
-    answer: "301.02",
-    law: "勞工作業場所容許暴露標準",
-    explanation: "常溫常壓（25°C、1 atm）下，氣體莫耳體積為 24.45 L/mol。\n濃度(mg/m³) = (ppm × 分子量) ÷ 24.45 = (80 × 92) ÷ 24.45 = 7360 ÷ 24.45 ≈ 301.02 mg/m³。"
-  },
+      // ==================== 第三單元 (9題 - 含高解析度 SVG 圖示) ====================
+      {
+        id: 'U3-1', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '1. GHS 化學品全球調和制度危害圖示配對', score: '27分', type: 'ghs',
+        stem: '請依據下列 9 張標準 GHS 危害標示圖示（白底紅框黑符號），分別選擇對應的正確危害名稱：',
+        items: [
+          { code: 'G-01', answer: '易燃性' },
+          { code: 'G-02', answer: '氧化性' },
+          { code: 'G-03', answer: '加壓氣體' },
+          { code: 'G-04', answer: '腐蝕性' },
+          { code: 'G-05', answer: '爆炸性' },
+          { code: 'G-06', answer: '急毒性' },
+          { code: 'G-07', answer: '健康危害' },
+          { code: 'G-08', answer: '慢性健康危害' },
+          { code: 'G-09', answer: '水環境危害' }
+        ],
+        pool: ['爆炸性', '易燃性', '加壓氣體', '氧化性', '健康危害', '腐蝕性', '急毒性', '慢性健康危害', '水環境危害'],
+        lawRef: '危害性化學品標示及通識規則：G-01 易燃性（火焰）、G-02 氧化性（圓圈火焰）、G-03 加壓氣體（鋼瓶）、G-04 腐蝕性（試管腐蝕）、G-05 爆炸性（炸彈爆炸）、G-06 急毒性（骷髏頭）、G-07 健康危害（驚嘆號）、G-08 慢性健康危害（人體星芒）、G-09 水環境危害（枯樹死魚）。'
+      },
+      {
+        id: 'U3-2', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '2. 容許濃度（PEL）與變量係數配對', score: '15分', type: 'match',
+        stem: '針對不同範圍的容許濃度（ppm 或 mg/m³），請配對正確的「變量係數」：',
+        rows: [
+          { label: '未滿 1（PEL < 1）', answer: '3' },
+          { label: '1 以上，未滿 10（1 ≤ PEL < 10）', answer: '2' },
+          { label: '10 以上，未滿 100（10 ≤ PEL < 100）', answer: '1.5' },
+          { label: '100 以上，未滿 1000（100 ≤ PEL < 1000）', answer: '1.25' },
+          { label: '1000 以上（PEL ≥ 1000）', answer: '1' }
+        ],
+        pool: ['3', '2', '1.5', '1.25', '1'],
+        lawRef: '勞工作業場所容許暴露標準第2條：未滿1為「3」；1～10為「2」；10～100為「1.5」；100～1000為「1.25」；1000以上為「1」。'
+      },
+      {
+        id: 'U3-3', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '3. 運轉中排氣管圖示壓力量測配對', score: '9分', type: 'pitot',
+        stem: '請觀察下列運轉中排氣管之皮托管（Pitot Tube）與 U 型壓力計測壓位置圖示，選擇對應的正確壓力名稱：',
+        items: [
+          { code: 'A', label: '圖 (A)', desc: '開口迎向氣流流向之正面取壓孔（量測靜壓與動壓總和）', answer: '全壓' },
+          { code: 'B', label: '圖 (B)', desc: '開口垂直於管壁之壁面取壓孔（不受氣流動能衝擊）', answer: '靜壓' },
+          { code: 'C', label: '圖 (C)', desc: '同時連接全壓孔與靜壓孔量測兩端差壓（全壓 − 靜壓）', answer: '動壓' }
+        ],
+        pool: ['靜壓', '全壓', '動壓'],
+        lawRef: '局部排氣裝置皮托管（Pitot Tube）測壓原理：圖(A)迎向氣流正面取壓為「全壓」；圖(B)垂直管壁取壓為「靜壓」；圖(C)兩端差壓為「動壓」。'
+      },
+      {
+        id: 'U3-4', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '4. Bird 事故因果連鎖理論模型排序', score: '9分', type: 'order',
+        stem: '請依序排列 Bird 事故因果連鎖理論模型之五個意外事故因素（由根本原因至最終結果）：',
+        slots: [
+          { label: '第 1 骨牌', answer: '3. 管理策略不當、缺陷 / 基本原因' },
+          { label: '第 2 骨牌', answer: '2. 個人及工作條件原因' },
+          { label: '第 3 骨牌', answer: '4. 不安全的行為 / 狀況 / 直接原因' },
+          { label: '第 4 骨牌', answer: '1. 事故' },
+          { label: '第 5 骨牌', answer: '5. 傷亡、損失' }
+        ],
+        pool: [
+          '1. 事故',
+          '2. 個人及工作條件原因',
+          '3. 管理策略不當、缺陷 / 基本原因',
+          '4. 不安全的行為 / 狀況 / 直接原因',
+          '5. 傷亡、損失'
+        ],
+        lawRef: 'Bird 事故因果連鎖理論順序代碼為 32415：管理策略不當/基本原因 → 個人及工作條件原因 → 不安全的行為/狀況(直接原因) → 事故 → 傷亡、損失。'
+      },
+      {
+        id: 'U3-5', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '5. 墜落災害防止計畫風險控制順序', score: '10分', type: 'order',
+        stem: '雇主對於高度二公尺以上之工作場所，勞工作業有墜落之虞者，應訂定墜落災害防止計畫，請依風險控制之先後順序排列：',
+        slots: [
+          { label: '第 1 優先', answer: '3. 經由設計或工法之選擇，儘量使勞工於地面完成作業，減少高處作業項目' },
+          { label: '第 2 優先', answer: '2. 經由施工程序之變更，優先施作永久構造物之上下設備或防墜設施' },
+          { label: '第 3 優先', answer: '4. 設置護欄、護蓋' },
+          { label: '第 4 優先', answer: '5. 張掛安全網' },
+          { label: '第 5 優先', answer: '6. 使勞工佩掛安全帶' },
+          { label: '第 6 優先', answer: '1. 設置警示線系統' },
+          { label: '第 7 優先', answer: '7. 限制作業人員進入管制區' }
+        ],
+        pool: [
+          '1. 設置警示線系統',
+          '2. 經由施工程序之變更，優先施作永久構造物之上下設備或防墜設施',
+          '3. 經由設計或工法之選擇，儘量使勞工於地面完成作業，減少高處作業項目',
+          '4. 設置護欄、護蓋',
+          '5. 張掛安全網',
+          '6. 使勞工佩掛安全帶',
+          '7. 限制作業人員進入管制區'
+        ],
+        lawRef: '職業安全衛生設施規則第225條之1：正確順序代碼為 3245617。'
+      },
+      {
+        id: 'U3-6', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '6. 異常工作負荷促發疾病預防措施順序', score: '10分', type: 'order',
+        stem: '雇主使勞工從事輪班、夜間工作、長時間工作等作業，為避免勞工因異常工作負荷促發疾病，請依序排列疾病預防措施：',
+        slots: [
+          { label: '第 1 步', answer: '2. 辨識及評估高風險群' },
+          { label: '第 2 步', answer: '4. 安排醫師面談及健康指導' },
+          { label: '第 3 步', answer: '5. 調整或縮短工作時間及更換工作內容之措施' },
+          { label: '第 4 步', answer: '1. 實施健康檢查、管理及促進' },
+          { label: '第 5 步', answer: '3. 執行成效之評估及改善' },
+          { label: '第 6 步', answer: '6. 其他有關安全衛生事項' }
+        ],
+        pool: [
+          '1. 實施健康檢查、管理及促進',
+          '2. 辨識及評估高風險群',
+          '3. 執行成效之評估及改善',
+          '4. 安排醫師面談及健康指導',
+          '5. 調整或縮短工作時間及更換工作內容之措施',
+          '6. 其他有關安全衛生事項'
+        ],
+        lawRef: '職業安全衛生設施規則第324條之2：正確順序代碼為 245136。'
+      },
+      {
+        id: 'U3-7', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '7. 升降機門連鎖裝置差距公分', score: '10分', type: 'single',
+        stem: '雇主對於升降機之升降路各樓出入口門，應有連鎖裝置，使搬器地板與樓板相差多少公分以上時，升降路出入口門不能開啟之？',
+        options: ['8.5 公分', '10 公分', '9 公分', '5.5 公分', '7.5 公分', '6.5 公分'],
+        answer: 4,
+        lawRef: '職業安全衛生設施規則第96條：搬器地板與樓板相差 7.5 公分以上時，升降路出入口門不能開啟。'
+      },
+      {
+        id: 'U3-8', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '8. 特定化學物質警報與除害器具備置容量', score: '5分', type: 'single',
+        stem: '雇主使勞工處置、使用丙類第一種物質或丁類物質之合計在多少公升（氣體以其容積一立方公尺換算為二公升）以上時，應置備漏洩警報用器具及除卻危害之必要藥劑、器具等設施？',
+        options: ['200 公升', '150 公升', '100 公升', '80 公升', '50 公升'],
+        answer: 2,
+        lawRef: '特定化學物質危害預防標準第23條：合計在 100 公升以上。'
+      },
+      {
+        id: 'U3-9', unit: 'U3', unitName: '第三單元：圖示配對、危害防護與管理理論', title: '9. 儲槽內部有機溶劑作業換氣量', score: '5分', type: 'single',
+        stem: '雇主使勞工於儲槽之內部從事有機溶劑作業時，應送入或吸出多少倍於儲槽容積之空氣，或以水灌滿儲槽後予以全部排出？',
+        options: ['10 倍', '8 倍', '5 倍', '3 倍', '2 倍', '1.5 倍'],
+        answer: 3,
+        lawRef: '有機溶劑中毒預防規則第24條第1項第2款：應送入或吸出 3 倍於儲槽容積之空氣。'
+      },
 
-  // ================= 第二單元 =================
-  {
-    id: "u2-A", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: false,
-    title: "A. 危險性設備規格填空配對（16分）",
-    stem: "針對危險性機械及設備安全檢查規則中規定：\n• 蒸氣鍋爐：最高使用壓力超過每平方公分【1】，或傳熱面積超過【2】。\n• 熱水鍋爐：水頭壓力超過【3】，或傳熱面積超過【4】。\n• 貫流式鍋爐：最高使用壓力超過每平方公分【5】，或其傳熱面積超過【6】。\n• 壓力容器：最高使用壓力超過每平方公分【7】，且內容積超過【8】。\n（請依序輸入8個答案，以頓號或空白分隔）",
-    placeholder: "1公斤 1平方公尺 10公尺 8平方公尺 10公斤 10平方公尺 1公斤 0.2立方公尺",
-    answer: "1公斤 1平方公尺 10公尺 8平方公尺 10公斤 10平方公尺 1公斤 0.2立方公尺",
-    law: "危險性機械及設備安全檢查規則第4條",
-    explanation: "【1】1公斤 ／ 【2】1平方公尺 ／ 【3】10公尺 ／ 【4】8平方公尺 ／ 【5】10公斤 ／ 【6】10平方公尺 ／ 【7】1公斤 ／ 【8】0.2立方公尺。"
-  },
-  {
-    id: "u2-B", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: false,
-    title: "B. 職安法共同作業《A》與細則協議事項《B》歸屬（18分）",
-    stem: "「職業安全衛生法」規定之共同作業為《A》，「職業安全衛生法施行細則」之協議事項為《B》。請依序判斷以下 9 項屬於 A 或 B（直接輸入 9 個英文字母）：\n1.工作場所巡視 / 2.作業人員管制 / 3.變更管理 / 4.作業環境作業管制 / 5.工作聯繫及調整 / 6.機械設備器具入場管制 / 7.設置協議組織 / 8.危險作業管制 / 9.安全衛生教育指導及協助",
-    placeholder: "例如：ABBBABABA",
-    answer: "ABBBABABA",
-    law: "職業安全衛生法第27條(A)、職業安全衛生法施行細則第37條(B)",
-    explanation: "A（職安法第27條）：1.工作場所巡視、5.工作聯繫及調整、7.設置協議組織、9.安全衛生教育指導及協助。\nB（施行細則第37條）：2.作業人員管制、3.變更管理、4.作業環境作業管制、6.機械設備器具入場管制、8.危險作業管制。"
-  },
-  {
-    id: "u2-C", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: false,
-    title: "C. 高壓水切割裝置安全標準（15分）",
-    stem: "雇主對於使用水柱壓力達每平方公分【1】以上之高壓水切割裝置，應指定【2】指揮監督；於適當位置設置【3】及能於緊急時立即遮斷動力之【4】；提供個人防護具並使【5】確實使用。（依序輸入5個答案，以空格分隔）",
-    placeholder: "350 專人 壓力表 立即遮斷動力 作業勞工",
-    answer: "350 專人 壓力表 立即遮斷動力 作業勞工",
-    law: "職業安全衛生設施規則第150條之1",
-    explanation: "【1】350 ／ 【2】專人 ／ 【3】壓力表 ／ 【4】立即遮斷動力 ／ 【5】作業勞工。"
-  },
-  {
-    id: "u2-D", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: false,
-    title: "D. 場所範圍大小排列（由小到大）（5分）",
-    stem: "職業安全衛生法中有 (1) 勞動場所、(2) 作業場所、(3) 工作場所，請依據各場所的範圍大小，由小到大排列（輸入3碼數字）。",
-    placeholder: "例如：231",
-    answer: "231",
-    law: "職業安全衛生法施行細則第5條",
-    explanation: "範圍由小到大為：(2) 作業場所 → (3) 工作場所 → (1) 勞動場所。"
-  },
-  {
-    id: "u2-E", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: false,
-    title: "E. 道路作業安全防護計畫事項排序（6分）",
-    stem: "日間封閉車道、路肩逾二小時或夜間封閉車道、路肩逾一小時者，應訂定安全防護計畫，請排序規定事項（輸入5碼數字）：\n(1)使用道路作業可能危害之項目 / (2)交通維持布設圖 / (3)可能危害之防止措施 / (4)緊急應變處置措施 / (5)提供防護設備、警示設備之檢點及維護方法",
-    placeholder: "例如：21354",
-    answer: "21354",
-    law: "職業安全衛生設施規則第21條之1第3項",
-    explanation: "正確順序：(2)交通維持布設圖 → (1)使用道路作業可能危害之項目 → (3)可能危害之防止措施 → (5)提供防護設備、警示設備之檢點及維護方法 → (4)緊急應變處置措施。"
-  },
-  {
-    id: "u2-F", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: false,
-    title: "F. 定期檢查與重點檢查紀錄事項排序（5分）",
-    stem: "雇主規定實施之定期檢查、重點檢查應就下列事項記錄，請排序紀錄事項之順序（輸入6碼數字）：\n(1)檢查部分 / (2)檢查方法 / (3)實施檢查者之姓名 / (4)依檢查結果應採取改善措施之內容 / (5)檢查年月日 / (6)檢查結果",
-    placeholder: "例如：521634",
-    answer: "521634",
-    law: "職業安全衛生管理辦法第80條",
-    explanation: "正確順序：(5)檢查年月日 → (2)檢查方法 → (1)檢查部分 → (6)檢查結果 → (3)實施檢查者之姓名 → (4)依檢查結果應採取改善措施之內容。"
-  },
-  {
-    id: "u2-G", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: false,
-    title: "G. 堆高機基準狀態規範（15分）",
-    stem: "一、基準負荷狀態：制動初速度【 】km/h，停止距離【 】m，坡度【 】%。\n二、基準無負荷狀態：制動初速度【 】km/h，停止距離【 】m，坡度【 】%。\n三、基準無負荷狀態貨叉上端距離地面【 】公分。（答案之間空一格）",
-    placeholder: "10 2.5 15 20 2.5 15 30",
-    answer: "10 2.5 15 20 2.5 15 30",
-    law: "機械設備器具安全標準第56條、第65條",
-    explanation: "基準負荷：初速 10 km/h、停止距離 2.5 m、坡度 15%；基準無負荷：初速 20 km/h、停止距離 2.5 m、坡度 15%；貨叉上端距地面 30 公分。"
-  },
-  {
-    id: "u2-C1", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: true,
-    title: "計算一：可燃性氣體爆炸危險性指數（8分）",
-    stem: "可燃性氣體組成與爆炸界限如下：\n• 乙烷（C2H6）：爆炸界限 3.0 ～ 12.4%，組成體積 30%\n• 丙烷（C3H8）：爆炸界限 2.1 ～ 10.1%，組成體積 30%\n• 丁烷（C4H10）：爆炸界限 1.6 ～ 8.4%，組成體積 40%\n(一) 試求乙烷、丙烷、丁烷之爆炸危險性（指數）分別為何？（四捨五入至小數第二位，答案空一格）",
-    placeholder: "例如：3.13 3.81 4.25",
-    answer: "3.13 3.81 4.25",
-    law: "火災爆炸危害評估公式",
-    explanation: "爆炸危險性指數 = (UEL − LEL) ÷ LEL：\n• 乙烷 = (12.4 − 3.0) ÷ 3.0 = 3.13\n• 丙烷 = (10.1 − 2.1) ÷ 2.1 = 3.81\n• 丁烷 = (8.4 − 1.6) ÷ 1.6 = 4.25"
-  },
-  {
-    id: "u2-C2", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: true,
-    title: "計算二：混合可燃性氣體爆炸上下限（6分）",
-    stem: "(二) 承上題氣體組成（乙烷 3.0~12.4% 佔 30%；丙烷 2.1~10.1% 佔 30%；丁烷 1.6~8.4% 佔 40%），依勒沙特列（Le Chatelier）定律，混合可燃性氣體爆炸上限（UEL）與爆炸下限（LEL）分別為多少%？（四捨五入至小數第二位，答案空一格）",
-    placeholder: "例如：9.85 2.03",
-    answer: "9.85 2.03",
-    law: "勒沙特列（Le Chatelier）定律",
-    explanation: "• 混合爆炸下限(LELm)：100 ÷ LELm = (30÷3.0) + (30÷2.1) + (40÷1.6) = 10 + 14.2857 + 25 = 49.2857 ⇒ LELm = 100 ÷ 49.2857 ≈ 2.03%\n• 混合爆炸上限(UELm)：100 ÷ UELm = (30÷12.4) + (30÷10.1) + (40÷8.4) = 2.4194 + 2.9703 + 4.7619 = 10.1516 ⇒ UELm = 100 ÷ 10.1516 ≈ 9.85%"
-  },
-  {
-    id: "u2-C3", unit: "u2", unitName: "第二單元：設備標準、共同作業與工程計算", type: "text", isCalc: true,
-    title: "計算三：二氧化碳通風稀釋換氣量（6分）",
-    stem: "柯南的工作場所之二氧化碳產生率為 11 m³/h，戶外二氧化碳濃度為 400 ppm。如欲使室內場所的二氧化碳濃度不超過 1500 ppm，則戶外空氣進氣量至少為【 】m³/h？（四捨五入至小數第2位）",
-    placeholder: "例如：10000",
-    answer: "10000",
-    law: "整體換氣稀釋公式",
-    explanation: "Q = G ÷ (Cs − C0) = 11 ÷ [(1500 − 400) × 10⁻⁶] = 11 ÷ 0.0011 = 10,000 m³/h。"
-  },
+      // ==================== 第四單元 (11題) ====================
+      {
+        id: 'U4-1', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '一、可燃性氣體定義基準溫度', score: '基本題', type: 'single',
+        stem: '所稱可燃性氣體，指其他於一大氣壓下、攝氏多少度時，具有可燃性之氣體？',
+        options: ['35 度', '30 度', '25 度', '20 度', '15 度', '10 度'],
+        answer: 4,
+        lawRef: '職業安全衛生法施行細則第13條第1款：一大氣壓下、攝氏 15 度時具有可燃性之氣體。'
+      },
+      {
+        id: 'U4-2', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '二、鍋爐房與通往工作台階梯寬度', score: '基本題', type: 'single',
+        stem: '雇主對於工作用階梯之設置，在原動機與鍋爐房中，或在機械四周通往工作台之工作用階梯，其寬度不得小於多少公分？',
+        options: ['80 公分', '75 公分', '65 公分', '56 公分', '45 公分'],
+        answer: 3,
+        lawRef: '職業安全衛生設施規則第37條第1款：寬度不得小於 56 公分。'
+      },
+      {
+        id: 'U4-3', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '三、機械與設備間通道寬度', score: '基本題', type: 'single',
+        stem: '雇主對於室內工作場所，應規定設置各機械間或其他設備間通道不得小於多少公分？',
+        options: ['100 公分', '90 公分', '80 公分', '75 公分'],
+        answer: 2,
+        lawRef: '職業安全衛生設施規則第31條第3款：通道寬度不得小於 80 公分。'
+      },
+      {
+        id: 'U4-4', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '四、固定梯踏條與牆壁淨距', score: '基本題', type: 'single',
+        stem: '雇主設置之固定梯，應於踏條與牆壁間應保持多少公分以上之淨距？',
+        options: ['18 公分', '17.5 公分', '16.5 公分', '15 公分', '12 公分'],
+        answer: 2,
+        lawRef: '職業安全衛生設施規則第38條第2款：保持 16.5 公分以上淨距。'
+      },
+      {
+        id: 'U4-5', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '五、固定梯平台設置與防護裝置高度', score: '填空題', type: 'fill',
+        segments: [
+          '承上題，固定梯之梯長連續超過 ',
+          { key: 'b1', answer: '6', options: ['4', '5', '6', '8', '9', '10'] },
+          ' 公尺時，應每隔 ',
+          { key: 'b2', answer: '9', options: ['5', '6', '8', '9', '10', '12'] },
+          ' 公尺以下設一平台，並應於距梯底 ',
+          { key: 'b3', answer: '2', options: ['1.5', '2', '2.5', '3'] },
+          ' 公尺以上部分，設置護籠或其他保護裝置。'
+        ],
+        lawRef: '職業安全衛生設施規則第38條第4款、第5款：梯長連續超過 6 公尺時，每隔 9 公尺以下設一平台，並距梯底 2 公尺以上設置護籠（答案代碼 6 9 2）。'
+      },
+      {
+        id: 'U4-6', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '六、研磨機試轉時間', score: '填空題', type: 'fill',
+        segments: [
+          '雇主對於研磨機之使用，應於每日作業開始前試轉 ',
+          { key: 'b1', answer: '60', options: ['30', '60', '90', '120', '180'] },
+          ' 秒以上，研磨輪更換時應先檢驗有無裂痕，並在防護罩下試轉 ',
+          { key: 'b2', answer: '3', options: ['1', '2', '3', '5', '10'] },
+          ' 分鐘以上。'
+        ],
+        lawRef: '職業安全衛生設施規則第70條第1款：每日作業開始前試轉 1 分鐘（60 秒）以上，更換研磨輪時試轉 3 分鐘以上。'
+      },
+      {
+        id: 'U4-7', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '七、吊鏈不可作為起重吊掛用具之情形（複選）', score: '複選題', type: 'multi',
+        stem: '下列何種情況之「吊鏈」不可作為起重升降機具之吊掛用具？（請勾選屬於吊鏈之禁用標準）',
+        options: [
+          '直徑減少達公稱直徑百分之七以上者',
+          '已斷一股子索者',
+          '延伸長度超過百分之五以上者',
+          '鋼索一撚間有百分之十以上素線截斷者',
+          '斷面直徑減少百分之十以上者',
+          '有顯著變形或腐蝕者',
+          '有龜裂者'
+        ],
+        answers: [2, 4, 6],
+        lawRef: '起重升降機具安全規則第61條：吊鏈禁用標準為「延伸長度超過 5% 以上」、「斷面直徑減少 10% 以上」、「有龜裂者」。其餘（公稱直徑減少7%、斷一股子索、一撚間素線截斷10%以上等）皆為鋼索之報廢標準。'
+      },
+      {
+        id: 'U4-8', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '八、良導體機器設備手提照明燈電壓上限', score: '基本題', type: 'single',
+        stem: '雇主對於良導體機器設備內之檢修工作所用之手提式照明燈，其使用電壓不得超過多少伏特，且導線須為耐磨損及有良好絕緣，並不得有接頭？',
+        options: ['110 伏特', '60 伏特', '24 伏特', '12 伏特'],
+        answer: 2,
+        lawRef: '職業安全衛生設施規則第244條：使用電壓不得超過 24 伏特。'
+      },
+      {
+        id: 'U4-9', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '九、起重機過捲預防裝置距離', score: '填空題', type: 'fill',
+        segments: [
+          '雇主對於起重機具之吊鉤或吊具，為防止與吊架或捲揚胴接觸、碰撞，應有至少保持 ',
+          { key: 'b1', answer: '0.25', options: ['0.05', '0.10', '0.15', '0.25', '0.50'] },
+          ' 公尺距離之過捲預防裝置，如為直動式過捲預防裝置者，應保持 ',
+          { key: 'b2', answer: '0.05', options: ['0.02', '0.05', '0.10', '0.25'] },
+          ' 公尺以上距離；並於鋼索上作顯著標示或設警報裝置。'
+        ],
+        lawRef: '起重升降機具安全規則第23條：一般過捲預防裝置至少保持 0.25 公尺，直動式保持 0.05 公尺以上。'
+      },
+      {
+        id: 'U4-10', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '十、綜合職災指標計算（總損失日數、FR、FSI）', score: '綜合計算', type: 'calc',
+        stem: '許瑞德的私人電廠於 2024 年 1 月發生電盤炸裂事件：1/20 領班皮卡丘死亡；索爾重傷於 1/20 當天住院，休養至 3/10 回到公司；維修人員兩津牙齒被炸光，1/20 回家休息，1/21 下午即回崗位工作。該電廠總工時為 500,000 小時（2/8～2/14 為過年休假）。試求：(一) 總損失日數、(二) 失能傷害頻率 FR、(三) 綜合傷害指數 FSI。',
+        formulaHtml: 'FR = <span class="font-mono bg-amber-100 px-1.5 py-0.5 rounded">(失能傷害人次數 × 10⁶) ÷ 總工時</span> ； SR = <span class="font-mono bg-amber-100 px-1.5 py-0.5 rounded">(總損失日數 × 10⁶) ÷ 總工時</span> ； FSI = <span class="font-mono bg-amber-100 px-1.5 py-0.5 rounded">√[(FR × SR) ÷ 1000]</span>',
+        symbols: [
+          '失能傷害人次數：含死亡、永久全失能、永久部分失能、暫時全失能（損失工作滿 1 日以上；兩津未滿 1 日屬輕傷不計）',
+          '總損失日數：死亡計 6,000 日；暫時全失能計受傷次日起至復工前一日之所有日曆天（含例假日，2024年2月閏年為29天）',
+          'FR：失能傷害頻率；SR：失能傷害嚴重率；FSI：綜合傷害指數'
+        ],
+        steps: [
+          {
+            label: '(一) 總損失日數 = 皮卡丘(6000) + 索爾(1月11日 + 2月29日 + 3月9日 = 49日) = ',
+            parts: [{ key: 'c1', answer: '6049', options: ['6042', '6048', '6049', '6051'] }, ' 日']
+          },
+          {
+            label: '(二) 失能傷害頻率 FR = (2 × 10⁶) ÷ 500,000 = ',
+            parts: [{ key: 'c2', answer: '4.00', options: ['2.00', '4.00', '6.00', '12.10'] }]
+          },
+          {
+            label: '(三) 綜合傷害指數 FSI = √[(4.00 × 12098) ÷ 1000] = √48.392 ≈ ',
+            parts: [{ key: 'c3', answer: '6.96', options: ['4.00', '6.96', '12.10', '48.39'] }]
+          }
+        ],
+        lawRef: '計算解析：① 皮卡丘死亡 6,000 日；② 索爾 1/21～3/9 共 11+29+9 = 49 日（過年不扣，2024閏年2月29天）；③ 兩津未滿1日不計。總損失日數 = 6049 日，FR = 4.00，SR = 12098，FSI = 6.96。'
+      },
+      {
+        id: 'U4-11', unit: 'U4', unitName: '第四單元：設施安全基準與綜合職災統計', title: '十一、身體質量指數（BMI）計算', score: '計算題', type: 'calc',
+        stem: '毛利事務所進行職場健康促進活動，其中小五郎身高 1 米 7，體重 65 公斤；琴酒身高 160 公分，體重 62 公斤。試求兩人之 BMI（四捨五入取至小數第2位）。',
+        formulaHtml: 'BMI = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">W ÷ H²</span>',
+        symbols: [
+          'W：體重（公斤，kg）',
+          'H：身高（公尺，m，注意公分須除以 100 換算）'
+        ],
+        steps: [
+          {
+            label: '小五郎 BMI = 65 ÷ (1.7)² = 65 ÷ 2.89 ≈ ',
+            parts: [{ key: 'c1', answer: '22.49', options: ['19.12', '22.49', '24.22', '38.24'] }]
+          },
+          {
+            label: '琴酒 BMI = 62 ÷ (1.6)² = 62 ÷ 2.56 ≈ ',
+            parts: [{ key: 'c2', answer: '24.22', options: ['22.49', '23.85', '24.22', '38.75'] }]
+          }
+        ],
+        lawRef: '計算解析：小五郎 = 65 ÷ 2.89 ≈ 22.49；琴酒 = 62 ÷ 2.56 ≈ 24.22。'
+      },
 
-  // ================= 第三單元 =================
-  {
-    id: "u3-1", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "text", isCalc: false,
-    title: "1. GHS 危害圖示名稱配對（27分）",
-    stem: "請依序寫出 G-01 至 G-09 各 GHS 危害圖示之正確中文名稱（以頓號或空白分隔）：",
-    mediaHTML: ghsGridHTML,
-    placeholder: "易燃性 氧化性 加壓氣體 腐蝕性 爆炸性 急毒性 健康危害 慢性健康危害 水環境危害",
-    answer: "易燃性 氧化性 加壓氣體 腐蝕性 爆炸性 急毒性 健康危害 慢性健康危害 水環境危害",
-    law: "危害性化學品標示及通識規則",
-    explanation: "G-01 易燃性 ／ G-02 氧化性 ／ G-03 加壓氣體 ／ G-04 腐蝕性 ／ G-05 爆炸性 ／ G-06 急毒性 ／ G-07 健康危害（驚嘆號） ／ G-08 慢性健康危害（人體星芒） ／ G-09 水環境危害。"
-  },
-  {
-    id: "u3-2", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "text", isCalc: false,
-    title: "2. 容許濃度變量係數配對（15分）",
-    stem: "請依序寫出下列五個容許濃度級距對應的「變量係數」（以空格分隔）：\n(1) 未滿 1 ／ (2) 1 以上，未滿 10 ／ (3) 10 以上，未滿 100 ／ (4) 100 以上，未滿 1000 ／ (5) 1000 以上",
-    placeholder: "3 2 1.5 1.25 1",
-    answer: "3 2 1.5 1.25 1",
-    law: "勞工作業場所容許暴露標準第2條",
-    explanation: "PEL < 1：3 ／ 1 ≤ PEL < 10：2 ／ 10 ≤ PEL < 100：1.5 ／ 100 ≤ PEL < 1000：1.25 ／ PEL ≥ 1000：1。"
-  },
-  {
-    id: "u3-3", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "text", isCalc: false,
-    title: "3. 運轉中排氣管壓力量測圖示配對（9分）",
-    stem: "請依據下列運轉中排氣管皮托管壓力量測圖示，依序寫出 圖(A)、圖(B)、圖(C) 之壓力名稱（以空格分隔）：",
-    mediaHTML: pitotDiagramHTML,
-    placeholder: "全壓 靜壓 動壓",
-    answer: "全壓 靜壓 動壓",
-    law: "局部排氣系統皮托管（Pitot Tube）量測原理",
-    explanation: "圖(A) 開口迎向氣流流向之正面取壓孔為「全壓」；圖(B) 開口垂直於管壁之壁面取壓孔為「靜壓」；圖(C) 量測全壓與靜壓兩端差壓（全壓 − 靜壓）為「動壓」。"
-  },
-  {
-    id: "u3-4", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "text", isCalc: false,
-    title: "4. Bird 事故因果連鎖理論模型排序（9分）",
-    stem: "Bird 事故因果連鎖理論模型－五個意外事故的因素，請排列其順序（輸入5碼數字）：\n1.事故 / 2.個人及工作條件原因 / 3.管理策略不當、缺陷/基本原因 / 4.不安全的行為/狀況/直接原因 / 5.傷亡、損失",
-    placeholder: "例如：32415",
-    answer: "32415",
-    law: "Frank Bird 事故因果連鎖理論（骨牌理論修正版）",
-    explanation: "順序：(3)管理策略不當、缺陷/基本原因 → (2)個人及工作條件原因 → (4)不安全的行為/狀況/直接原因 → (1)事故 → (5)傷亡、損失。"
-  },
-  {
-    id: "u3-5", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "text", isCalc: false,
-    title: "5. 墜落災害防止計畫風險控制順序（10分）",
-    stem: "雇主對於高度二公尺以上之工作場所，勞工作業有墜落之虞者，應訂定墜落災害防止計畫，依風險控制先後順序排序（輸入7碼數字）：\n1.設置警示線系統 / 2.經由施工程序之變更，優先施作永久構造物之上下設備或防墜設施 / 3.經由設計或工法之選擇，儘量使勞工於地面完成作業，減少高處作業項目 / 4.設置護欄、護蓋 / 5.張掛安全網 / 6.使勞工佩掛安全帶 / 7.限制作業人員進入管制區",
-    placeholder: "例如：3245617",
-    answer: "3245617",
-    law: "職業安全衛生設施規則第225條之1",
-    explanation: "正確順序：(3)設計工法減少高處作業 → (2)施工程序變更施作永久設施 → (4)設置護欄護蓋 → (5)張掛安全網 → (6)佩掛安全帶 → (1)設置警示線系統 → (7)限制進入管制區。"
-  },
-  {
-    id: "u3-6", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "text", isCalc: false,
-    title: "6. 異常工作負荷促發疾病預防措施順序（10分）",
-    stem: "為避免勞工因異常工作負荷促發疾病，應採取下列預防措施，請進行排序（輸入6碼數字）：\n1.實施健康檢查、管理及促進 / 2.辨識及評估高風險群 / 3.執行成效之評估及改善 / 4.安排醫師面談及健康指導 / 5.調整或縮短工作時間及更換工作內容之措施 / 6.其他有關安全衛生事項",
-    placeholder: "例如：245136",
-    answer: "245136",
-    law: "職業安全衛生設施規則第324條之2",
-    explanation: "正確順序：(2)辨識及評估高風險群 → (4)安排醫師面談及健康指導 → (5)調整或縮短工作時間及更換工作內容 → (1)實施健康檢查、管理及促進 → (3)執行成效之評估及改善 → (6)其他有關安全衛生事項。"
-  },
-  {
-    id: "u3-7", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "single", isCalc: false,
-    title: "7. 升降機門連鎖裝置差距公分（10分）",
-    stem: "雇主對於升降機之升降路各樓出入口門，應有連鎖裝置，使搬器地板與樓板相差【 】公分以上時，升降路出入口門不能開啟之。",
-    options: ["8.5", "10", "9", "5.5", "7.5", "6.5"],
-    answer: "7.5",
-    law: "職業安全衛生設施規則第96條",
-    explanation: "相差 7.5 公分以上時，升降路出入口門不能開啟。"
-  },
-  {
-    id: "u3-8", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "single", isCalc: false,
-    title: "8. 特定化學物質警報與除害器具備置容量（5分）",
-    stem: "雇主使勞工處置、使用丙類第一種物質或丁類物質之合計在【 】公升（氣體以其容積一立方公尺換算為二公升）以上時，應置備漏洩警報用器具及除卻危害之必要藥劑、器具等設施。",
-    options: ["200", "150", "100", "80", "50"],
-    answer: "100",
-    law: "特定化學物質危害預防標準第23條",
-    explanation: "合計在 100 公升以上時應置備警報及除害設施。"
-  },
-  {
-    id: "u3-9", unit: "u3", unitName: "第三單元：圖示配對、危害防護與管理理論", type: "single", isCalc: false,
-    title: "9. 儲槽內部有機溶劑作業換氣量（5分）",
-    stem: "雇主使勞工於儲槽之內部從事有機溶劑作業時，應送入或吸出【 】倍於儲槽容積之空氣，或以水灌滿儲槽後予以全部排出。",
-    options: ["10", "8", "5", "3", "2", "1.5"],
-    answer: "3",
-    law: "有機溶劑中毒預防規則第24條第1項第2款",
-    explanation: "應送入或吸出 3 倍於儲槽容積之空氣。"
-  },
+      // ==================== 第五單元 (10題) ====================
+      {
+        id: 'U5-1', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '1. 作業環境監測事前通報期限', score: '2分', type: 'single',
+        stem: '雇主於實施作業環境監測多少日前，應將監測計畫依中央主管機關公告之網路登錄系統及格式，實施通報？',
+        options: ['45 日前', '30 日前', '25 日前', '15 日前', '7 日前'],
+        answer: 3,
+        lawRef: '勞工作業環境監測實施辦法第10條第1項：實施監測 15 日前通報。'
+      },
+      {
+        id: 'U5-2', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '2. 特殊或臨時計畫事後通報期限', score: '2分', type: 'single',
+        stem: '承上題，依規定辦理之特殊或臨時作業環境監測者，得於實施後多少日內通報？',
+        options: ['10 日內', '15 日內', '7 日內', '5 日內', '3 日內'],
+        answer: 0,
+        lawRef: '勞工作業環境監測實施辦法第10條但書：得於實施監測後 10 日內通報。'
+      },
+      {
+        id: 'U5-3', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '3. 水肺或水面供氣潛水正常上浮速率', score: '2分', type: 'fill',
+        segments: [
+          '雇主使勞工從事潛水作業而使用水肺或水面供氣供給空氣，正常上浮速率不得超過每分鐘 ',
+          { key: 'b1', answer: '10', options: ['5', '10', '15', '18', '20'] },
+          ' 公尺。'
+        ],
+        lawRef: '異常氣壓危害預防標準第36條第1項第1款：正常上浮速率不得超過每分鐘 10 公尺。'
+      },
+      {
+        id: 'U5-4', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '4. 噪音公告標示分貝值', score: '2分', type: 'single',
+        stem: '噪音超過多少分貝之工作場所，應標示並公告噪音危害之預防事項，使勞工周知？',
+        options: ['95 分貝', '90 分貝', '85 分貝', '80 分貝'],
+        answer: 2,
+        lawRef: '職業安全衛生設施規則第300條第4款：超過 85 分貝應標示並公告噪音危害預防事項。'
+      },
+      {
+        id: 'U5-5', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '5. 勞工健康保護四大計畫（複選）', score: '20分', type: 'multi',
+        stem: '勞動部制定了許多健康保護計畫，其中法規明訂企業須按規定實施的【勞工健康保護四大計畫】為下列哪四項？（請複選 4 項）',
+        options: [
+          '執行職務遭受不法侵害預防計畫',
+          '呼吸防護計畫',
+          '人因性危害預防計畫',
+          '職業安全衛生管理計畫',
+          '勞工健康服務計畫',
+          '作業環境監測計畫',
+          '衛生教育訓練實施計畫',
+          '異常工作負荷促發疾病預防計畫',
+          '母性健康保護計畫',
+          '聽力保護計畫'
+        ],
+        answers: [0, 2, 7, 8],
+        lawRef: '職業安全衛生法第6條第2項、第31條：勞工健康保護四大計畫為「執行職務遭受不法侵害預防計畫」、「人因性危害預防計畫」、「異常工作負荷促發疾病預防計畫」、「母性健康保護計畫」。'
+      },
+      {
+        id: 'U5-6', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '6. 開口部防墜護欄設置高度門檻', score: '2分', type: 'single',
+        stem: '雇主對於高度在多少公尺以上之工作場所邊緣及開口部分，勞工有遭受墜落危險之虞者，應設有適當強度之護欄、護蓋等防護設備？',
+        options: ['2.5 公尺', '2 公尺', '1.8 公尺', '1.5 公尺', '1 公尺'],
+        answer: 1,
+        lawRef: '職業安全衛生設施規則第224條：高度在 2 公尺以上工作場所。'
+      },
+      {
+        id: 'U5-7', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '7. 穩定性噪音暴露劑量計算', score: '15分', type: 'calc',
+        stem: '笑面虎工作時間 8 小時，穩定性噪音為 86 分貝，請問笑面虎噪音暴露劑量為多少 %？（四捨五入到小數第2位）',
+        formulaHtml: 'T = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">8 ÷ 2<sup>(L − 90) ÷ 5</sup></span>　；　暴露劑量 D = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(t ÷ T) × 100%</span>',
+        symbols: [
+          'T：該音壓級下之容許暴露時間（小時）',
+          'L：工作場所測定之音壓級（86 dBA）',
+          't：勞工實際暴露時間（8 小時）',
+          'D：噪音暴露劑量（%，超過 100% 即為超標）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（容許暴露時間 T）：T = 8 ÷ 2<sup>(86−90)/5</sup> = 8 × 2<sup>0.8</sup> ≈ ',
+            parts: [{ key: 'c1', answer: '13.93', options: ['4.59', '8.00', '12.13', '13.93', '16.00'] }, ' 小時']
+          },
+          {
+            label: '步驟 2（暴露劑量 D）：D = (8 ÷ 13.9288) × 100% ≈ ',
+            parts: [{ key: 'c2', answer: '57.43', options: ['50.00', '57.43', '65.98', '86.00', '174.11'] }, ' %']
+          }
+        ],
+        lawRef: '計算解析：T = 8 ÷ 2⁻⁰·⁸ = 8 × 1.7411 = 13.9288 小時；暴露劑量 D = (8 ÷ 13.9288) × 100% ≈ 57.43%。'
+      },
+      {
+        id: 'U5-8', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '8. 12小時暴露有機溶劑折減容許濃度（Brief & Scala 模型）', score: '15分', type: 'calc',
+        stem: 'A 有機溶劑之 8 小時日時量平均容許濃度為 141 ppm，如果一班暴露時間為 12 小時，依國內技檢標準 Brief & Scala 模型，請問 A 有機溶劑相當 8 小時日時量平均容許濃度為多少 ppm？（請四捨五入到小數第2位）',
+        formulaHtml: '折減係數 RF = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(8 ÷ h) × [(24 − h) ÷ 16]</span>　；　PEL<sub>adj</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">PEL × RF</span>',
+        symbols: [
+          'RF：長工時暴露折減係數（Reduction Factor）',
+          'h：每日實際工作（暴露）時數（12 小時）',
+          'PEL：原 8 小時日時量平均容許濃度（141 ppm）',
+          'PEL<sub>adj</sub>：調整折減後之容許濃度（ppm）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（折減係數 RF）：RF = (8 ÷ 12) × [(24 − 12) ÷ 16] = ',
+            parts: [{ key: 'c1', answer: '0.50', options: ['0.33', '0.50', '0.67', '0.75'] }]
+          },
+          {
+            label: '步驟 2（折減後容許濃度）：PEL<sub>adj</sub> = 141 × 0.50 = ',
+            parts: [{ key: 'c2', answer: '70.50', options: ['47.00', '70.50', '94.00', '105.75'] }, ' ppm']
+          }
+        ],
+        lawRef: '計算解析：Brief & Scala 模型 RF = (8/12) × (12/16) = 0.5，PELadj = 141 × 0.5 = 70.50 ppm（若採 OSHA 簡易模型則為 141 × 8/12 = 94.00 ppm）。'
+      },
+      {
+        id: 'U5-9', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '9. 靜電火花放電能量計算', score: '20分', type: 'calc',
+        stem: '有一個大型甲醇桶槽，其電容為 400 pF，電壓為 1 KV 時，請問其最低著火（靜電放電）能量為多少 mJ？',
+        formulaHtml: '靜電放電能量 E = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">½ × C × V²</span>',
+        symbols: [
+          'E：靜電放電能量（焦耳 J，1 J = 1,000 mJ）',
+          'C：電容（法拉 F，1 pF = 10⁻¹² F，故 400 pF = 400 × 10⁻¹² F）',
+          'V：帶電體電位／電壓（伏特 V，1 KV = 1,000 V）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（單位換算代入）：E = 0.5 × ',
+            parts: [
+              { key: 'c1', answer: '400 × 10⁻¹²', options: ['400 × 10⁻⁶', '400 × 10⁻⁹', '400 × 10⁻¹²', '400'] },
+              ' × ( ',
+              { key: 'c2', answer: '1000', options: ['1', '100', '1000', '10000'] },
+              ' )²'
+            ]
+          },
+          {
+            label: '步驟 2（換算毫焦耳 mJ）：2 × 10⁻⁴ J = ',
+            parts: [{ key: 'c3', answer: '0.2', options: ['0.02', '0.2', '2.0', '200'] }, ' mJ']
+          }
+        ],
+        lawRef: '計算解析：E = 0.5 × (400 × 10⁻¹² F) × (1000 V)² = 2 × 10⁻⁴ J = 0.2 mJ。'
+      },
+      {
+        id: 'U5-10', unit: 'U5', unitName: '第五單元：環境監測、健康計畫與工程防護計算', title: '10. 架空起重機荷重試驗配重計算', score: '20分', type: 'calc',
+        stem: '麥克的吊運車架空起重機，其吊升荷重為 270 噸，吊具 30 噸，請問要檢查設置完成後的荷重試驗時，應該準備多重的砝碼或荷重物（噸）？',
+        formulaHtml: '額定荷重 = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">吊升荷重 − 吊具重量</span>　；　超過 200 噸時：<span class="font-mono bg-amber-100 px-2 py-0.5 rounded">試驗荷重 = 額定荷重 + 50 噸</span>',
+        symbols: [
+          '吊升荷重：起重機構造上所能吊升之最大荷重（270 噸）',
+          '額定荷重：吊升荷重扣除吊鉤、抓斗等吊具重量後之荷重（240 噸）',
+          '法規但書：額定荷重在 200 公噸以下者為 1.25 倍；超過 200 公噸者為額定荷重加 50 公噸'
+        ],
+        steps: [
+          {
+            label: '步驟 1（計算額定荷重）：270 − 30 = ',
+            parts: [{ key: 'c1', answer: '240', options: ['240', '270', '300'] }, ' 噸']
+          },
+          {
+            label: '步驟 2（計算試驗荷重）：240 + 50 = ',
+            parts: [{ key: 'c2', answer: '290', options: ['250', '290', '300', '337.5'] }, ' 噸']
+          }
+        ],
+        lawRef: '計算解析：起重升降機具安全規則第26條，額定荷重 = 270 − 30 = 240 噸（超過 200 噸），試驗荷重 = 240 + 50 = 290 噸（若不計200噸以上但書採1.25倍則為300噸）。'
+      },
 
-  // ================= 第四單元 =================
-  {
-    id: "u4-1", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "single", isCalc: false,
-    title: "一、可燃性氣體定義基準溫度",
-    stem: "所稱可燃性氣體，指其他於一大氣壓下、攝氏【 】度時，具有可燃性之氣體。",
-    options: ["35", "30", "25", "20", "15", "10"],
-    answer: "15",
-    law: "職業安全衛生法施行細則第13條第1款",
-    explanation: "一大氣壓下、攝氏 15 度時具有可燃性之氣體。"
-  },
-  {
-    id: "u4-2", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "single", isCalc: false,
-    title: "二、鍋爐房與通往工作台階梯寬度",
-    stem: "雇主對於工作用階梯之設置，在原動機與鍋爐房中，或在機械四周通往工作台之工作用階梯，其寬度不得小於【 】公分。",
-    options: ["80", "75", "65", "56", "45"],
-    answer: "56",
-    law: "職業安全衛生設施規則第37條第1款",
-    explanation: "其寬度不得小於 56 公分。"
-  },
-  {
-    id: "u4-3", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "single", isCalc: false,
-    title: "三、機械與設備間通道寬度",
-    stem: "雇主對於室內工作場所，應規定設置各機械間或其他設備間通道不得小於【 】公分。",
-    options: ["100", "90", "80", "75"],
-    answer: "80",
-    law: "職業安全衛生設施規則第31條第3款",
-    explanation: "通道寬度不得小於 80 公分。"
-  },
-  {
-    id: "u4-4", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "single", isCalc: false,
-    title: "四、固定梯踏條與牆壁淨距",
-    stem: "雇主設置之固定梯，應於踏條與牆壁間應保持【 】公分以上之淨距。",
-    options: ["18", "17.5", "16.5", "15", "12"],
-    answer: "16.5",
-    law: "職業安全衛生設施規則第38條第2款",
-    explanation: "應保持 16.5 公分以上之淨距。"
-  },
-  {
-    id: "u4-5", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "text", isCalc: false,
-    title: "五、固定梯平台設置與防護裝置高度",
-    stem: "承上題，梯長連續超過【 】公尺時，應每隔【 】公尺以下設一平台，並應於距梯底【 】公尺以上部分，設置護籠或其他保護裝置。（答案之間請空一格）",
-    placeholder: "6 9 2",
-    answer: "6 9 2",
-    law: "職業安全衛生設施規則第38條第4款、第5款",
-    explanation: "梯長連續超過 6 公尺時，每隔 9 公尺以下設一平台，並距梯底 2 公尺以上設置護籠。"
-  },
-  {
-    id: "u4-6", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "text", isCalc: false,
-    title: "六、研磨機試轉時間",
-    stem: "雇主對於研磨機之使用，應於每日作業開始前試轉【 】秒以上，研磨輪更換時應先檢驗有無裂痕，並在防護罩下試轉【 】分鐘以上。（答案之間請空一格）",
-    placeholder: "60 3",
-    answer: "60 3",
-    law: "職業安全衛生設施規則第70條第1款",
-    explanation: "每日作業開始前試轉 1 分鐘（60 秒）以上，更換研磨輪時試轉 3 分鐘以上。"
-  },
-  {
-    id: "u4-7", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "multi", isCalc: false,
-    title: "七、吊鏈不可作為起重吊掛用具之情形（複選）",
-    stem: "下列何種情況之吊鏈不可作為起重升降機具之吊掛用具：",
-    options: [
-      "直徑減少達公稱直徑百分之七以上者",
-      "已斷一股子索者",
-      "延伸長度超過百分之五以上者",
-      "鋼索一撚間有百分之十以上素線截斷者",
-      "斷面直徑減少百分之十以上者",
-      "有顯著變形或腐蝕者",
-      "有龜裂者"
-    ],
-    answer: [
-      "延伸長度超過百分之五以上者",
-      "斷面直徑減少百分之十以上者",
-      "有龜裂者"
-    ],
-    law: "起重升降機具安全規則第61條",
-    explanation: "吊鏈報廢標準為：延伸長度超過5%以上、斷面直徑減少10%以上、有龜裂者（其餘選項如公稱直徑減少7%、斷一股子索、一撚間素線截斷10%等為鋼索報廢標準）。"
-  },
-  {
-    id: "u4-8", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "single", isCalc: false,
-    title: "八、良導體機器設備手提照明燈電壓上限",
-    stem: "雇主對於良導體機器設備內之檢修工作所用之手提式照明燈，其使用電壓不得超過【 】伏特，且導線須為耐磨損及有良好絕緣，並不得有接頭。",
-    options: ["110", "60", "24", "12"],
-    answer: "24",
-    law: "職業安全衛生設施規則第244條",
-    explanation: "使用電壓不得超過 24 伏特。"
-  },
-  {
-    id: "u4-9", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "text", isCalc: false,
-    title: "九、起重機過捲預防裝置距離",
-    stem: "雇主對於起重機具之吊鉤或吊具，為防止與吊架或捲揚胴接觸、碰撞，應有至少保持【 】公尺距離之過捲預防裝置，如為直動式過捲預防裝置者，應保持【 】公尺以上距離。（答案之間請空一格）",
-    placeholder: "0.25 0.05",
-    answer: "0.25 0.05",
-    law: "起重升降機具安全規則第23條",
-    explanation: "一般過捲預防裝置至少保持 0.25 公尺，直動式過捲預防裝置保持 0.05 公尺以上。"
-  },
-  {
-    id: "u4-10", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "text", isCalc: true,
-    title: "十、綜合職災指標計算",
-    stem: "許瑞德的私人電廠於 2024 年 1 月發生電盤炸裂事件，1 月 20 號領班－皮卡丘死亡，索爾受重傷於 1 月 20 當天住院，休養至 3 月 10 號回到公司，而維修人員－兩津當場牙齒全被炸光，1 月 20 號回家休息，1 月 21 號下午回到工作崗位。該電廠總工時為 500,000 小時，且 2 月 8 號到 2 月 14 號為公司過年休假。\n試問：(一) 總損失日數？ (二) 失能傷害頻率？ (三) 綜合傷害指數？（答案之間空一格）",
-    placeholder: "6049 4.00 6.96",
-    answer: "6049 4.00 6.96",
-    law: "職業災害統計指標計算規範（CNS 7534）",
-    explanation: "1. 皮卡丘：死亡計 6,000 日。\n2. 索爾：1/20受傷，3/10復工（受傷日與復工日不計，過年休假不扣除）：1月(31-20=11日) + 2月(2024閏年29日) + 3月(1~9日=9日) = 49 日。\n3. 兩津：次日下午即復工，牙齒脫落無表定損失日數，屬輕傷不計入。\n4. 總損失日數 = 6,049 日（失能傷害件數 = 2 件）。\n5. FR = (2 × 10⁶) ÷ 500,000 = 4.00；SR = (6,049 × 10⁶) ÷ 500,000 = 12,098；FSI = √[(4.00 × 12,098) ÷ 1000] ≈ 6.96。"
-  },
-  {
-    id: "u4-11", unit: "u4", unitName: "第四單元：設施安全基準與綜合職災統計分析", type: "text", isCalc: true,
-    title: "十一、身體質量指數（BMI）計算",
-    stem: "毛利事務所進行職場健康促進活動，小五郎身高 1 米 7，體重 65 公斤；琴酒身高 160 公分，體重 62 公斤。試問小五郎與琴酒的 BMI 分別為何？（四捨五入至小數第2位，答案空一格）",
-    placeholder: "22.49 24.22",
-    answer: "22.49 24.22",
-    law: "成人身體質量指數公式 BMI = 體重(kg) ÷ 身高²(m²)",
-    explanation: "• 小五郎：BMI = 65 ÷ (1.7)² = 65 ÷ 2.89 ≈ 22.49\n• 琴酒：BMI = 62 ÷ (1.6)² = 62 ÷ 2.56 ≈ 24.22"
-  },
-
-  // ================= 第五單元 =================
-  {
-    id: "u5-1", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "single", isCalc: false,
-    title: "1. 作業環境監測事前通報期限（2分）",
-    stem: "雇主於實施監測【 】日前，應將監測計畫依中央主管機關公告之網路登錄系統及格式，實施通報。",
-    options: ["45", "30", "25", "15", "7"],
-    answer: "15",
-    law: "勞工作業環境監測實施辦法第10條第1項",
-    explanation: "應於實施監測 15 日前通報。"
-  },
-  {
-    id: "u5-2", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "single", isCalc: false,
-    title: "2. 特殊或臨時計畫事後通報期限（2分）",
-    stem: "承上題，規定辦理之作業環境監測者，得於實施後【 】日內通報。",
-    options: ["10", "15", "7", "5", "3"],
-    answer: "10",
-    law: "勞工作業環境監測實施辦法第10條但書",
-    explanation: "得於實施監測後 10 日內通報。"
-  },
-  {
-    id: "u5-3", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "text", isCalc: false,
-    title: "3. 水肺或水面供氣潛水正常上浮速率（2分）",
-    stem: "雇主使勞工從事潛水作業而使用水肺或水面供氣供給空氣，正常上浮速率不得超過每分鐘【 】公尺。",
-    placeholder: "10",
-    answer: "10",
-    law: "異常氣壓危害預防標準第36條第1項第1款",
-    explanation: "正常上浮速率不得超過每分鐘 10 公尺。"
-  },
-  {
-    id: "u5-4", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "single", isCalc: false,
-    title: "4. 噪音公告標示分貝值（2分）",
-    stem: "噪音超過【 】分貝之工作場所，應標示並公告噪音危害之預防事項，使勞工周知。",
-    options: ["95", "90", "85", "80"],
-    answer: "85",
-    law: "職業安全衛生設施規則第300條第4款",
-    explanation: "噪音超過 85 分貝之工作場所應公告標示。"
-  },
-  {
-    id: "u5-5", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "multi", isCalc: false,
-    title: "5. 勞工健康保護四大計畫（複選勾選，20分）",
-    stem: "勞動部制定了許多健康保護計畫，其中有四個法規明訂企業須按規定實施的計畫，稱為【勞工健康保護四大計畫】，請勾選為四大計畫之選項：",
-    options: [
-      "執行職務遭受不法侵害預防計畫",
-      "呼吸防護計畫",
-      "人因性危害預防計畫",
-      "職業安全衛生管理計畫",
-      "勞工健康服務計畫",
-      "作業環境監測計畫",
-      "衛生教育訓練實施計畫",
-      "異常工作負荷促發疾病預防計畫",
-      "母性健康保護計畫",
-      "聽力保護計畫"
-    ],
-    answer: [
-      "執行職務遭受不法侵害預防計畫",
-      "人因性危害預防計畫",
-      "異常工作負荷促發疾病預防計畫",
-      "母性健康保護計畫"
-    ],
-    law: "職業安全衛生法第6條第2項、第31條",
-    explanation: "四大計畫為：1.執行職務遭受不法侵害預防計畫、2.人因性危害預防計畫、3.異常工作負荷促發疾病預防計畫、4.母性健康保護計畫。"
-  },
-  {
-    id: "u5-6", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "single", isCalc: false,
-    title: "6. 開口部防墜護欄設置高度門檻（2分）",
-    stem: "雇主對於高度在【 】公尺以上之工作場所邊緣及開口部分，勞工有遭受墜落危險之虞者，應設有適當強度之護欄、護蓋等防護設備。",
-    options: ["2.5", "2", "1.8", "1.5", "1"],
-    answer: "2",
-    law: "職業安全衛生設施規則第224條",
-    explanation: "高度在 2 公尺以上工作場所邊緣及開口部分應設護欄或護蓋。"
-  },
-  {
-    id: "u5-7", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "text", isCalc: true,
-    title: "7. 穩定性噪音暴露劑量計算（15分）",
-    stem: "笑面虎工作時間 8 小時，穩定性噪音為 86 分貝，請問笑面虎噪音暴露劑量為【 】%？（四捨五入到小數第2位）",
-    placeholder: "57.43",
-    answer: "57.43",
-    law: "職業安全衛生設施規則第300條",
-    explanation: "1. 容許暴露時間 T = 8 ÷ 2^((86 - 90) ÷ 5) = 8 ÷ 2^(-0.8) = 8 × 1.7411 = 13.9288 小時。\n2. 暴露劑量 D = (8 ÷ 13.9288) × 100% ≈ 57.43%。"
-  },
-  {
-    id: "u5-8", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "text", isCalc: true,
-    title: "8. 12小時暴露有機溶劑折減容許濃度（15分）",
-    stem: "A 有機溶劑之 8 小時日時量平均容許濃度為 141 ppm，如果一休暴露時間為 12 小時，請問 A 有機溶劑相當 8 小時日時量平均容許濃度為多少 ppm？（請四捨五入到小數第2位）",
-    placeholder: "70.50",
-    answer: "70.50",
-    law: "Brief & Scala 延長工時折減模型（技檢標準考法）",
-    explanation: "Brief & Scala 模型：RF = (8 ÷ 12) × [(24 − 12) ÷ 16] = (2/3) × (12/16) = 0.5 ⇒ PEL_adj = 141 × 0.5 = 70.50 ppm。（註：若採 OSHA 簡易模型 141 × 8/12 則為 94.00 ppm）。"
-  },
-  {
-    id: "u5-9", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "text", isCalc: true,
-    title: "9. 靜電火花放電能量計算（20分）",
-    stem: "有一個大型甲醇桶槽，其電容為 400 pF，電壓為 1 KV 時，請問其最低著火能量為多少 mJ？",
-    placeholder: "0.2",
-    answer: "0.2",
-    law: "靜電放電能量公式 E = 0.5 × C × V²",
-    explanation: "E = 0.5 × (400 × 10⁻¹² F) × (1000 V)² = 2 × 10⁻⁴ J = 0.2 mJ。"
-  },
-  {
-    id: "u5-10", unit: "u5", unitName: "第五單元：環境監測、健康計畫與工程防護計算", type: "text", isCalc: true,
-    title: "10. 架空起重機荷重試驗配重計算（20分）",
-    stem: "麥克的吊運車架空起重機，其吊升荷重為 270 噸，吊具 30 噸，請問要檢查設置完成後的荷重試驗時，應該準備多重的砝碼或荷重物【 】噸？",
-    placeholder: "290",
-    answer: "290",
-    law: "起重升降機具安全規則第26條",
-    explanation: "1. 額定荷重 = 吊升荷重 − 吊具重量 = 270 − 30 = 240 噸。\n2. 額定荷重在 200 公噸以下者為 1.25 倍；超過 200 公噸者，為額定荷重加 50 公噸之荷重：240 + 50 = 290 噸。"
-  },
-
-  // ================= 第六單元：必考重點精選 =================
-  {
-    id: "u6-1", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: false,
-    title: "精選 1. 職業安全衛生管理人員設置與管理等級",
-    stem: "某非營利以外之製造業（第一類高度風險事業），單一廠區僱用勞工人數為 350 人：\n(1) 應建置之安全衛生管理等級包含哪四項？\n(2) 若未建置職業安全衛生管理系統，罰鍰為新臺幣多少萬元以上至多少萬元以下？執行紀錄須留存幾年？（請輸入罰鍰下限 上限 留存年數，例如：3 30 3）",
-    placeholder: "3 30 3",
-    answer: "3 30 3",
-    law: "職業安全衛生管理辦法第3條、第12條之2",
-    explanation: "(1) 人員配置：甲種業務主管1人＋管理員1人＋管理師1人（設專職一級管理單位）。\n(2) 四級管理制度：管理紀錄、管理計畫、管理規章、職業安全衛生管理系統。\n(3) 未建置管理系統罰鍰新臺幣 3 萬元以上 30 萬元以下；執行紀錄須留存 3 年。"
-  },
-  {
-    id: "u6-2", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: false,
-    title: "精選 2. 危險性機械及設備安全檢查制度配對",
-    stem: "請依序寫出下列五種情境對應之「檢查名稱」（以空格分隔）：\n(1) 危險性設備於熔接施工前審查焊條與焊接程序。\n(2) 固定式起重機（5公噸）於現場組裝完成啟用前。\n(3) 移動式起重機（10公噸）自國外進口完成首次使用前。\n(4) 蒸氣鍋爐合格證到期前 1 個月申請換證。\n(5) 既有壓力容器閒置超過 1 年後擬重新恢復使用。",
-    placeholder: "熔接檢查 竣工檢查 使用檢查 定期檢查 重新檢查",
-    answer: "熔接檢查 竣工檢查 使用檢查 定期檢查 重新檢查",
-    law: "職業安全衛生法第16條、危險性機械及設備安全檢查規則",
-    explanation: "(1)熔接檢查（代行檢查機構）／ (2)竣工檢查（所在地勞檢機構）／ (3)使用檢查（所在地勞檢機構）／ (4)定期檢查（代行檢查機構）／ (5)重新檢查（代行檢查機構）。"
-  },
-  {
-    id: "u6-3", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "single", isCalc: false,
-    title: "精選 3. 限制族群禁止從事之危險性或有害性工作",
-    stem: "依據職業安全衛生法第29條及第30條規定，下列哪一組工作項目是「妊娠中女性、分娩後未滿一年女性、未滿十八歲者」三類限制族群【全部皆禁止】從事的？",
-    options: [
-      "異常氣壓之工作、處理或暴露於弓形蟲或德國麻疹之工作",
-      "礦坑工作、鉛及其化合物散布場所之工作、鑿岩機及其他有顯著振動之工作、一定重量以上之重物處理工作",
-      "處理爆炸性或易燃性物質之工作、超過220伏特電力線之銜接、鍋爐之燒火及操作",
-      "起重機與人字臂起重桿之運轉工作、橡膠化合物及合成樹脂之滾輾工作"
-    ],
-    answer: "礦坑工作、鉛及其化合物散布場所之工作、鑿岩機及其他有顯著振動之工作、一定重量以上之重物處理工作",
-    law: "職業安全衛生法第29條、第30條",
-    explanation: "礦坑工作、鉛及其化合物散布場所、顯著振動工作（如鑿岩機）、一定重量以上重物處理及中央主管機關規定之危險性工作，三類族群均禁止從事。"
-  },
-  {
-    id: "u6-4", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: false,
-    title: "精選 4. 教育訓練、重大職災通報與環境監測法定時限",
-    stem: "(1) 重大職災（死亡、罹災3人以上、或1人以上需住院治療）應於【 】小時內通報勞檢機構。\n(2) 勞工年齡 40 歲以上未滿 65 歲者，一般健康檢查週期為每【 】年 1 次。\n(3) 高溫作業場所應每【 】個月測定 1 次；特定粉塵及致癌物監測紀錄應保存【 】年。（依序輸入4個數字，以空格分隔）",
-    placeholder: "8 3 3 30",
-    answer: "8 3 3 30",
-    law: "職安法第37條、勞工健康保護規則、勞工作業環境監測實施辦法",
-    explanation: "(1) 重大職災 8 小時內通報；(2) 40~64歲每 3 年健檢 1 次；(3) 高溫作業每 3 個月監測 1 次，特定粉塵及致癌物紀錄保存 30 年。"
-  },
-  {
-    id: "u6-5", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "single", isCalc: false,
-    title: "精選 5. 常見職業病與致病危害因子辨識",
-    stem: "下列關於法定職業病與主要引發原因（危害因子）的配對，何者「錯誤」？",
-    options: [
-      "肝血管肉瘤、骨胳溶解 ── 暴露於氯乙烯單體（VCM）",
-      "周邊神經病變（多發性神經炎） ── 暴露於正己烷等有機溶劑",
-      "再生不良性貧血、白血病 ── 長期暴露於游離輻射或苯（Benzene）",
-      "白指症（局部振動病） ── 異常高氣壓作業後未能適當減壓"
-    ],
-    answer: "白指症（局部振動病） ── 異常高氣壓作業後未能適當減壓",
-    law: "勞工職業災害保險職業病種類表",
-    explanation: "白指症（局部振動病）是由於「長期手持局部振動工具（如氣動鑿岩機、鏈鋸）」引起；異常高氣壓未適當減壓引發的是「潛水夫病（異常氣壓病）」。"
-  },
-  {
-    id: "u6-6", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: false,
-    title: "精選 6. 局限空間（缺氧危險）作業氣體測定標準",
-    stem: "勞工進入局限空間作業前，空氣中氧氣濃度應維持在【 】% 至【 】% 之間；硫化氫濃度應在【 】ppm 以下；一氧化碳濃度應在【 】ppm 以下；可燃性氣體濃度應在爆炸下限（LEL）之【 】% 以下。（依序輸入5個數字，以空格分隔）",
-    placeholder: "18 23.5 10 35 30",
-    answer: "18 23.5 10 35 30",
-    law: "缺氧症預防規則、職業安全衛生設施規則第29條之1",
-    explanation: "氧氣 18% ～ 23.5%（未滿 18% 即為缺氧）、硫化氫 10 ppm 以下、一氧化碳 35 ppm 以下、可燃性氣體 LEL 30% 以下；現場並應置缺氧作業主管及入口監視人員。"
-  },
-  {
-    id: "u6-7", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: false,
-    title: "精選 7. 高處護欄、合梯、電氣與局部排氣風速規格",
-    stem: "(1) 護欄腳趾板高度應在【 】公分以上，杆柱間距不得超過【 】公尺。\n(2) 合梯梯腳與地面角度應在【 】度以內。\n(3) 對地電壓 150V 以上移動式電動機具應裝設漏電斷路器（額定動作電流【 】mA 以下、動作時間【 】秒以內）。\n(4) 外裝型氣罩（側邊吸引）控制風速至少【 】m/s；上方吸引至少【 】m/s。（依序輸入7個數字，以空格分隔）",
-    placeholder: "10 2.5 75 30 0.1 0.5 1.0",
-    answer: "10 2.5 75 30 0.1 0.5 1.0",
-    law: "職業安全衛生設施規則",
-    explanation: "腳趾板 10 cm 以上、杆柱間距 ≤ 2.5 m；合梯角度 ≤ 75°；漏電斷路器 30 mA 以下、0.1 秒以內；外裝型氣罩側邊吸引 0.5 m/s、上方吸引 1.0 m/s（包圍型 0.4 m/s）。"
-  },
-  {
-    id: "u6-8", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: true,
-    title: "精選 8. 職業災害統計指標計算（FR / SR / FSI）",
-    stem: "某工廠年度總經歷工時為 2,000,000 小時，共發生 4 件失能傷害事故：1 名死亡、1 名永久部分失能（損失 300 日）、2 名暫時全失能（損失 15 日與 25 日）。試求：(1) 失能傷害頻率 FR (2) 失能傷害嚴重率 SR (3) 總合傷害指數 FSI（四捨五入至小數第2位，答案空一格）",
-    placeholder: "2.00 3170 2.52",
-    answer: "2.00 3170 2.52",
-    law: "職業災害統計指標計算公式",
-    explanation: "1. 總損失日數 = 6,000 + 300 + 15 + 25 = 6,340 日；失能傷害人次 = 4 人次。\n2. FR = (4 × 10⁶) ÷ 2,000,000 = 2.00\n3. SR = (6,340 × 10⁶) ÷ 2,000,000 = 3,170\n4. FSI = √[(2.00 × 3,170) ÷ 1,000] = √6.34 ≈ 2.52"
-  },
-  {
-    id: "u6-9", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: true,
-    title: "精選 9. 變動性噪音暴露劑量與時量平均音壓級計算",
-    stem: "某作業員於 8 小時工作日內，前 4 小時暴露於 90 dBA，後 4 小時暴露於 95 dBA。試計算：(1) 噪音暴露劑量 D（%）(2) 相當 8 小時時量平均音壓級 L_TWA（dBA）（四捨五入至小數第2位，答案空一格）",
-    placeholder: "150 92.92",
-    answer: "150 92.92",
-    law: "職業安全衛生設施規則第300條",
-    explanation: "1. 90 dBA 容許時間 T1 = 8 hr；95 dBA 容許時間 T2 = 8 ÷ 2^((95-90)/5) = 4 hr。\n2. 暴露劑量 D = (4/8 + 4/4) × 100% = (0.5 + 1.0) × 100% = 150%（已超過 100% 法定標準）。\n3. L_TWA = 16.61 × log(150 ÷ 100) + 90 = 16.61 × 0.17609 + 90 ≈ 92.92 dBA。"
-  },
-  {
-    id: "u6-10", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: true,
-    title: "精選 10. 戶內無日曬綜合溫度熱指數（WBGT）計算",
-    stem: "某煉銅熔鑄廠房屬於「戶內無日曬」作業環境，實測自然濕球溫度為 28°C、黑球溫度為 35°C、乾球溫度為 32°C。試計算該作業場所之綜合溫度熱指數（WBGT）為多少 °C？",
-    placeholder: "30.1",
-    answer: "30.1",
-    law: "高溫作業勞工作息時間標準",
-    explanation: "戶內無日曬公式：WBGT = 0.7 × 自然濕球溫度 + 0.3 × 黑球溫度（不計入乾球溫度）。\nWBGT = 0.7 × 28 + 0.3 × 35 = 19.6 + 10.5 = 30.1°C。"
-  },
-  {
-    id: "u6-11", unit: "u6", unitName: "第六單元：必考重點精選（組織/檢查/職業病/公式）", type: "text", isCalc: true,
-    title: "精選 11. 化學濃度換算、燃燒下限估算與研磨輪周速度計算",
-    stem: "(1) 常溫常壓下，苯（分子量 78）濃度為 10 ppm，換算為 mg/m³ 為多少？\n(2) 某可燃性氣體完全燃燒理論混合比 C_st 為 4.0%，以 Jones 經驗公式估算燃燒下限 LEL 為多少%？\n(3) 研磨輪直徑 300 mm、轉速 2,000 rpm，圓周速度 V 為多少 m/min？（π 取 3.1416，四捨五入至小數第2位，答案空一格）",
-    placeholder: "31.90 2.20 1884.96",
-    answer: "31.90 2.20 1884.96",
-    law: "安全衛生工程核心計算公式",
-    explanation: "(1) mg/m³ = (10 × 78) ÷ 24.45 ≈ 31.90 mg/m³\n(2) LEL = 0.55 × C_st = 0.55 × 4.0% = 2.20%\n(3) V = π × D × N = 3.1416 × 0.3 m × 2,000 rpm = 1,884.96 m/min"
-  }
-];
-
-// Application State
-let currentMode = 'practice'; // 'practice' | 'study'
-let filteredQuestions = [...questionPool];
-let currentIdx = 0;
-let userProgress = {}; // { [id]: { userAns, isCorrect, submitted } }
-let studyHideAnswers = false;
-
-document.getElementById('total-count-badge').textContent = questionPool.length;
-
-function setMode(mode) {
-  currentMode = mode;
-  const btnPrac = document.getElementById('btn-mode-practice');
-  const btnStudy = document.getElementById('btn-mode-study');
-  const btnToggleAns = document.getElementById('btn-toggle-all-ans');
-
-  if (mode === 'practice') {
-    btnPrac.className = "px-3 py-1.5 rounded-lg text-sm font-bold bg-white text-[#0f4c81] shadow transition";
-    btnStudy.className = "px-3 py-1.5 rounded-lg text-sm font-bold bg-sky-800 text-white hover:bg-sky-700 transition";
-    document.getElementById('practice-view').classList.remove('hidden');
-    document.getElementById('study-view').classList.add('hidden');
-    btnToggleAns.classList.add('hidden');
-    renderPracticeQuestion();
-  } else {
-    btnStudy.className = "px-3 py-1.5 rounded-lg text-sm font-bold bg-white text-[#0f4c81] shadow transition";
-    btnPrac.className = "px-3 py-1.5 rounded-lg text-sm font-bold bg-sky-800 text-white hover:bg-sky-700 transition";
-    document.getElementById('practice-view').classList.add('hidden');
-    document.getElementById('study-view').classList.remove('hidden');
-    btnToggleAns.classList.remove('hidden');
-    renderStudyList();
-  }
-}
-
-function applyFilter() {
-  const unitVal = document.getElementById('unit-filter').value;
-  const kw = document.getElementById('search-input').value.trim().toLowerCase();
-
-  filteredQuestions = questionPool.filter(q => {
-    let unitMatch = true;
-    if (unitVal === 'calc') unitMatch = q.isCalc === true;
-    else if (unitVal === 'wrong') unitMatch = userProgress[q.id] && userProgress[q.id].submitted && !userProgress[q.id].isCorrect;
-    else if (unitVal !== 'all') unitMatch = q.unit === unitVal;
-
-    let kwMatch = true;
-    if (kw) {
-      const blob = `${q.title} ${q.stem} ${q.law} ${q.explanation} ${Array.isArray(q.answer) ? q.answer.join(' ') : q.answer}`.toLowerCase();
-      kwMatch = blob.includes(kw);
-    }
-    return unitMatch && kwMatch;
-  });
-
-  currentIdx = 0;
-  updateStats();
-  if (currentMode === 'practice') renderPracticeQuestion();
-  else renderStudyList();
-}
-
-function shufflePool() {
-  for (let i = filteredQuestions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [filteredQuestions[i], filteredQuestions[j]] = [filteredQuestions[j], filteredQuestions[i]];
-  }
-  currentIdx = 0;
-  if (currentMode === 'practice') renderPracticeQuestion();
-  else renderStudyList();
-}
-
-function resetProgress() {
-  if (!confirm('確定要清除所有作答與錯題紀錄嗎？')) return;
-  userProgress = {};
-  updateStats();
-  if (currentMode === 'practice') renderPracticeQuestion();
-  else renderStudyList();
-}
-
-function updateStats() {
-  const total = questionPool.length;
-  let answered = 0, correct = 0, wrong = 0;
-  Object.values(userProgress).forEach(p => {
-    if (p.submitted) {
-      answered++;
-      if (p.isCorrect) correct++;
-      else wrong++;
-    }
-  });
-  document.getElementById('stat-filtered').textContent = filteredQuestions.length;
-  document.getElementById('stat-answered').textContent = answered;
-  document.getElementById('stat-correct').textContent = correct;
-  document.getElementById('stat-wrong').textContent = wrong;
-  document.getElementById('wrong-count-opt').textContent = wrong;
-  document.getElementById('stat-rate').textContent = answered > 0 ? Math.round((correct / answered) * 100) + '%' : '0%';
-}
-
-function prevQuestion() {
-  if (filteredQuestions.length === 0) return;
-  currentIdx = (currentIdx - 1 + filteredQuestions.length) % filteredQuestions.length;
-  renderPracticeQuestion();
-}
-
-function nextQuestion() {
-  if (filteredQuestions.length === 0) return;
-  currentIdx = (currentIdx + 1) % filteredQuestions.length;
-  renderPracticeQuestion();
-}
-
-function normalizeStr(s) {
-  return String(s || '')
-    .trim()
-    .replace(/，|、|,|\//g, ' ')
-    .replace(/\s+/g, ' ')
-    .toUpperCase();
-}
-
-function submitAnswer(qId) {
-  const q = questionPool.find(item => item.id === qId);
-  if (!q) return;
-
-  let userAns = null;
-  let isCorrect = false;
-
-  if (q.type === 'single') {
-    const selected = document.querySelector(`input[name="opt-${q.id}"]:checked`);
-    if (!selected) { alert('請先選擇一個選項！'); return; }
-    userAns = selected.value;
-    isCorrect = userAns === q.answer;
-  } else if (q.type === 'multi') {
-    const checked = Array.from(document.querySelectorAll(`input[name="opt-${q.id}"]:checked`)).map(el => el.value);
-    if (checked.length === 0) { alert('請至少勾選一個選項！'); return; }
-    userAns = checked;
-    const sortedUser = [...checked].sort().join('||');
-    const sortedAns = [...q.answer].sort().join('||');
-    isCorrect = sortedUser === sortedAns;
-  } else {
-    const inputEl = document.getElementById(`input-${q.id}`);
-    const val = inputEl ? inputEl.value.trim() : '';
-    if (!val) { alert('請輸入您的答案後再送出！'); return; }
-    userAns = val;
-    isCorrect = normalizeStr(val) === normalizeStr(q.answer);
-  }
-
-  userProgress[q.id] = { userAns, isCorrect, submitted: true };
-  updateStats();
-  renderPracticeQuestion();
-}
-
-function revealDirectly(qId) {
-  const q = questionPool.find(item => item.id === qId);
-  if (!q) return;
-  if (!userProgress[q.id]) {
-    userProgress[q.id] = { userAns: '（直接檢視解答）', isCorrect: false, submitted: true };
-    updateStats();
-  }
-  renderPracticeQuestion();
-}
-
-function renderQuestionCardHTML(q, isStudy) {
-  const prog = userProgress[q.id];
-  const showResult = isStudy ? !studyHideAnswers : (prog && prog.submitted);
-
-  let inputAreaHTML = '';
-  if (q.type === 'single') {
-    inputAreaHTML = `<div class="space-y-2 my-3">` + q.options.map((opt, idx) => {
-      const checked = prog && prog.userAns === opt ? 'checked' : '';
-      let badge = '';
-      if (showResult) {
-        if (opt === q.answer) badge = `<span class="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">✔ 正確答案</span>`;
-        else if (prog && prog.userAns === opt) badge = `<span class="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800">✘ 您的選擇</span>`;
+      // ==================== 第六單元：必考重點增補題庫池 (12題) ====================
+      {
+        id: 'U6-1', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '1.【職業病分類】化學性危害因子與典型職業病配對', score: '必考重點', type: 'match',
+        stem: '依據《勞工職業災害保險職業病種類表》，請將下列化學性危害因子與其引發之典型職業病正確配對：',
+        rows: [
+          { label: '1. 結晶型游離二氧化矽／煤塵（噴砂、鑄造）', answer: '塵肺症（矽肺症／煤肺症）' },
+          { label: '2. 石綿粉塵／石綿纖維（舊船解體、建材拆除）', answer: '間皮細胞瘤、肺癌' },
+          { label: '3. 正己烷有機溶劑（電子擦拭、製鞋黏著）', answer: '周邊神經病變（多發性神經炎）' },
+          { label: '4. 氯乙烯單體 VCM（聚合反應槽清理）', answer: '骨骼溶解、肝血管肉瘤' },
+          { label: '5. 苯 Benzene 芳香族烴（塗料、橡膠輪胎）', answer: '再生不良性貧血、白血病' },
+          { label: '6. 慢性砷及其化合物中毒（農藥、砷化鎵製程）', answer: '烏腳病、皮膚癌' }
+        ],
+        pool: [
+          '塵肺症（矽肺症／煤肺症）',
+          '間皮細胞瘤、肺癌',
+          '周邊神經病變（多發性神經炎）',
+          '骨骼溶解、肝血管肉瘤',
+          '再生不良性貧血、白血病',
+          '烏腳病、皮膚癌'
+        ],
+        lawRef: '重點對照表：游離二氧化矽→塵肺症；石綿→間皮細胞瘤；正己烷→多發性神經炎；氯乙烯單體(VCM)→肝血管肉瘤；苯→白血病；砷→烏腳病。'
+      },
+      {
+        id: 'U6-2', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '2.【人因工程職業病】作業型態與肌肉骨骼疾病配對', score: '必考重點', type: 'match',
+        stem: '人因工程危害因子引發之肌肉骨骼疾病為術科極常考題型，請配對下列高風險作業與職業病名稱：',
+        rows: [
+          { label: '1. 高重複性手腕動作（鍵盤輸入、肉品分割、裝配線）', answer: '腕隧道症候群' },
+          { label: '2. 長期頻繁人力提舉搬運重物、彎腰扭轉（物流、護理抱扶）', answer: '腰椎椎間盤突出' },
+          { label: '3. 長期從事手部高舉過肩作業（裝潢油漆、洗車、倉儲理貨）', answer: '旋轉肌袖症候群（肩部）' },
+          { label: '4. 手部局部過度用力與反覆抓握（美髮師、廚師顛鍋炒菜）', answer: '肌腱腱鞘炎（媽媽手／板機指）' }
+        ],
+        pool: [
+          '腕隧道症候群',
+          '腰椎椎間盤突出',
+          '旋轉肌袖症候群（肩部）',
+          '肌腱腱鞘炎（媽媽手／板機指）'
+        ],
+        lawRef: '人因工程職業病重點：手腕重複動作→腕隧道症候群；彎腰搬運→腰椎椎間盤突出；高舉過肩→旋轉肌袖症候群；反覆抓握→肌腱腱鞘炎（媽媽手）。'
+      },
+      {
+        id: 'U6-3', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '3.【限制族群工作項目】分娩後未滿一年女性禁止從事之工作（複選）', score: '必考重點', type: 'multi',
+        stem: '依職業安全衛生法第30條規定，雇主不得使「分娩後未滿一年」之女性勞工從事 5 項危險性或有害性工作，下列哪些屬於該限制項目？（複選 4 項）',
+        options: [
+          '礦坑工作',
+          '鉛及其化合物散布場所之工作',
+          '異常氣壓之工作',
+          '鑿岩機及其他有顯著振動之工作',
+          '一定重量以上之重物處理工作',
+          '超過二百二十伏特電力線之銜接'
+        ],
+        answers: [0, 1, 3, 4],
+        lawRef: '限制族群對照表：妊娠中禁止 14 項；「分娩後未滿一年」禁止 5 項（礦坑工作、鉛及其化合物散布場所、鑿岩機等顯著振動工作、一定重量以上重物處理、其他規定工作）。異常氣壓僅限妊娠中禁止。'
+      },
+      {
+        id: 'U6-4', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '4.【危險性機械及設備安全檢查】檢查種類與實施時間點配對', score: '必考重點', type: 'match',
+        stem: '依據危險性機械及設備安全檢查比對表，請將下列檢查名稱與其「實施時間點」正確配對：',
+        rows: [
+          { label: '1. 型式檢查（全部製造商，勞檢員）', answer: '製造或修改前' },
+          { label: '2. 定期檢查（全體合格設備，代行檢查員）', answer: '合格證到期前 1 個月' },
+          { label: '3. 重新檢查（全體設備，代行檢查員）', answer: '閒置逾 1 年、禁停用恢復、外國進口' },
+          { label: '4. 變更檢查（除高壓氣體容器外，代行檢查員）', answer: '進行設計變更時' },
+          { label: '5. 使用檢查（移動式起重機、吊籠，勞檢員）', answer: '進口或製造完成首次使用前' }
+        ],
+        pool: [
+          '製造或修改前',
+          '合格證到期前 1 個月',
+          '閒置逾 1 年、禁停用恢復、外國進口',
+          '進行設計變更時',
+          '進口或製造完成首次使用前'
+        ],
+        lawRef: '危性機械設備檢查比對：型式（製造修改前）、定期（到期前1個月）、重新（閒置逾1年/禁停用恢復/外國進口）、變更（設計變更時，除高壓氣體容器外）、使用（移動式機械首次使用前）。'
+      },
+      {
+        id: 'U6-5', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '5.【安全衛生管理制度與人員配置】規模門檻選項填空', score: '必考重點', type: 'fill',
+        segments: [
+          '一、管理制度等級：僱用勞工 ',
+          { key: 'b1', answer: '30人以下', options: ['30人以下', '31～99人', '100人以上', '200人以上'] },
+          ' 應製作管理紀錄（留存 3 年）；31～99 人應訂定管理計畫； ',
+          { key: 'b2', answer: '100人以上', options: ['30人以上', '50人以上', '100人以上', '300人以上'] },
+          ' 應訂定管理規章；第一類事業 ',
+          { key: 'b3', answer: '200人以上', options: ['100人以上', '200人以上', '300人以上', '500人以上'] },
+          ' 應建置職業安全衛生管理系統（未建置罰 3 萬～30 萬元）。<br>二、第一類事業人員配置：30 人以上設丙種業務主管；100 人以上設乙員＋甲種業務主管； ',
+          { key: 'b4', answer: '300人以上', options: ['100人以上', '200人以上', '300人以上', '500人以上'] },
+          ' 應設專職一級管理單位（配置甲業＋乙員＋甲師）。'
+        ],
+        lawRef: '職業安全衛生管理辦法：30人以下紀錄、31～99人計畫、100人以上規章、第一類200人以上管理系統；第一類300人以上設專職一級管理單位。'
+      },
+      {
+        id: 'U6-6', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '6.【重大職災通報與安衛委員會】法規時限與代表比例', score: '必考重點', type: 'fill',
+        segments: [
+          '一、事業單位勞動場所發生死亡災害、罹災人數 3 人以上、或罹災人數 1 人以上且需住院治療之重大職災時，雇主應於 ',
+          { key: 'b1', answer: '8', options: ['4', '8', '12', '24', '48'] },
+          ' 小時內通報勞動檢查機構。<br>二、職業安全衛生委員會每 ',
+          { key: 'b2', answer: '3', options: ['1', '2', '3', '6'] },
+          ' 個月至少開會 1 次，且委員會中之勞工代表應佔 ',
+          { key: 'b3', answer: '1/3', options: ['1/4', '1/3', '1/2', '2/3'] },
+          ' 以上。'
+        ],
+        lawRef: '職業安全衛生法第37條（8小時內通報）及職業安全衛生管理辦法第11條、第12條（每3個月開會1次，勞工代表佔1/3以上）。'
+      },
+      {
+        id: 'U6-7', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '7.【高處護欄、合梯與局限空間檢點標準】選項填空', score: '必考重點', type: 'fill',
+        segments: [
+          '一、高處作業護欄高度應在 ',
+          { key: 'b1', answer: '90', options: ['75', '85', '90', '110'] },
+          ' 公分以上，腳趾板高度 ',
+          { key: 'b2', answer: '10', options: ['5', '10', '15', '20'] },
+          ' 公分以上；合梯梯腳與地面角度應在 ',
+          { key: 'b3', answer: '75', options: ['45', '60', '75', '80'] },
+          ' 度以內。<br>二、局限空間作業前測定氣體基準：氧氣濃度應在 ',
+          { key: 'b4', answer: '18%～23.5%', options: ['16%～21%', '18%～23.5%', '19.5%～25%', '20%～25%'] },
+          ' 、硫化氫 ',
+          { key: 'b5', answer: '10', options: ['5', '10', '25', '35'] },
+          ' ppm 以下、一氧化碳 ',
+          { key: 'b6', answer: '35', options: ['10', '25', '35', '50'] },
+          ' ppm 以下、可燃性氣體 LEL 30% 以下。'
+        ],
+        lawRef: '職業安全衛生設施規則及缺氧症預防規則：護欄90cm、腳趾板10cm、合梯75度以內；氧氣18%～23.5%、硫化氫10ppm以下、一氧化碳35ppm以下。'
+      },
+      {
+        id: 'U6-8', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '8.【感電防止漏電斷路器與化學品 SDS 規範】選項填空', score: '必考重點', type: 'fill',
+        segments: [
+          '一、對地電壓 150 伏特以上移動式或攜帶式電動機具，或於潮濕場所使用之電動機具，應裝設高敏感度、高速型漏電斷路器，其額定動作電流在 ',
+          { key: 'b1', answer: '30', options: ['15', '30', '50', '100'] },
+          ' mA 以下、動作時間在 ',
+          { key: 'b2', answer: '0.1', options: ['0.05', '0.1', '0.2', '0.5'] },
+          ' 秒以內。<br>二、安全資料表（SDS）共有 ',
+          { key: 'b3', answer: '16', options: ['8', '12', '16', '20'] },
+          ' 項內容，每 ',
+          { key: 'b4', answer: '3', options: ['1', '2', '3', '5'] },
+          ' 年至少檢討更新 1 次；容器容積在 100 毫升以下得僅標示名稱、危害圖式及警示語。'
+        ],
+        lawRef: '職業安全衛生設施規則第243條（30mA以下、0.1秒以內）及危害性化學品標示及通識規則（SDS 16項、每3年更新）。'
+      },
+      {
+        id: 'U6-9', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '9.【作業環境監測與勞工健康檢查週期】選項填空', score: '必考重點', type: 'fill',
+        segments: [
+          '一、噪音（超過85分貝）、粉塵、有機溶劑、特定化學物質作業場所，每 ',
+          { key: 'b1', answer: '6', options: ['3', '6', '12', '24'] },
+          ' 個月測定 1 次（高溫作業每 3 個月 1 次）；監測結果應於測定後 ',
+          { key: 'b2', answer: '45', options: ['10', '15', '30', '45'] },
+          ' 日內通報，特定粉塵、致癌物紀錄應保存 ',
+          { key: 'b3', answer: '30', options: ['3', '5', '10', '30'] },
+          ' 年。<br>二、在職勞工一般健康檢查週期：65 歲以上每年 1 次；40 歲以上未滿 65 歲每 ',
+          { key: 'b4', answer: '3', options: ['1', '2', '3', '5'] },
+          ' 年 1 次；未滿 40 歲每 5 年 1 次。'
+        ],
+        lawRef: '勞工作業環境監測實施辦法（每6個月測定、測定後45日內通報結果、致癌物/特定粉塵保存30年）及勞工健康保護規則（40～64歲每3年1次）。'
+      },
+      {
+        id: 'U6-10', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '10.【計算題】戶外有日曬與戶內無日曬 WBGT 計算', score: '必考公式', type: 'calc',
+        stem: '測得某戶外營造工地之自然濕球溫度 t_nw = 26°C、黑球溫度 t_g = 36°C、乾球溫度 t_d = 32°C。試求：(一) 戶外有日曬之 WBGT；(二) 若為戶內無日曬環境（相同濕球與黑球溫度）之 WBGT。',
+        formulaHtml: 'WBGT<sub>戶外</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">0.7 t<sub>nw</sub> + 0.2 t<sub>g</sub> + 0.1 t<sub>d</sub></span>　；　WBGT<sub>戶內</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">0.7 t<sub>nw</sub> + 0.3 t<sub>g</sub></span>',
+        symbols: [
+          't<sub>nw</sub>：自然濕球溫度（26°C）',
+          't<sub>g</sub>：黑球溫度（36°C，反映輻射熱）',
+          't<sub>d</sub>：乾球溫度（32°C，反映空氣溫度）'
+        ],
+        steps: [
+          {
+            label: '(一) 戶外有日曬 WBGT = 0.7×26 + 0.2×36 + 0.1×32 = 18.2 + 7.2 + 3.2 = ',
+            parts: [{ key: 'c1', answer: '28.6', options: ['28.2', '28.6', '29.0', '31.3'] }, ' °C']
+          },
+          {
+            label: '(二) 戶內無日曬 WBGT = 0.7×26 + 0.3×36 = 18.2 + 10.8 = ',
+            parts: [{ key: 'c2', answer: '29.0', options: ['28.6', '29.0', '29.8', '31.0'] }, ' °C']
+          }
+        ],
+        lawRef: '計算解析：戶外 = 0.7(26) + 0.2(36) + 0.1(32) = 18.2 + 7.2 + 3.2 = 28.6°C；戶內 = 0.7(26) + 0.3(36) = 18.2 + 10.8 = 29.0°C。'
+      },
+      {
+        id: 'U6-11', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '11.【計算題】研磨輪周速度（V = π D N）計算', score: '必考公式', type: 'calc',
+        stem: '某工廠使用直徑為 30 公分之研磨輪，其主軸轉速為每分鐘 2,000 轉（rpm），試求該研磨輪之周速度 V 為多少 m/min？（π 取 3.14，四捨五入至整數）',
+        formulaHtml: '研磨輪周速度 V = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">π × D × N</span>',
+        symbols: [
+          'V：研磨輪周速度（公尺/分鐘，m/min）',
+          'π：圓周率（3.14）',
+          'D：研磨輪直徑（公尺，m — 題目給 30 公分須換算為 0.3 公尺）',
+          'N：每分鐘轉數（2,000 rpm）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（單位換算代入）：V = 3.14 × ',
+            parts: [
+              { key: 'c1', answer: '0.3', options: ['0.03', '0.3', '3', '30'] },
+              ' × 2000'
+            ]
+          },
+          {
+            label: '步驟 2（計算結果）：V = ',
+            parts: [{ key: 'c2', answer: '1884', options: ['188.4', '942', '1884', '18840'] }, ' m/min']
+          }
+        ],
+        lawRef: '計算解析：直徑 D = 30 cm = 0.3 m，周速度 V = 3.14 × 0.3 × 2000 = 1,884 m/min（切記直徑須先換算成公尺）。'
+      },
+      {
+        id: 'U6-12', unit: 'U6', unitName: '第六單元：必考重點增補題庫', title: '12.【計算題】噪音暴露劑量反推時量平均音壓級（L_TWA）', score: '必考公式', type: 'calc',
+        stem: '某作業勞工配戴個人噪音劑量計，測得 8 小時工作日之噪音暴露劑量 D 為 200%，試求其 8 小時日時量平均音壓級 L_TWA 為多少 dBA？（log₁₀ 2 ≈ 0.3010）',
+        formulaHtml: 'L<sub>TWA</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">16.61 × log<sub>10</sub>(D ÷ 100) + 90</span>',
+        symbols: [
+          'L<sub>TWA</sub>：8 小時日時量平均音壓級（dBA）',
+          'D：實測噪音暴露劑量百分比（200%）',
+          '90：我國職安法規 8 小時容許噪音基準（90 dBA，每增加 5 dBA 容許時間減半）'
+        ],
+        steps: [
+          {
+            label: '步驟 1（代入劑量 D）：L<sub>TWA</sub> = 16.61 × log<sub>10</sub>( ',
+            parts: [{ key: 'c1', answer: '2', options: ['0.5', '2', '20', '200'] }, ' ) + 90']
+          },
+          {
+            label: '步驟 2（計算結果）：16.61 × 0.3010 + 90 = 5.00 + 90 = ',
+            parts: [{ key: 'c2', answer: '95', options: ['85', '90', '93', '95', '100'] }, ' dBA']
+          }
+        ],
+        lawRef: '計算解析：暴露劑量 D = 200%（即 2 倍容許劑量），根據 5 dB 減半法則，音壓級比基準 90 dBA 高出 5 dBA，故 L_TWA = 16.61 × log₁₀(2) + 90 = 5 + 90 = 95 dBA。'
       }
-      return `
-        <label class="flex items-center p-2.5 rounded-lg border ${showResult && opt === q.answer ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:bg-slate-50'} cursor-pointer">
-          <input type="radio" name="opt-${q.id}" value="${opt}" ${checked} ${isStudy ? 'disabled' : ''} class="w-4 h-4 text-[#0f4c81] mr-3">
-          <span class="text-sm font-medium">${opt}</span>
-          ${badge}
-        </label>`;
-    }).join('') + `</div>`;
-  } else if (q.type === 'multi') {
-    inputAreaHTML = `<div class="space-y-2 my-3">` + q.options.map(opt => {
-      const isChecked = prog && Array.isArray(prog.userAns) && prog.userAns.includes(opt) ? 'checked' : '';
-      const isRightOpt = q.answer.includes(opt);
-      let badge = '';
-      if (showResult) {
-        if (isRightOpt) badge = `<span class="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800">✔ 應選項目</span>`;
-        else if (isChecked) badge = `<span class="ml-2 text-xs font-bold px-2 py-0.5 rounded bg-rose-100 text-rose-800">✘ 誤選</span>`;
+    ];
+
+    // ==========================================
+    // 3. Application State & Logic
+    // ==========================================
+    let state = {
+      unitFilter: 'ALL',
+      isRandom: false,
+      filteredList: [...QUESTION_BANK],
+      currentIndex: 0,
+      results: {}, // { [questionId]: { isCorrect: boolean, userResponse: any } }
+      gridOpen: false
+    };
+
+    // DOM Elements
+    const unitFilterEl = document.getElementById('unit-filter');
+    const btnOrderSeq = document.getElementById('btn-order-seq');
+    const btnOrderRand = document.getElementById('btn-order-rand');
+    const btnToggleGrid = document.getElementById('btn-toggle-grid');
+    const gridPanel = document.getElementById('question-grid-panel');
+    const gridArrow = document.getElementById('grid-arrow');
+    const questionGrid = document.getElementById('question-grid');
+    const btnReset = document.getElementById('btn-reset');
+    const cardContainer = document.getElementById('card-container');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const footerCounter = document.getElementById('footer-counter');
+    const footerUnitBadge = document.getElementById('footer-unit-badge');
+    const statProgress = document.getElementById('stat-progress');
+    const statCorrect = document.getElementById('stat-correct');
+    const statRate = document.getElementById('stat-rate');
+
+    function shuffleArray(arr) {
+      const copy = [...arr];
+      for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [copy[i], copy[j]] = [copy[j], copy[i]];
       }
-      return `
-        <label class="flex items-center p-2.5 rounded-lg border ${showResult && isRightOpt ? 'border-emerald-500 bg-emerald-50' : 'border-slate-200 hover:bg-slate-50'} cursor-pointer">
-          <input type="checkbox" name="opt-${q.id}" value="${opt}" ${isChecked} ${isStudy ? 'disabled' : ''} class="w-4 h-4 text-[#0f4c81] rounded mr-3">
-          <span class="text-sm font-medium">${opt}</span>
-          ${badge}
-        </label>`;
-    }).join('') + `</div>`;
-  } else {
-    if (!isStudy) {
-      const prevVal = prog && prog.userAns && prog.userAns !== '（直接檢視解答）' ? prog.userAns : '';
-      inputAreaHTML = `
-        <div class="my-3">
-          <input id="input-${q.id}" type="text" value="${prevVal}" placeholder="${q.placeholder || '請輸入答案...'}"
-            onkeydown="if(event.key==='Enter') submitAnswer('${q.id}')"
-            class="w-full border-2 border-slate-300 focus:border-[#0f4c81] rounded-lg px-3 py-2 text-sm font-medium focus:outline-none" />
-        </div>`;
+      return copy;
     }
-  }
 
-  const actionBtns = !isStudy ? `
-    <div class="flex flex-wrap items-center gap-2 mt-3">
-      <button onclick="submitAnswer('${q.id}')" class="px-4 py-2 rounded-lg bg-[#0f4c81] hover:bg-sky-800 text-white text-sm font-bold shadow-sm transition">
-        送出對答案
-      </button>
-      <button onclick="revealDirectly('${q.id}')" class="px-3 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold transition">
-        直接看解答與詳解
-      </button>
-    </div>` : '';
+    function applyFilterAndOrder() {
+      let list = state.unitFilter === 'ALL'
+        ? [...QUESTION_BANK]
+        : QUESTION_BANK.filter(q => q.unit === state.unitFilter);
+      if (state.isRandom) {
+        list = shuffleArray(list);
+      }
+      state.filteredList = list;
+      state.currentIndex = 0;
+      renderAll();
+    }
 
-  const formattedAns = Array.isArray(q.answer) ? q.answer.join('、') : q.answer;
-  const statusBanner = (!isStudy && prog && prog.submitted) ? (
-    prog.isCorrect
-      ? `<div class="mb-2 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-sm font-bold">🎉 答對了！觀念非常正確！</div>`
-      : `<div class="mb-2 px-3 py-1.5 rounded-lg bg-rose-600 text-white text-sm font-bold">💡 答案有誤或已檢視解答（您的作答：${Array.isArray(prog.userAns) ? prog.userAns.join('、') : prog.userAns}）</div>`
-  ) : '';
+    function updateStatsAndNav() {
+      const total = state.filteredList.length;
+      const answeredIds = state.filteredList.filter(q => state.results[q.id] !== undefined);
+      const correctCount = answeredIds.filter(q => state.results[q.id].isCorrect).length;
+      const rate = answeredIds.length === 0 ? 0 : Math.round((correctCount / answeredIds.length) * 100);
 
-  const answerSectionHTML = showResult ? `
-    <div class="mt-4 pt-3 border-t-2 border-dashed border-slate-200 bg-sky-50/70 rounded-lg p-3.5">
-      ${statusBanner}
-      <div class="text-sm font-bold text-[#0f4c81] mb-1">
-        ✅ 標準答案：<span class="text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded">${formattedAns}</span>
-      </div>
-      <div class="text-xs font-bold text-slate-600 mb-1.5">📚 法規／學理依據：${q.law}</div>
-      <div class="text-sm text-slate-700 whitespace-pre-line leading-relaxed bg-white p-2.5 rounded border border-slate-200">${q.explanation}</div>
-    </div>` : '';
+      statProgress.textContent = `${answeredIds.length} / ${total}`;
+      statCorrect.textContent = `${correctCount}`;
+      statRate.textContent = `${rate}%`;
 
-  return `
-    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
-      <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
-        <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-sky-100 text-[#0f4c81]">${q.unitName}</span>
-        <div class="flex items-center gap-1.5">
-          ${q.isCalc ? '<span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-800">🧮 計算題</span>' : ''}
-          <span class="text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-600">
-            ${q.type === 'single' ? '單選題' : q.type === 'multi' ? '複選題' : '填空／問答計算'}
-          </span>
-        </div>
-      </div>
-      <h3 class="text-base md:text-lg font-bold text-slate-900 mb-2">${q.title}</h3>
-      <div class="text-sm md:text-base text-slate-800 whitespace-pre-line leading-relaxed">${q.stem}</div>
-      ${q.mediaHTML || ''}
-      ${inputAreaHTML}
-      ${actionBtns}
-      ${answerSectionHTML}
-    </div>
-  `;
-}
+      const currentQ = state.filteredList[state.currentIndex];
+      footerCounter.textContent = `第 ${state.currentIndex + 1} 題 / 共 ${total} 題`;
+      footerUnitBadge.textContent = currentQ ? currentQ.unitName : '';
 
-function renderPracticeQuestion() {
-  const container = document.getElementById('single-question-container');
-  document.getElementById('curr-total').textContent = filteredQuestions.length;
+      btnPrev.disabled = state.currentIndex <= 0;
+      btnNext.disabled = state.currentIndex >= total - 1;
 
-  if (filteredQuestions.length === 0) {
-    document.getElementById('curr-index').textContent = 0;
-    container.innerHTML = `<div class="bg-white rounded-xl p-8 text-center text-slate-500 border border-slate-200">目前篩選條件下沒有符合的題目，請切換其他單元或清除搜尋關鍵字。</div>`;
-    return;
-  }
+      // Render Question Grid
+      questionGrid.innerHTML = state.filteredList.map((q, idx) => {
+        const res = state.results[q.id];
+        let cls = 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100';
+        if (res) {
+          cls = res.isCorrect
+            ? 'bg-emerald-500 text-white border-emerald-600'
+            : 'bg-rose-500 text-white border-rose-600';
+        }
+        const activeRing = idx === state.currentIndex ? 'ring-2 ring-cyan-600 ring-offset-1 font-black' : 'font-semibold';
+        return `<button onclick="jumpToQuestion(${idx})" class="py-1.5 px-1 text-xs rounded border ${cls} ${activeRing} transition">${idx + 1}</button>`;
+      }).join('');
+    }
 
-  document.getElementById('curr-index').textContent = currentIdx + 1;
-  const q = filteredQuestions[currentIdx];
-  container.innerHTML = renderQuestionCardHTML(q, false);
-}
+    window.jumpToQuestion = function(idx) {
+      state.currentIndex = idx;
+      renderAll();
+    };
 
-function renderStudyList() {
-  const container = document.getElementById('study-view');
-  if (filteredQuestions.length === 0) {
-    container.innerHTML = `<div class="bg-white rounded-xl p-8 text-center text-slate-500 border border-slate-200">目前篩選條件下沒有符合的題目。</div>`;
-    return;
-  }
-  container.innerHTML = filteredQuestions.map((q, i) => `
-    <div>
-      <div class="text-xs font-bold text-slate-400 mb-1">題號 #${i + 1}</div>
-      ${renderQuestionCardHTML(q, true)}
-    </div>
-  `).join('');
-}
+    function buildSelectHtml(key, options, savedVal, isSubmitted, correctAnswer) {
+      let stateClass = '';
+      if (isSubmitted) {
+        stateClass = (savedVal === correctAnswer) ? 'correct' : 'wrong';
+      }
+      const optsHtml = options.map(opt => {
+        const selected = savedVal === opt ? 'selected' : '';
+        return `<option value="${opt.replace(/"/g, '&quot;')}" ${selected}>${opt}</option>`;
+      }).join('');
 
-function toggleAllStudyAnswers() {
-  studyHideAnswers = !studyHideAnswers;
-  renderStudyList();
-}
+      let correctionBadge = '';
+      if (isSubmitted && savedVal !== correctAnswer) {
+        correctionBadge = `<span class="inline-block ml-1 px-2 py-0.5 text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300 rounded">正解：${correctAnswer}</span>`;
+      }
 
-// Initialize
-updateStats();
-renderPracticeQuestion();
-</script>
+      return `<select data-key="${key}" ${isSubmitted ? 'disabled' : ''} class="blank-select ${stateClass}">
+        <option value="">▼ 請選擇</option>
+        ${optsHtml}
+      </select>${correctionBadge}`;
+    }
+
+    function renderCurrentQuestion() {
+      const q = state.filteredList[state.currentIndex];
+      if (!q) return;
+      const saved = state.results[q.id];
+      const isSubmitted = !!saved;
+
+      const typeLabels = {
+        single: '單選題（點擊選項立即揭曉）',
+        multi: '複選題（勾選後送出）',
+        fill: '選項填空題',
+        order: '順序排列（選項填空）',
+        match: '項目配對（選項填空）',
+        ghs: '圖示配對（選項填空）',
+        pitot: '工程圖示配對（選項填空）',
+        calc: '公式套入計算（選項填空）'
+      };
+
+      let bodyHtml = '';
+
+      // 1. Single Choice
+      if (q.type === 'single') {
+        bodyHtml = `
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-5">${q.stem}</p>
+          <div class="space-y-2.5">
+            ${q.options.map((opt, idx) => {
+              let btnStyle = 'bg-slate-50 border-slate-200 hover:border-cyan-600 hover:bg-cyan-50/50 text-slate-800';
+              let badge = `<span class="w-7 h-7 rounded-full bg-white border border-slate-300 text-slate-600 flex items-center justify-center text-xs font-bold shrink-0">${String.fromCharCode(65 + idx)}</span>`;
+              if (isSubmitted) {
+                if (idx === q.answer) {
+                  btnStyle = 'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold ring-1 ring-emerald-500';
+                  badge = `<span class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold shrink-0">✓</span>`;
+                } else if (idx === saved.userResponse) {
+                  btnStyle = 'bg-rose-50 border-rose-500 text-rose-950 font-bold';
+                  badge = `<span class="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center text-xs font-bold shrink-0">✕</span>`;
+                } else {
+                  btnStyle = 'bg-slate-50 border-slate-200 text-slate-400 opacity-70';
+                }
+              }
+              return `<button type="button" ${isSubmitted ? 'disabled' : ''} onclick="handleSingleSelect(${idx})" class="w-full text-left p-3.5 rounded-xl border-2 transition flex items-center gap-3 ${btnStyle}">
+                ${badge}
+                <span class="text-sm sm:text-base">${opt}</span>
+              </button>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // 2. Multi Choice
+      else if (q.type === 'multi') {
+        const selectedArr = isSubmitted ? saved.userResponse : [];
+        bodyHtml = `
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-4">${q.stem}</p>
+          <div class="space-y-2">
+            ${q.options.map((opt, idx) => {
+              const isChecked = selectedArr.includes(idx);
+              const isCorrectOpt = q.answers.includes(idx);
+              let rowStyle = 'bg-slate-50 border-slate-200 hover:bg-cyan-50/40';
+              let statusTag = '';
+              if (isSubmitted) {
+                if (isCorrectOpt && isChecked) {
+                  rowStyle = 'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold';
+                  statusTag = '<span class="ml-auto text-xs font-bold px-2 py-0.5 rounded bg-emerald-600 text-white">正確應選</span>';
+                } else if (isCorrectOpt && !isChecked) {
+                  rowStyle = 'bg-amber-50 border-amber-400 text-amber-950 font-bold';
+                  statusTag = '<span class="ml-auto text-xs font-bold px-2 py-0.5 rounded bg-amber-500 text-white">漏選（正解）</span>';
+                } else if (!isCorrectOpt && isChecked) {
+                  rowStyle = 'bg-rose-50 border-rose-500 text-rose-950 font-bold';
+                  statusTag = '<span class="ml-auto text-xs font-bold px-2 py-0.5 rounded bg-rose-600 text-white">誤選</span>';
+                } else {
+                  rowStyle = 'bg-slate-50 border-slate-200 text-slate-400';
+                }
+              }
+              return `<label class="flex items-center gap-3 p-3 rounded-xl border-2 cursor-pointer transition ${rowStyle}">
+                <input type="checkbox" value="${idx}" ${isChecked ? 'checked' : ''} ${isSubmitted ? 'disabled' : ''} class="w-5 h-5 text-cyan-700 rounded border-slate-300 focus:ring-cyan-600">
+                <span class="text-sm sm:text-base flex-1">${opt}</span>
+                ${statusTag}
+              </label>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // 3. Inline Fill-in-the-Blank (Options Select)
+      else if (q.type === 'fill') {
+        const userMap = isSubmitted ? saved.userResponse : {};
+        const htmlContent = q.segments.map(seg => {
+          if (typeof seg === 'string') return seg;
+          return buildSelectHtml(seg.key, seg.options, userMap[seg.key] || '', isSubmitted, seg.answer);
+        }).join('');
+        bodyHtml = `
+          <div class="text-base sm:text-lg text-slate-800 leading-loose bg-slate-50/70 p-4 sm:p-5 rounded-xl border border-slate-200">
+            ${htmlContent}
+          </div>
+        `;
+      }
+
+      // 4. Ordering (Options Select)
+      else if (q.type === 'order') {
+        const userMap = isSubmitted ? saved.userResponse : {};
+        bodyHtml = `
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-4">${q.stem}</p>
+          <div class="space-y-2.5 bg-slate-50 p-4 rounded-xl border border-slate-200">
+            ${q.slots.map((slot, i) => {
+              const key = `s${i}`;
+              return `<div class="flex flex-col sm:flex-row sm:items-center gap-2 bg-white p-2.5 rounded-lg border border-slate-200">
+                <span class="text-xs font-black px-2.5 py-1 rounded bg-cyan-900 text-white self-start sm:self-auto shrink-0">${slot.label}</span>
+                <div class="flex-1">
+                  ${buildSelectHtml(key, q.pool, userMap[key] || '', isSubmitted, slot.answer)}
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // 5. Matching Table (Options Select)
+      else if (q.type === 'match') {
+        const userMap = isSubmitted ? saved.userResponse : {};
+        bodyHtml = `
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-4">${q.stem}</p>
+          <div class="overflow-x-auto rounded-xl border border-slate-200">
+            <table class="w-full text-left border-collapse text-sm sm:text-base">
+              <thead>
+                <tr class="bg-slate-100 text-slate-700 border-b border-slate-200">
+                  <th class="py-2.5 px-3 font-bold">題目項目</th>
+                  <th class="py-2.5 px-3 font-bold">請選擇對應項目</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200 bg-white">
+                ${q.rows.map((row, i) => {
+                  const key = `m${i}`;
+                  return `<tr>
+                    <td class="py-2.5 px-3 font-medium text-slate-800">${row.label}</td>
+                    <td class="py-2.5 px-3">${buildSelectHtml(key, q.pool, userMap[key] || '', isSubmitted, row.answer)}</td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      // 6. GHS Pictogram Matching (SVG + Options Select)
+      else if (q.type === 'ghs') {
+        const userMap = isSubmitted ? saved.userResponse : {};
+        bodyHtml = `
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-4">${q.stem}</p>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            ${q.items.map((item, i) => {
+              const key = `g${i}`;
+              return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex flex-col items-center text-center">
+                ${GHS_SVGS[item.code]}
+                <span class="text-sm font-black text-slate-800 mt-1 mb-2">${item.code}</span>
+                <div class="w-full">
+                  ${buildSelectHtml(key, q.pool, userMap[key] || '', isSubmitted, item.answer)}
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // 7. Pitot Tube Diagram Matching (SVG + Options Select)
+      else if (q.type === 'pitot') {
+        const userMap = isSubmitted ? saved.userResponse : {};
+        bodyHtml = `
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-4">${q.stem}</p>
+          <div class="space-y-3">
+            ${q.items.map((item, i) => {
+              const key = `p${i}`;
+              return `<div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 flex flex-col sm:flex-row items-center gap-4">
+                <div class="shrink-0">${PITOT_SVGS[item.code]}</div>
+                <div class="flex-1 text-center sm:text-left">
+                  <div class="font-black text-cyan-900 text-base">${item.label}</div>
+                  <p class="text-xs sm:text-sm text-slate-600 mt-0.5 mb-2">${item.desc}</p>
+                  <div>${buildSelectHtml(key, q.pool, userMap[key] || '', isSubmitted, item.answer)}</div>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // 8. Formula Calculation (Formula + Symbol Legend + Option-Select Substitution)
+      else if (q.type === 'calc') {
+        const userMap = isSubmitted ? saved.userResponse : {};
+        bodyHtml = `
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-4">${q.stem}</p>
+
+          <!-- Formula & Symbol Legend Box -->
+          <div class="bg-amber-50/90 border-l-4 border-amber-500 rounded-r-xl p-4 mb-5 shadow-sm">
+            <div class="text-xs font-black uppercase tracking-wider text-amber-800 mb-1">📐 計算公式與代號說明</div>
+            <div class="text-base sm:text-lg font-bold text-slate-900 my-2">${q.formulaHtml}</div>
+            <ul class="text-xs sm:text-sm text-slate-700 space-y-1 mt-2 border-t border-amber-200/80 pt-2">
+              ${q.symbols.map(s => `<li class="flex items-start gap-1.5"><span class="text-amber-600 font-bold">•</span><span>${s}</span></li>`).join('')}
+            </ul>
+          </div>
+
+          <!-- Interactive Substitution Steps -->
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+            <div class="text-xs font-black text-cyan-900">✏️ 公式套入與計算作答（請由下拉選單選擇正確數值）：</div>
+            ${q.steps.map(step => {
+              const partsHtml = step.parts.map(part => {
+                if (typeof part === 'string') return `<span class="font-bold text-slate-800">${part}</span>`;
+                return buildSelectHtml(part.key, part.options, userMap[part.key] || '', isSubmitted, part.answer);
+              }).join('');
+              return `<div class="bg-white p-3 rounded-lg border border-slate-200 text-sm sm:text-base leading-loose">
+                <span class="font-bold text-slate-700">${step.label}</span>${partsHtml}
+              </div>`;
+            }).join('')}
+          </div>
+        `;
+      }
+
+      // Submit Action Button (for non-single types before submission)
+      let actionHtml = '';
+      if (q.type !== 'single' && !isSubmitted) {
+        actionHtml = `
+          <div class="mt-5 flex justify-end">
+            <button type="button" onclick="handleFormSubmit()" class="w-full sm:w-auto px-6 py-3 rounded-xl font-black text-sm sm:text-base bg-amber-500 hover:bg-amber-400 text-cyan-950 shadow-md transition">
+              確認作答並立即看解析
+            </button>
+          </div>
+        `;
+      }
+
+      // Immediate Answer & Explanation Drawer (Shown right after submission)
+      let feedbackHtml = '';
+      if (isSubmitted) {
+        const bannerStyle = saved.isCorrect
+          ? 'bg-emerald-50 border-emerald-500 text-emerald-950'
+          : 'bg-rose-50 border-rose-500 text-rose-950';
+        const icon = saved.isCorrect ? '🎉 恭喜答對！' : '💡 答錯了，請檢視下方正解與解析：';
+
+        feedbackHtml = `
+          <div class="mt-5 rounded-xl border-2 p-4 sm:p-5 ${bannerStyle} animate-card">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-black text-base sm:text-lg">${icon}</span>
+              <button type="button" onclick="retryCurrentQuestion()" class="text-xs font-bold px-2.5 py-1 rounded bg-white/80 hover:bg-white border border-slate-300 text-slate-700 transition">
+                重新練習此題
+              </button>
+            </div>
+            <div class="text-sm sm:text-base text-slate-800 leading-relaxed bg-white/80 p-3.5 rounded-lg border border-slate-200/80">
+              <span class="font-black text-cyan-900">【法規依據與詳細解析】</span><br>
+              ${q.lawRef}
+            </div>
+          </div>
+        `;
+      }
+
+      cardContainer.innerHTML = `
+        <article class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+          <!-- Card Header -->
+          <div class="bg-slate-800 text-white px-5 py-3.5 flex flex-wrap items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-md text-xs font-black bg-cyan-600 text-white">${q.id}</span>
+              <span class="text-xs sm:text-sm text-slate-300 font-medium">${q.unitName}</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-400/20 text-amber-300 border border-amber-400/40">${typeLabels[q.type]}</span>
+              <span class="text-xs font-bold text-slate-300">配分：${q.score}</span>
+            </div>
+          </div>
+
+          <!-- Card Body -->
+          <div class="p-5 sm:p-6">
+            <h2 class="text-lg sm:text-xl font-black text-cyan-950 mb-4 pb-2.5 border-b border-slate-100">${q.title}</h2>
+            ${bodyHtml}
+            ${actionHtml}
+            ${feedbackHtml}
+          </div>
+        </article>
+      `;
+    }
+
+    // ==========================================
+    // 4. Grading & Interaction Handlers
+    // ==========================================
+    window.handleSingleSelect = function(selectedIndex) {
+      const q = state.filteredList[state.currentIndex];
+      if (!q || state.results[q.id]) return;
+      const isCorrect = selectedIndex === q.answer;
+      state.results[q.id] = { isCorrect, userResponse: selectedIndex };
+      renderAll();
+    };
+
+    window.handleFormSubmit = function() {
+      const q = state.filteredList[state.currentIndex];
+      if (!q || state.results[q.id]) return;
+
+      if (q.type === 'multi') {
+        const checked = Array.from(cardContainer.querySelectorAll('input[type="checkbox"]:checked'))
+          .map(el => parseInt(el.value, 10))
+          .sort((a, b) => a - b);
+        if (checked.length === 0) {
+          showToast('請至少勾選一個選項再送出！');
+          return;
+        }
+        const expected = [...q.answers].sort((a, b) => a - b);
+        const isCorrect = checked.length === expected.length && checked.every((v, i) => v === expected[i]);
+        state.results[q.id] = { isCorrect, userResponse: checked };
+        renderAll();
+        return;
+      }
+
+      // Collect all <select> dropdowns
+      const selects = Array.from(cardContainer.querySelectorAll('select.blank-select'));
+      const userMap = {};
+      let hasEmpty = false;
+      selects.forEach(sel => {
+        userMap[sel.dataset.key] = sel.value;
+        if (!sel.value) hasEmpty = true;
+      });
+
+      if (hasEmpty) {
+        showToast('尚有空格未選擇答案，請完成所有下拉選項後再送出！');
+        return;
+      }
+
+      let isCorrect = true;
+      if (q.type === 'fill') {
+        q.segments.forEach(seg => {
+          if (typeof seg === 'object' && userMap[seg.key] !== seg.answer) isCorrect = false;
+        });
+      } else if (q.type === 'order') {
+        q.slots.forEach((slot, i) => {
+          if (userMap[`s${i}`] !== slot.answer) isCorrect = false;
+        });
+      } else if (q.type === 'match') {
+        q.rows.forEach((row, i) => {
+          if (userMap[`m${i}`] !== row.answer) isCorrect = false;
+        });
+      } else if (q.type === 'ghs') {
+        q.items.forEach((item, i) => {
+          if (userMap[`g${i}`] !== item.answer) isCorrect = false;
+        });
+      } else if (q.type === 'pitot') {
+        q.items.forEach((item, i) => {
+          if (userMap[`p${i}`] !== item.answer) isCorrect = false;
+        });
+      } else if (q.type === 'calc') {
+        q.steps.forEach(step => {
+          step.parts.forEach(part => {
+            if (typeof part === 'object' && userMap[part.key] !== part.answer) isCorrect = false;
+          });
+        });
+      }
+
+      state.results[q.id] = { isCorrect, userResponse: userMap };
+      renderAll();
+    };
+
+    window.retryCurrentQuestion = function() {
+      const q = state.filteredList[state.currentIndex];
+      if (!q) return;
+      delete state.results[q.id];
+      renderAll();
+    };
+
+    function showToast(msg) {
+      let toast = document.getElementById('custom-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'custom-toast';
+        toast.className = 'fixed bottom-20 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-sm font-bold px-4 py-2.5 rounded-xl shadow-lg z-50 transition-opacity duration-300';
+        document.body.appendChild(toast);
+      }
+      toast.textContent = msg;
+      toast.style.opacity = '1';
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(() => { toast.style.opacity = '0'; }, 2400);
+    }
+
+    function renderAll() {
+      renderCurrentQuestion();
+      updateStatsAndNav();
+    }
+
+    // Event Listeners
+    unitFilterEl.addEventListener('change', (e) => {
+      state.unitFilter = e.target.value;
+      applyFilterAndOrder();
+    });
+
+    btnOrderSeq.addEventListener('click', () => {
+      state.isRandom = false;
+      btnOrderSeq.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-cyan-800 text-white shadow-sm transition';
+      btnOrderRand.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+      applyFilterAndOrder();
+    });
+
+    btnOrderRand.addEventListener('click', () => {
+      state.isRandom = true;
+      btnOrderRand.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-cyan-800 text-white shadow-sm transition';
+      btnOrderSeq.className = 'px-3 py-1.5 rounded-lg text-xs sm:text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+      applyFilterAndOrder();
+    });
+
+    btnToggleGrid.addEventListener('click', () => {
+      state.gridOpen = !state.gridOpen;
+      gridPanel.classList.toggle('hidden', !state.gridOpen);
+      gridArrow.textContent = state.gridOpen ? '▲' : '▼';
+    });
+
+    btnReset.addEventListener('click', () => {
+      state.results = {};
+      state.currentIndex = 0;
+      renderAll();
+      showToast('已清除所有作答紀錄！');
+    });
+
+    btnPrev.addEventListener('click', () => {
+      if (state.currentIndex > 0) {
+        state.currentIndex--;
+        renderAll();
+      }
+    });
+
+    btnNext.addEventListener('click', () => {
+      if (state.currentIndex < state.filteredList.length - 1) {
+        state.currentIndex++;
+        renderAll();
+      }
+    });
+
+    // Keyboard Left/Right Arrow Navigation (when not focused on a select)
+    document.addEventListener('keydown', (e) => {
+      if (document.activeElement && document.activeElement.tagName === 'SELECT') return;
+      if (e.key === 'ArrowLeft' && state.currentIndex > 0) {
+        state.currentIndex--;
+        renderAll();
+      } else if (e.key === 'ArrowRight' && state.currentIndex < state.filteredList.length - 1) {
+        state.currentIndex++;
+        renderAll();
+      }
+    });
+
+    // Initialize
+    renderAll();
+  </script>
 </body>
 </html>
