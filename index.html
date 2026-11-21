@@ -1411,7 +1411,7 @@
       const dist_13 = String(Math.round(1.6 * (tl_13 + ts_13)));
 
       const dia_14 = rFloat(0.2, 0.3, 2), rpm_14 = rInt(3000, 4000);
-      const vel_14 = String(Math.round(Math.PI * dia_14 * rpm_14));
+      const vel_14 = String(Math.round(3.1416 * dia_14 * rpm_14));
 
       const a_len_15 = rFloat(2.5, 4.0, 1), a_wid_15 = rFloat(2.0, 3.0, 1);
       const area_15 = parseFloat((a_len_15 * a_wid_15).toFixed(1));
@@ -1495,7 +1495,7 @@
           formulaHtml: 'E<sub>avg</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(E₁ + E₂ + E₃ + E₄) ÷ 4</span>',
           symbols: ['E₁～E₄：小區域四個角落測定之照度值（Lux）'],
           steps: [
-            { label: '步驟 1（分母測點數）：E<sub>avg</sub> = (${p1_5} + ${p2_5} + ${p3_5} + ${p4_5}) ÷ ', parts: [{ key: 'c1', answer: '4', options: ['2', '3', '4', '5'] }] },
+            { label: `步驟 1（分母測點數）：E<sub>avg</sub> = (${p1_5} + ${p2_5} + ${p3_5} + ${p4_5}) ÷ `, parts: [{ key: 'c1', answer: '4', options: ['2', '3', '4', '5'] }] },
             { label: '步驟 2（小區平均照度）：E<sub>avg</sub> = ', parts: [{ key: 'c2', answer: lux_5, options: makeNumOptions(lux_5, 1) }, ' Lux'] }
           ],
           lawRef: `標準算式：(${p1_5} + ${p2_5} + ${p3_5} + ${p4_5}) ÷ 4 = ${lux_5} Lux。`
@@ -1506,7 +1506,7 @@
           formulaHtml: 'F₂ = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">F₁ × (r₁ ÷ r₂)²</span>',
           symbols: ['F₁、F₂：距離 r₁、r₂ 處之輻射通量密度（mW/cm²）'],
           steps: [
-            { label: '步驟 1（距離平方反比計算）：F₂ = ${flux_base_6} ÷ (${dist_6}²) = ', parts: [{ key: 'c1', answer: flux_6, options: makeNumOptions(flux_6, 2) }, ' mW/cm²'] }
+            { label: `步驟 1（距離平方反比計算）：F₂ = ${flux_base_6} ÷ (${dist_6}²) = `, parts: [{ key: 'c1', answer: flux_6, options: makeNumOptions(flux_6, 2) }, ' mW/cm²'] }
           ],
           lawRef: `標準算式：F₂ = ${flux_base_6} ÷ (${dist_6}²) = ${flux_6} mW/cm²。`
         },
@@ -1516,7 +1516,7 @@
           formulaHtml: 'I (mA) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(V ÷ R) × 1,000</span>',
           symbols: ['V：接觸電壓（V）', 'R：人體電阻（Ω）', 'I：通過人體電流（毫安培 mA）'],
           steps: [
-            { label: '步驟 1（計算通過人體電流）：I = (${volt_7} ÷ ${res_7}) × 1,000 = ', parts: [{ key: 'c1', answer: cur_7, options: makeNumOptions(cur_7, 1) }, ' mA'] }
+            { label: `步驟 1（計算通過人體電流）：I = (${volt_7} ÷ ${res_7}) × 1,000 = `, parts: [{ key: 'c1', answer: cur_7, options: makeNumOptions(cur_7, 1) }, ' mA'] }
           ],
           lawRef: `標準算式：I = (${volt_7} ÷ ${res_7}) × 1,000 = ${cur_7} mA。`
         },
@@ -1526,7 +1526,7 @@
           formulaHtml: '用電度數 (kWh) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(功率 W × 時間 hr) ÷ 1,000</span>',
           symbols: ['1 度電 = 1 千瓦·小時（1 kWh = 1,000 W·hr）'],
           steps: [
-            { label: '步驟 1（換算基準分母）：度數 = (${watt_8} × ${hr_8}) ÷ ', parts: [{ key: 'c1', answer: '1000', options: ['60', '100', '1000', '3600'] }] },
+            { label: `步驟 1（換算基準分母）：度數 = (${watt_8} × ${hr_8}) ÷ `, parts: [{ key: 'c1', answer: '1000', options: ['60', '100', '1000', '3600'] }] },
             { label: '步驟 2（累積耗電度數）：度數 = ', parts: [{ key: 'c2', answer: kwh_8, options: makeNumOptions(kwh_8, 1) }, ' 度'] }
           ],
           lawRef: `標準算式：(${watt_8} × ${hr_8}) ÷ 1,000 = ${kwh_8} 度。`
@@ -1537,7 +1537,7 @@
           formulaHtml: 'tan(θ) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">垂直高度 H ÷ 水平距離 R</span>',
           symbols: ['H：垂直有效安全高度（26 m）', 'R：水平距離（m）'],
           steps: [
-            { label: '步驟 1（正切值 tan θ）：tan(θ) = 26 ÷ ${r_dist_9} = ', parts: [{ key: 'c1', answer: tan_9, options: makeNumOptions(tan_9, 2) }] },
+            { label: `步驟 1（正切值 tan θ）：tan(θ) = 26 ÷ ${r_dist_9} = `, parts: [{ key: 'c1', answer: tan_9, options: makeNumOptions(tan_9, 2) }] },
             { label: '步驟 2（安全仰角最大限制）：不超過 ', parts: [{ key: 'c2', answer: '60', options: ['30', '45', '60', '75'] }, ' 度'] }
           ],
           lawRef: `標準算式：tan(θ) = 26 ÷ ${r_dist_9} = ${tan_9}；作業安全仰角最大不得超過 60 度。`
@@ -1548,7 +1548,7 @@
           formulaHtml: 'P₂<sub>abs</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(P₁<sub>gauge</sub> + 1.033) × (273.15 + T₂) ÷ (273.15 + T₁)</span>',
           symbols: ['絕對壓力 = 表壓力 + 1.033 kg/cm²', '絕對溫度 K = 273.15 + ℃'],
           steps: [
-            { label: '步驟 1（35 ℃ 時之表壓力）：P₂<sub>gauge</sub> = P₂<sub>abs</sub> − 1.033 = ', parts: [{ key: 'c1', answer: p2_gauge_10, options: makeNumOptions(p2_gauge_10, 1) }, ' kg/cm²'] }
+            { label: `步驟 1（35 ℃ 時之表壓力）：P₂<sub>gauge</sub> = [(${p1_gauge_10} + 1.033) × 308.15 ÷ 293.15] − 1.033 = `, parts: [{ key: 'c1', answer: p2_gauge_10, options: makeNumOptions(p2_gauge_10, 1) }, ' kg/cm²'] }
           ],
           lawRef: `標準算式：P₂_abs = (${p1_gauge_10} + 1.033) × 308.15 ÷ 293.15，再減 1.033 得表壓力 ${p2_gauge_10} kg/cm²（達 10 kg/cm² 以上即屬高壓氣體）。`
         },
@@ -1558,7 +1558,7 @@
           formulaHtml: 'L = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(4 ÷ 995) × (X − 5) + 6</span>',
           symbols: ['X：儲槽儲存能力（公噸，5 < X < 1,000）', 'L：安全距離（公尺）'],
           steps: [
-            { label: '步驟 1（代入儲存能力計算距離 L）：L = (4 ÷ 995) × (${ton_11} − 5) + 6 = ', parts: [{ key: 'c1', answer: l_11, options: makeNumOptions(l_11, 1) }, ' 公尺'] }
+            { label: `步驟 1（代入儲存能力計算距離 L）：L = (4 ÷ 995) × (${ton_11} − 5) + 6 = `, parts: [{ key: 'c1', answer: l_11, options: makeNumOptions(l_11, 1) }, ' 公尺'] }
           ],
           lawRef: `標準算式：L = (4 ÷ 995) × (${ton_11} − 5) + 6 = ${l_11} 公尺。`
         },
@@ -1568,7 +1568,7 @@
           formulaHtml: '冷凍能力 R (公噸) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">每小時入熱量 (kcal/hr) ÷ 6,640</span>',
           symbols: ['6,640 kcal/hr：吸收式冷凍設備法定 1 公噸冷凍能力基準入熱量'],
           steps: [
-            { label: '步驟 1（法定基準入熱量）：R = ${kcal_12} ÷ ', parts: [{ key: 'c1', answer: '6640', options: ['3320', '6640', '7968', '10000'] }] },
+            { label: `步驟 1（法定基準入熱量）：R = ${kcal_12} ÷ `, parts: [{ key: 'c1', answer: '6640', options: ['3320', '6640', '7968', '10000'] }] },
             { label: '步驟 2（計算冷凍能力）：R = ', parts: [{ key: 'c2', answer: ton_12, options: makeNumOptions(ton_12, 1) }, ' 公噸'] }
           ],
           lawRef: `標準算式：R = ${kcal_12} ÷ 6,640 = ${ton_12} 公噸。`
@@ -1590,7 +1590,7 @@
           formulaHtml: 'V = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">π × D × N</span>',
           symbols: ['D：研磨輪直徑（m）', 'N：主軸每分鐘轉數（rpm）'],
           steps: [
-            { label: '步驟 1（計算周邊速度 V）：V = 3.1416 × ${dia_14} × ${rpm_14} = ', parts: [{ key: 'c1', answer: vel_14, options: makeNumOptions(vel_14, 0) }, ' m/min'] }
+            { label: `步驟 1（計算周邊速度 V）：V = 3.1416 × ${dia_14} × ${rpm_14} = `, parts: [{ key: 'c1', answer: vel_14, options: makeNumOptions(vel_14, 0) }, ' m/min'] }
           ],
           lawRef: `標準算式：V = 3.1416 × ${dia_14} × ${rpm_14} = ${vel_14} m/min。`
         },
@@ -1611,8 +1611,8 @@
           formulaHtml: '斷裂荷重 = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">d² ÷ 20</span>　；　最大容許荷重 = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">斷裂荷重 ÷ 安全係數</span>',
           symbols: ['d：鋼索直徑（mm）', '安全係數：吊掛用鋼索法定不得小於 6'],
           steps: [
-            { label: '步驟 1（斷裂荷重）：(${d_16}²) ÷ 20 = ', parts: [{ key: 'c1', answer: break_16, options: makeNumOptions(break_16, 1) }, ' 噸'] },
-            { label: '步驟 2（安全係數 6 下最大荷重）：${break_16} ÷ 6 = ', parts: [{ key: 'c2', answer: max_load_16, options: makeNumOptions(max_load_16, 2) }, ' 噸'] }
+            { label: `步驟 1（斷裂荷重）：(${d_16}²) ÷ 20 = `, parts: [{ key: 'c1', answer: break_16, options: makeNumOptions(break_16, 1) }, ' 噸'] },
+            { label: `步驟 2（安全係數 6 下最大荷重）：${break_16} ÷ 6 = `, parts: [{ key: 'c2', answer: max_load_16, options: makeNumOptions(max_load_16, 2) }, ' 噸'] }
           ],
           lawRef: `標準算式：斷裂荷重 = ${d_16}² ÷ 20 = ${break_16} 噸；最大容許荷重 = ${break_16} ÷ 6 = ${max_load_16} 噸。`
         },
@@ -1622,7 +1622,7 @@
           formulaHtml: '額定荷重 = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">吊升荷重 − 吊具重</span>',
           symbols: ['額定荷重 > 200 噸時，試驗荷重 = 額定荷重 + 50 噸；≤ 200 噸時，試驗荷重 = 額定荷重 × 1.25'],
           steps: [
-            { label: '步驟 1（額定荷重）：${lift_17} − ${hook_17} = ', parts: [{ key: 'c1', answer: String(rated_17), options: makeNumOptions(String(rated_17), 0) }, ' 噸'] },
+            { label: `步驟 1（額定荷重）：${lift_17} − ${hook_17} = `, parts: [{ key: 'c1', answer: String(rated_17), options: makeNumOptions(String(rated_17), 0) }, ' 噸'] },
             { label: '步驟 2（荷重試驗值）：試驗配重 = ', parts: [{ key: 'c2', answer: test_17, options: makeNumOptions(test_17, rated_17 > 200 ? 0 : 1) }, ' 噸'] }
           ],
           lawRef: `標準算式：額定荷重 = ${lift_17} − ${hook_17} = ${rated_17} 噸；荷重試驗值 = ${test_17} 噸。`
@@ -1644,7 +1644,7 @@
           formulaHtml: 'Q (m³/min) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">0.04 × W</span>',
           symbols: ['0.04：第二種有機溶劑法定換氣係數（第一種為 0.3；第三種為 0.01）'],
           steps: [
-            { label: '步驟 1（第二種有機溶劑係數）：Q = ${w_19} × ', parts: [{ key: 'c1', answer: '0.04', options: ['0.01', '0.04', '0.10', '0.30'] }] },
+            { label: `步驟 1（第二種有機溶劑係數）：Q = ${w_19} × `, parts: [{ key: 'c1', answer: '0.04', options: ['0.01', '0.04', '0.10', '0.30'] }] },
             { label: '步驟 2（每分鐘法定換氣量）：Q = ', parts: [{ key: 'c2', answer: q_min_19, options: makeNumOptions(q_min_19, 0) }, ' m³/min'] }
           ],
           lawRef: `標準算式：Q = ${w_19} × 0.04 = ${q_min_19} m³/min。`
@@ -1666,7 +1666,7 @@
           formulaHtml: 'H = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(UEL − LEL) ÷ LEL</span>',
           symbols: ['UEL：爆炸上限（%）', 'LEL：爆炸下限（%）'],
           steps: [
-            { label: '步驟 1（危險度指數 H）：H = (${uel_21} − ${lel_21}) ÷ ${lel_21} = ', parts: [{ key: 'c1', answer: h_danger_21, options: makeNumOptions(h_danger_21, 2) }] }
+            { label: `步驟 1（危險度指數 H）：H = (${uel_21} − ${lel_21}) ÷ ${lel_21} = `, parts: [{ key: 'c1', answer: h_danger_21, options: makeNumOptions(h_danger_21, 2) }] }
           ],
           lawRef: `標準算式：H = (${uel_21} − ${lel_21}) ÷ ${lel_21} = ${h_danger_21}。`
         },
@@ -1687,7 +1687,7 @@
           formulaHtml: 'SR = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(總損失日數 × 10⁶) ÷ 總經歷工時</span>',
           symbols: ['死亡 1 人法定損失日數為 6,000 日'],
           steps: [
-            { label: '步驟 1（總損失日數）：6,000 + ${days_lost_23} = ', parts: [{ key: 'c1', answer: total_days_23, options: makeNumOptions(total_days_23, 0) }, ' 日'] },
+            { label: `步驟 1（總損失日數）：6,000 + ${days_lost_23} = `, parts: [{ key: 'c1', answer: total_days_23, options: makeNumOptions(total_days_23, 0) }, ' 日'] },
             { label: '步驟 2（失能傷害嚴重率 SR）：SR = ', parts: [{ key: 'c2', answer: sr_23, options: makeNumOptions(sr_23, 0) }] }
           ],
           lawRef: `標準算式：總損失日數 = 6,000 + ${days_lost_23} = ${total_days_23} 日；SR = (${total_days_23} × 10⁶) ÷ 10⁶ = ${sr_23}。`
