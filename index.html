@@ -407,7 +407,7 @@
         ],
         steps: [
           {
-            label: '步驟 1（分子加權總和）：WBGT = ',
+            label: '步驟 1（代入各時段 WBGT 與時間數值）：WBGT = ',
             parts: [
               { key: 'c1', answer: '(27×10 + 29×20 + 31×30)', options: ['(27 + 29 + 31)', '(27×10 + 29×20 + 31×30)', '(27×30 + 29×20 + 31×10)', '(27×10 × 29×20 × 31×30)'] },
               ' ÷ ',
@@ -415,7 +415,7 @@
             ]
           },
           {
-            label: '步驟 2（計算結果）：1780 ÷ 60 ≈ ',
+            label: '步驟 2（計算最終結果）：1780 ÷ 60 ≈ ',
             parts: [
               { key: 'c3', answer: '29.67', options: ['28.50', '29.00', '29.33', '29.67', '30.12'] },
               ' °C'
@@ -437,14 +437,14 @@
         ],
         steps: [
           {
-            label: '步驟 1（每小時換氣次數 N）：N = Q ÷ V = ',
+            label: '步驟 1（代入 Q、V 計算每小時換氣次數 N）：N = Q ÷ V = ',
             parts: [
               { key: 'c1', answer: '200 ÷ 800 = 0.25', options: ['800 ÷ 200 = 4.00', '200 ÷ 800 = 0.25', '300 ÷ 800 = 0.375', '200 ÷ 300 = 0.67'] },
               ' hr⁻¹'
             ]
           },
           {
-            label: '步驟 2（4小時後濃度）：C₄ = 300 × e<sup>−(0.25×4)</sup> = 300 ÷ 2.71828 ≈ ',
+            label: '步驟 2（代入 C₀、N、t 計算 4 小時後濃度）：C₄ = 300 × e<sup>−(0.25 × 4)</sup> = 300 ÷ 2.71828 ≈ ',
             parts: [
               { key: 'c2', answer: '110.36', options: ['75.00', '110.36', '150.00', '189.64', '225.00'] },
               ' ppm'
@@ -464,7 +464,7 @@
         ],
         steps: [
           {
-            label: '步驟 1（代入公式）：濃度 = ( 80 × ',
+            label: '步驟 1（代入容許濃度 80 ppm 與分子量）：濃度 = ( 80 × ',
             parts: [
               { key: 'c1', answer: '92', options: ['24.45', '78', '92', '106'] },
               ' ) ÷ ',
@@ -623,15 +623,15 @@
         ],
         steps: [
           {
-            label: '乙烷 H = (12.4 − 3.0) ÷ 3.0 = ',
+            label: '步驟 1（代入乙烷 UEL=12.4%、LEL=3.0%）：H<sub>乙烷</sub> = (12.4 − 3.0) ÷ 3.0 = ',
             parts: [{ key: 'c1', answer: '3.13', options: ['2.45', '3.13', '3.81', '4.13'] }]
           },
           {
-            label: '丙烷 H = (10.1 − 2.1) ÷ 2.1 = ',
+            label: '步驟 2（代入丙烷 UEL=10.1%、LEL=2.1%）：H<sub>丙烷</sub> = (10.1 − 2.1) ÷ 2.1 = ',
             parts: [{ key: 'c2', answer: '3.81', options: ['3.13', '3.52', '3.81', '4.25'] }]
           },
           {
-            label: '丁烷 H = (8.4 − 1.6) ÷ 1.6 = ',
+            label: '步驟 3（代入丁烷 UEL=8.4%、LEL=1.6%）：H<sub>丁烷</sub> = (8.4 − 1.6) ÷ 1.6 = ',
             parts: [{ key: 'c3', answer: '4.25', options: ['3.81', '4.00', '4.25', '5.25'] }]
           }
         ],
@@ -648,11 +648,11 @@
         ],
         steps: [
           {
-            label: '混合爆炸上限 UEL<sub>m</sub> = 100 ÷ (30/12.4 + 30/10.1 + 40/8.4) = 100 ÷ 10.1516 ≈ ',
+            label: '步驟 1（代入各氣體體積比與 UEL）：UEL<sub>m</sub> = 100 ÷ (30/12.4 + 30/10.1 + 40/8.4) = 100 ÷ 10.1516 ≈ ',
             parts: [{ key: 'c1', answer: '9.85', options: ['8.95', '9.85', '10.15', '10.30'] }, ' %']
           },
           {
-            label: '混合爆炸下限 LEL<sub>m</sub> = 100 ÷ (30/3.0 + 30/2.1 + 40/1.6) = 100 ÷ 49.2857 ≈ ',
+            label: '步驟 2（代入各氣體體積比與 LEL）：LEL<sub>m</sub> = 100 ÷ (30/3.0 + 30/2.1 + 40/1.6) = 100 ÷ 49.2857 ≈ ',
             parts: [{ key: 'c2', answer: '2.03', options: ['1.85', '2.03', '2.23', '2.45'] }, ' %']
           }
         ],
@@ -670,7 +670,7 @@
         ],
         steps: [
           {
-            label: '步驟 1（套入數值）：Q = ',
+            label: '步驟 1（代入產生率 G 與濃度差 C<sub>s</sub> − C<sub>0</sub>）：Q = ',
             parts: [
               { key: 'c1', answer: '11', options: ['11', '400', '1100', '1500'] },
               ' ÷ ',
@@ -912,15 +912,15 @@
         ],
         steps: [
           {
-            label: '(一) 總損失日數 = 皮卡丘(6000) + 索爾(1月11日 + 2月29日 + 3月9日 = 49日) = ',
+            label: '步驟 1（代入死亡與暫時全失能日數）：總損失日數 = 6,000 + (11 + 29 + 9) = ',
             parts: [{ key: 'c1', answer: '6049', options: ['6042', '6048', '6049', '6051'] }, ' 日']
           },
           {
-            label: '(二) 失能傷害頻率 FR = (2 × 10⁶) ÷ 500,000 = ',
+            label: '步驟 2（代入失能人次 2 人與總工時 500,000）：FR = (2 × 10⁶) ÷ 500,000 = ',
             parts: [{ key: 'c2', answer: '4.00', options: ['2.00', '4.00', '6.00', '12.10'] }]
           },
           {
-            label: '(三) 綜合傷害指數 FSI = √[(4.00 × 12098) ÷ 1000] = √48.392 ≈ ',
+            label: '步驟 3（代入 FR=4.00 與 SR=12,098）：FSI = √[(4.00 × 12,098) ÷ 1,000] = √48.392 ≈ ',
             parts: [{ key: 'c3', answer: '6.96', options: ['4.00', '6.96', '12.10', '48.39'] }]
           }
         ],
@@ -936,11 +936,11 @@
         ],
         steps: [
           {
-            label: '小五郎 BMI = 65 ÷ (1.7)² = 65 ÷ 2.89 ≈ ',
+            label: '步驟 1（代入小五郎體重 65 kg、身高 1.7 m）：BMI = 65 ÷ (1.7)² = 65 ÷ 2.89 ≈ ',
             parts: [{ key: 'c1', answer: '22.49', options: ['19.12', '22.49', '24.22', '38.24'] }]
           },
           {
-            label: '琴酒 BMI = 62 ÷ (1.6)² = 62 ÷ 2.56 ≈ ',
+            label: '步驟 2（代入琴酒體重 62 kg、身高 1.6 m）：BMI = 62 ÷ (1.6)² = 62 ÷ 2.56 ≈ ',
             parts: [{ key: 'c2', answer: '24.22', options: ['22.49', '23.85', '24.22', '38.75'] }]
           }
         ],
@@ -1015,11 +1015,11 @@
         ],
         steps: [
           {
-            label: '步驟 1（容許暴露時間 T）：T = 8 ÷ 2<sup>(86−90)/5</sup> = 8 × 2<sup>0.8</sup> ≈ ',
+            label: '步驟 1（代入 L = 86 dBA 計算容許時間 T）：T = 8 ÷ 2<sup>(86 − 90) ÷ 5</sup> = 8 × 2<sup>0.8</sup> ≈ ',
             parts: [{ key: 'c1', answer: '13.93', options: ['4.59', '8.00', '12.13', '13.93', '16.00'] }, ' 小時']
           },
           {
-            label: '步驟 2（暴露劑量 D）：D = (8 ÷ 13.9288) × 100% ≈ ',
+            label: '步驟 2（代入 t = 8 小時與 T 值計算劑量）：D = (8 ÷ 13.9288) × 100% ≈ ',
             parts: [{ key: 'c2', answer: '57.43', options: ['50.00', '57.43', '65.98', '86.00', '174.11'] }, ' %']
           }
         ],
@@ -1037,11 +1037,11 @@
         ],
         steps: [
           {
-            label: '步驟 1（折減係數 RF）：RF = (8 ÷ 12) × [(24 − 12) ÷ 16] = ',
+            label: '步驟 1（代入工時 h = 12 小時計算折減係數）：RF = (8 ÷ 12) × [(24 − 12) ÷ 16] = ',
             parts: [{ key: 'c1', answer: '0.50', options: ['0.33', '0.50', '0.67', '0.75'] }]
           },
           {
-            label: '步驟 2（折減後容許濃度）：PEL<sub>adj</sub> = 141 × 0.50 = ',
+            label: '步驟 2（代入原 PEL = 141 ppm 與 RF 值）：PEL<sub>adj</sub> = 141 × 0.50 = ',
             parts: [{ key: 'c2', answer: '70.50', options: ['47.00', '70.50', '94.00', '105.75'] }, ' ppm']
           }
         ],
@@ -1058,7 +1058,7 @@
         ],
         steps: [
           {
-            label: '步驟 1（單位換算代入）：E = 0.5 × ',
+            label: '步驟 1（代入電容 C = 400×10⁻¹² F 與電壓 V = 1,000 V）：E = 0.5 × ',
             parts: [
               { key: 'c1', answer: '400 × 10⁻¹²', options: ['400 × 10⁻⁶', '400 × 10⁻⁹', '400 × 10⁻¹²', '400'] },
               ' × ( ',
@@ -1067,7 +1067,7 @@
             ]
           },
           {
-            label: '步驟 2（換算毫焦耳 mJ）：2 × 10⁻⁴ J = ',
+            label: '步驟 2（將焦耳 J 乘以 1,000 換算為毫焦耳 mJ）：(2 × 10⁻⁴) × 1,000 = ',
             parts: [{ key: 'c3', answer: '0.2', options: ['0.02', '0.2', '2.0', '200'] }, ' mJ']
           }
         ],
@@ -1084,11 +1084,11 @@
         ],
         steps: [
           {
-            label: '步驟 1（計算額定荷重）：270 − 30 = ',
+            label: '步驟 1（代入吊升荷重 270 噸與吊具 30 噸）：額定荷重 = 270 − 30 = ',
             parts: [{ key: 'c1', answer: '240', options: ['240', '270', '300'] }, ' 噸']
           },
           {
-            label: '步驟 2（計算試驗荷重）：240 + 50 = ',
+            label: '步驟 2（額定荷重超過 200 噸，代入加 50 噸公式）：試驗荷重 = 240 + 50 = ',
             parts: [{ key: 'c2', answer: '290', options: ['250', '290', '300', '337.5'] }, ' 噸']
           }
         ],
@@ -1255,11 +1255,11 @@
         ],
         steps: [
           {
-            label: '(一) 戶外有日曬 WBGT = 0.7×26 + 0.2×36 + 0.1×32 = 18.2 + 7.2 + 3.2 = ',
+            label: '步驟 1（代入戶外有日曬公式數值）：WBGT<sub>戶外</sub> = 0.7 × 26 + 0.2 × 36 + 0.1 × 32 = 18.2 + 7.2 + 3.2 = ',
             parts: [{ key: 'c1', answer: '28.6', options: ['28.2', '28.6', '29.0', '31.3'] }, ' °C']
           },
           {
-            label: '(二) 戶內無日曬 WBGT = 0.7×26 + 0.3×36 = 18.2 + 10.8 = ',
+            label: '步驟 2（代入戶內無日曬公式數值）：WBGT<sub>戶內</sub> = 0.7 × 26 + 0.3 × 36 = 18.2 + 10.8 = ',
             parts: [{ key: 'c2', answer: '29.0', options: ['28.6', '29.0', '29.8', '31.0'] }, ' °C']
           }
         ],
@@ -1277,14 +1277,14 @@
         ],
         steps: [
           {
-            label: '步驟 1（單位換算代入）：V = 3.14 × ',
+            label: '步驟 1（將直徑 30 cm 換算為 0.3 m 並代入公式）：V = 3.14 × ',
             parts: [
               { key: 'c1', answer: '0.3', options: ['0.03', '0.3', '3', '30'] },
               ' × 2000'
             ]
           },
           {
-            label: '步驟 2（計算結果）：V = ',
+            label: '步驟 2（計算周速度結果）：V = 3.14 × 0.3 × 2,000 = ',
             parts: [{ key: 'c2', answer: '1884', options: ['188.4', '942', '1884', '18840'] }, ' m/min']
           }
         ],
@@ -1301,11 +1301,11 @@
         ],
         steps: [
           {
-            label: '步驟 1（代入劑量 D）：L<sub>TWA</sub> = 16.61 × log<sub>10</sub>( ',
+            label: '步驟 1（代入 D = 200% 計算 D ÷ 100）：L<sub>TWA</sub> = 16.61 × log<sub>10</sub>( ',
             parts: [{ key: 'c1', answer: '2', options: ['0.5', '2', '20', '200'] }, ' ) + 90']
           },
           {
-            label: '步驟 2（計算結果）：16.61 × 0.3010 + 90 = 5.00 + 90 = ',
+            label: '步驟 2（代入 log₁₀(2) ≈ 0.3010 計算音壓級）：L<sub>TWA</sub> = 16.61 × 0.3010 + 90 = 5.00 + 90 = ',
             parts: [{ key: 'c2', answer: '95', options: ['85', '90', '93', '95', '100'] }, ' dBA']
           }
         ],
@@ -1333,11 +1333,11 @@
       ],
       steps: [
         {
-          label: '(一) 儲槽儲存能力 W = 0.9 × 1.5 × (10 × 1,000) = ',
+          label: '步驟 1（代入 d=1.5、V=10,000 L 計算儲存能力）：W = 0.9 × 1.5 × (10 × 1,000) = ',
           parts: [{ key: 'c1', answer: '13500', options: ['9000', '13500', '15000', '18000'] }, ' kg']
         },
         {
-          label: '(二) 灌氣容器再灌裝量 = 13,500 ÷ 4 = ',
+          label: '步驟 2（代入 W 計算灌氣容器再灌裝量）：再灌裝量 = 13,500 ÷ 4 = ',
           parts: [{ key: 'c2', answer: '3375', options: ['2250', '3000', '3375', '4500'] }, ' kg']
         }
       ],
@@ -1448,247 +1448,344 @@
         {
           id: 'D23-01', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 01：綜合溫度熱指數（WBGT）計算', score: '動態題', type: 'calc',
           stem: `戶外有日曬環境測得：自然濕球溫度 Tnwb = ${tw_1} ℃、黑球溫度 Tgb = ${tg_1} ℃、乾球溫度 Tdb = ${td_1} ℃。試求綜合溫度熱指數 WBGT。`,
-          formulaHtml: 'WBGT<sub>戶外</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">0.7 × Tnwb + 0.2 × Tgb + 0.1 × Tdb</span>',
-          symbols: ['Tnwb：自然濕球溫度（℃）', 'Tgb：黑球溫度（℃）', 'Tdb：乾球溫度（℃）'],
+          formulaHtml: 'WBGT<sub>戶外有日曬</sub> = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">0.7 × Tnwb + 0.2 × Tgb + 0.1 × Tdb</span>',
+          symbols: [
+            'WBGT：綜合溫度熱指數（℃）',
+            'Tnwb：自然濕球溫度（℃），戶外日曬權重為 0.7',
+            'Tgb：黑球溫度（℃），戶外日曬權重為 0.2',
+            'Tdb：乾球溫度（℃），戶外日曬權重為 0.1'
+          ],
           steps: [
-            { label: '步驟 1（濕球權重係數）：WBGT = ', parts: [{ key: 'c1', answer: '0.7', options: ['0.1', '0.2', '0.3', '0.7'] }, ` × ${tw_1} + 0.2 × ${tg_1} + 0.1 × ${td_1}`] },
-            { label: '步驟 2（計算結果）：WBGT = ', parts: [{ key: 'c2', answer: wbgt_1, options: makeNumOptions(wbgt_1, 1) }, ' ℃'] }
+            { label: '步驟 1（代入自然濕球權重係數）：WBGT = ', parts: [{ key: 'c1', answer: '0.7', options: ['0.1', '0.2', '0.3', '0.7'] }, ` × ${tw_1} + 0.2 × ${tg_1} + 0.1 × ${td_1}`] },
+            { label: `步驟 2（代入數值計算最終結果）：WBGT = 0.7 × ${tw_1} + 0.2 × ${tg_1} + 0.1 × ${td_1} = `, parts: [{ key: 'c2', answer: wbgt_1, options: makeNumOptions(wbgt_1, 1) }, ' ℃'] }
           ],
           lawRef: `標準算式：WBGT = 0.7 × ${tw_1} + 0.2 × ${tg_1} + 0.1 × ${td_1} = ${wbgt_1} ℃。`
         },
         {
           id: 'D23-02', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 02：噪音容許暴露時間與累積劑量（Dose）', score: '動態題', type: 'calc',
           stem: `勞工工作 8 小時，暴露於 95 dBA 共 ${t1_2} 小時（容許 4 小時），90 dBA 共 ${t2_2} 小時（容許 8 小時）。試求總暴露劑量比值 D。`,
-          formulaHtml: 'D = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(t₁ ÷ T₁) + (t₂ ÷ T₂)</span>',
-          symbols: ['tᵢ：實際暴露時間（hr）', 'Tᵢ：該音壓級之容許暴露時間（95 dBA 為 4 hr；90 dBA 為 8 hr）'],
+          formulaHtml: 'D = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">Σ(t<sub>i</sub> ÷ T<sub>i</sub>) = (t₁ ÷ T₁) + (t₂ ÷ T₂)</span>',
+          symbols: [
+            'D：噪音累積暴露劑量比值（D > 1 即超過 100% 容許標準）',
+            't₁、t₂：各音壓級下之實際暴露時間（小時，hr）',
+            'T₁、T₂：各音壓級對應之法定容許暴露時間（90 dBA 為 8 hr；每增 5 dBA 減半，故 95 dBA 為 4 hr）'
+          ],
           steps: [
-            { label: '步驟 1（95 dBA 容許時間 T₁）：D = ( ' + t1_2 + ' ÷ ', parts: [{ key: 'c1', answer: '4', options: ['2', '4', '6', '8'] }, ` ) + ( ${t2_2} ÷ 8 )`] },
-            { label: '步驟 2（總劑量比值 D）：D = ', parts: [{ key: 'c2', answer: dose_2, options: makeNumOptions(dose_2, 2) }] }
+            { label: `步驟 1（代入 95 dBA 容許時間 T₁）：D = (${t1_2} ÷ `, parts: [{ key: 'c1', answer: '4', options: ['2', '4', '6', '8'] }, `) + (${t2_2} ÷ 8)`] },
+            { label: `步驟 2（代入數值計算總劑量比值 D）：D = (${t1_2} ÷ 4) + (${t2_2} ÷ 8) = `, parts: [{ key: 'c2', answer: dose_2, options: makeNumOptions(dose_2, 2) }] }
           ],
           lawRef: `標準算式：D = (${t1_2} / 4) + (${t2_2} / 8) = ${dose_2}（即 ${(parseFloat(dose_2)*100).toFixed(0)}%）。`
         },
         {
           id: 'D23-03', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 03：八小時日時量平均音壓級（TWA-8）', score: '動態題', type: 'calc',
           stem: `經測定勞工暴露之累積劑量比值 D = ${dose_3}（即 ${(dose_3*100).toFixed(0)}%）。試求八小時日時量平均音壓級 TWA（取小數第一位）。`,
-          formulaHtml: 'TWA = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">16.61 × log₁₀(D) + 90</span>',
-          symbols: ['D：噪音累積暴露劑量比值（100% 時 D = 1.0）', '16.61：5 dB 減半法則常數（5 ÷ log₁₀2）'],
+          formulaHtml: 'TWA = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">16.61 × log<sub>10</sub>(D) + 90</span>',
+          symbols: [
+            'TWA：八小時日時量平均音壓級（dBA）',
+            'D：噪音累積暴露劑量比值（100% 時 D = 1.0）',
+            '16.61：5 dB 減半法則換算常數（5 ÷ log₁₀2 ≈ 16.61）',
+            '90：我國職安法規 8 小時容許音壓級基準（90 dBA）'
+          ],
           steps: [
-            { label: '步驟 1（公式常數）：TWA = ', parts: [{ key: 'c1', answer: '16.61', options: ['10.00', '16.61', '20.00', '33.22'] }, ` × log₁₀(${dose_3}) + 90`] },
-            { label: '步驟 2（計算結果）：TWA = ', parts: [{ key: 'c2', answer: twa_3, options: makeNumOptions(twa_3, 1) }, ' dBA'] }
+            { label: '步驟 1（代入公式常數）：TWA = ', parts: [{ key: 'c1', answer: '16.61', options: ['10.00', '16.61', '20.00', '33.22'] }, ` × log₁₀(${dose_3}) + 90`] },
+            { label: `步驟 2（代入 D = ${dose_3} 計算結果）：TWA = 16.61 × log₁₀(${dose_3}) + 90 = `, parts: [{ key: 'c2', answer: twa_3, options: makeNumOptions(twa_3, 1) }, ' dBA'] }
           ],
           lawRef: `標準算式：TWA = 16.61 × log₁₀(${dose_3}) + 90 = ${twa_3} dBA。`
         },
         {
           id: 'D23-04', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 04：相同音源音壓級相加合成', score: '動態題', type: 'calc',
           stem: `機械 1 測得噪音為 ${spl_base_4} dB，增設 1 台相同音量之機械 2 於同一處同時運轉。試求合成後總音壓級。`,
-          formulaHtml: 'SPL<sub>總</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">SPL<sub>單台</sub> + 10 × log₁₀(N)</span>',
-          symbols: ['N：相同音量之音源台數（2 台時 10×log₁₀2 ≈ +3 dB）'],
+          formulaHtml: 'SPL<sub>總</sub> = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">SPL<sub>單台</sub> + 10 × log<sub>10</sub>(N)</span>',
+          symbols: [
+            'SPL<sub>總</sub>：多台相同音源合成後之總音壓級（dB）',
+            'SPL<sub>單台</sub>：單一音源之音壓級（dB）',
+            'N：相同音量之音源台數（2 台時增加值 ΔL = 10 × log₁₀(2) ≈ +3 dB）'
+          ],
           steps: [
-            { label: '步驟 1（兩相同音源增加值）：ΔL = ', parts: [{ key: 'c1', answer: '3', options: ['2', '3', '5', '6'] }, ' dB'] },
-            { label: '步驟 2（合成後總音壓級）：SPL = ', parts: [{ key: 'c2', answer: spl_4, options: makeNumOptions(spl_4, 0) }, ' dB'] }
+            { label: '步驟 1（代入台數 N = 2 查出增加值 ΔL）：ΔL = 10 × log₁₀(2) ≈ ', parts: [{ key: 'c1', answer: '3', options: ['2', '3', '5', '6'] }, ' dB'] },
+            { label: `步驟 2（代入 SPL<sub>單台</sub> = ${spl_base_4} 計算總音壓級）：SPL<sub>總</sub> = ${spl_base_4} + 3 = `, parts: [{ key: 'c2', answer: spl_4, options: makeNumOptions(spl_4, 0) }, ' dB'] }
           ],
           lawRef: `標準算式：兩相同音源合成增加 3 dB，SPL = ${spl_base_4} + 3 = ${spl_4} dB。`
         },
         {
           id: 'D23-05', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 05：採光照明四點法平均照度', score: '動態題', type: 'calc',
           stem: `於作業小區域四角測得照度分別為：${p1_5}、${p2_5}、${p3_5}、${p4_5} Lux。試求該小區平均照度。`,
-          formulaHtml: 'E<sub>avg</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(E₁ + E₂ + E₃ + E₄) ÷ 4</span>',
-          symbols: ['E₁～E₄：小區域四個角落測定之照度值（Lux）'],
+          formulaHtml: 'E<sub>avg</sub> = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(E₁ + E₂ + E₃ + E₄) ÷ 4</span>',
+          symbols: [
+            'E<sub>avg</sub>：小區域平均照度（Lux，米燭光）',
+            'E₁、E₂、E₃、E₄：小區域四個角落測定之照度值（Lux）',
+            '4：四點法測定點數'
+          ],
           steps: [
-            { label: `步驟 1（分母測點數）：E<sub>avg</sub> = (${p1_5} + ${p2_5} + ${p3_5} + ${p4_5}) ÷ `, parts: [{ key: 'c1', answer: '4', options: ['2', '3', '4', '5'] }] },
-            { label: '步驟 2（小區平均照度）：E<sub>avg</sub> = ', parts: [{ key: 'c2', answer: lux_5, options: makeNumOptions(lux_5, 1) }, ' Lux'] }
+            { label: `步驟 1（代入四點照度與總測點數）：E<sub>avg</sub> = (${p1_5} + ${p2_5} + ${p3_5} + ${p4_5}) ÷ `, parts: [{ key: 'c1', answer: '4', options: ['2', '3', '4', '5'] }] },
+            { label: `步驟 2（計算小區平均照度）：E<sub>avg</sub> = (${p1_5} + ${p2_5} + ${p3_5} + ${p4_5}) ÷ 4 = `, parts: [{ key: 'c2', answer: lux_5, options: makeNumOptions(lux_5, 1) }, ' Lux'] }
           ],
           lawRef: `標準算式：(${p1_5} + ${p2_5} + ${p3_5} + ${p4_5}) ÷ 4 = ${lux_5} Lux。`
         },
         {
           id: 'D23-06', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 06：電磁波輻射通量密度平方反比定律', score: '動態題', type: 'calc',
           stem: `離天線 1 公尺處測得通量密度為 ${flux_base_6} mW/cm²，若距離拉遠至 ${dist_6} 公尺處，其通量密度為多少 mW/cm²？`,
-          formulaHtml: 'F₂ = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">F₁ × (r₁ ÷ r₂)²</span>',
-          symbols: ['F₁、F₂：距離 r₁、r₂ 處之輻射通量密度（mW/cm²）'],
+          formulaHtml: 'F₂ = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">F₁ × (r₁ ÷ r₂)²</span>',
+          symbols: [
+            'F₁：基準距離 r₁（1 公尺）處測得之輻射通量密度（mW/cm²）',
+            'F₂：目標距離 r₂ 處之輻射通量密度（mW/cm²）',
+            'r₁、r₂：距離天線之直線距離（公尺，m）'
+          ],
           steps: [
-            { label: `步驟 1（距離平方反比計算）：F₂ = ${flux_base_6} ÷ (${dist_6}²) = `, parts: [{ key: 'c1', answer: flux_6, options: makeNumOptions(flux_6, 2) }, ' mW/cm²'] }
+            { label: `步驟 1（代入 F₁ = ${flux_base_6}、r₁ = 1、r₂ = ${dist_6}）：F₂ = ${flux_base_6} × (1 ÷ ${dist_6})² = `, parts: [{ key: 'c1', answer: flux_6, options: makeNumOptions(flux_6, 2) }, ' mW/cm²'] }
           ],
           lawRef: `標準算式：F₂ = ${flux_base_6} ÷ (${dist_6}²) = ${flux_6} mW/cm²。`
         },
         {
           id: 'D23-07', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 07：歐姆定律與人體感電電流', score: '動態題', type: 'calc',
           stem: `勞工接觸 ${volt_7} V 電壓，皮膚潮濕時全身電阻為 ${res_7} Ω。試求通過人體之感電電流（mA）。`,
-          formulaHtml: 'I (mA) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(V ÷ R) × 1,000</span>',
-          symbols: ['V：接觸電壓（V）', 'R：人體電阻（Ω）', 'I：通過人體電流（毫安培 mA）'],
+          formulaHtml: 'I (mA) = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(V ÷ R) × 1,000</span>',
+          symbols: [
+            'I：通過人體之感電電流（毫安培 mA，1 A = 1,000 mA）',
+            'V：人體接觸之電壓（伏特 V）',
+            'R：人體全身總電阻（歐姆 Ω）'
+          ],
           steps: [
-            { label: `步驟 1（計算通過人體電流）：I = (${volt_7} ÷ ${res_7}) × 1,000 = `, parts: [{ key: 'c1', answer: cur_7, options: makeNumOptions(cur_7, 1) }, ' mA'] }
+            { label: `步驟 1（代入 V = ${volt_7} V 與 R = ${res_7} Ω）：I = (${volt_7} ÷ ${res_7}) × 1,000 = `, parts: [{ key: 'c1', answer: cur_7, options: makeNumOptions(cur_7, 1) }, ' mA'] }
           ],
           lawRef: `標準算式：I = (${volt_7} ÷ ${res_7}) × 1,000 = ${cur_7} mA。`
         },
         {
           id: 'D23-08', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 08：電氣功率消耗與度數計算', score: '動態題', type: 'calc',
           stem: `使用消耗功率 ${watt_8} W 之燈泡，連續點亮 ${hr_8} 小時，共耗電多少度（kWh）？`,
-          formulaHtml: '用電度數 (kWh) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(功率 W × 時間 hr) ÷ 1,000</span>',
-          symbols: ['1 度電 = 1 千瓦·小時（1 kWh = 1,000 W·hr）'],
+          formulaHtml: '用電度數 (kWh) = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(P × t) ÷ 1,000</span>',
+          symbols: [
+            'P：電器消耗功率（瓦特 W）',
+            't：連續使用時間（小時 hr）',
+            '1,000：1 度電 = 1 千瓦·小時（1 kWh = 1,000 W·hr）'
+          ],
           steps: [
-            { label: `步驟 1（換算基準分母）：度數 = (${watt_8} × ${hr_8}) ÷ `, parts: [{ key: 'c1', answer: '1000', options: ['60', '100', '1000', '3600'] }] },
-            { label: '步驟 2（累積耗電度數）：度數 = ', parts: [{ key: 'c2', answer: kwh_8, options: makeNumOptions(kwh_8, 1) }, ' 度'] }
+            { label: `步驟 1（代入功率與時間並除以換算基準）：度數 = (${watt_8} × ${hr_8}) ÷ `, parts: [{ key: 'c1', answer: '1000', options: ['60', '100', '1000', '3600'] }] },
+            { label: `步驟 2（計算累積耗電度數）：度數 = (${watt_8} × ${hr_8}) ÷ 1,000 = `, parts: [{ key: 'c2', answer: kwh_8, options: makeNumOptions(kwh_8, 1) }, ' 度'] }
           ],
           lawRef: `標準算式：(${watt_8} × ${hr_8}) ÷ 1,000 = ${kwh_8} 度。`
         },
         {
           id: 'D23-09', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 09：移動式起重機近接高壓線安全仰角', score: '動態題', type: 'calc',
           stem: `上方高壓線有效安全高度 26 公尺，起重機水平距離旋轉中心為 ${r_dist_9} 公尺。試求正切值 tan(θ) 及一般作業安全仰角上限。`,
-          formulaHtml: 'tan(θ) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">垂直高度 H ÷ 水平距離 R</span>',
-          symbols: ['H：垂直有效安全高度（26 m）', 'R：水平距離（m）'],
+          formulaHtml: 'tan(θ) = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">H ÷ R</span>　；　<span class="font-mono bg-amber-100 px-2.5 py-1 rounded">作業安全仰角 θ ≤ 60°</span>',
+          symbols: [
+            'H：高壓線垂直有效安全高度（26 公尺）',
+            'R：起重機旋轉中心至高壓線之水平距離（公尺）',
+            'θ：伸臂作業安全仰角（最大不得超過 60 度）'
+          ],
           steps: [
-            { label: `步驟 1（正切值 tan θ）：tan(θ) = 26 ÷ ${r_dist_9} = `, parts: [{ key: 'c1', answer: tan_9, options: makeNumOptions(tan_9, 2) }] },
-            { label: '步驟 2（安全仰角最大限制）：不超過 ', parts: [{ key: 'c2', answer: '60', options: ['30', '45', '60', '75'] }, ' 度'] }
+            { label: `步驟 1（代入 H = 26 m 與 R = ${r_dist_9} m）：tan(θ) = 26 ÷ ${r_dist_9} = `, parts: [{ key: 'c1', answer: tan_9, options: makeNumOptions(tan_9, 2) }] },
+            { label: '步驟 2（查出法定作業安全仰角最大限制）：不超過 ', parts: [{ key: 'c2', answer: '60', options: ['30', '45', '60', '75'] }, ' 度'] }
           ],
           lawRef: `標準算式：tan(θ) = 26 ÷ ${r_dist_9} = ${tan_9}；作業安全仰角最大不得超過 60 度。`
         },
         {
           id: 'D23-10', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 10：高壓氣體給呂薩克定律狀態判定', score: '動態題', type: 'calc',
           stem: `壓縮氫氣鋼瓶於 20 ℃ 時表壓力為 ${p1_gauge_10} kg/cm²（大氣壓以 1.033 kg/cm² 計）。當溫度升至 35 ℃ 時，其表壓力為多少 kg/cm²？`,
-          formulaHtml: 'P₂<sub>abs</sub> = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(P₁<sub>gauge</sub> + 1.033) × (273.15 + T₂) ÷ (273.15 + T₁)</span>',
-          symbols: ['絕對壓力 = 表壓力 + 1.033 kg/cm²', '絕對溫度 K = 273.15 + ℃'],
+          formulaHtml: 'P₂<sub>abs</sub> = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(P₁<sub>gauge</sub> + 1.033) × (273.15 + T₂) ÷ (273.15 + T₁)</span>　；　P₂<sub>gauge</sub> = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">P₂<sub>abs</sub> − 1.033</span>',
+          symbols: [
+            'P₁<sub>gauge</sub>、P₂<sub>gauge</sub>：初溫 T₁（20 ℃）、末溫 T₂（35 ℃）時之表壓力（kg/cm²）',
+            '1.033 kg/cm²：標準一大氣壓（絕對壓力 = 表壓力 + 1.033）',
+            '273.15：攝氏溫度（℃）換算絕對溫度（K）之常數'
+          ],
           steps: [
-            { label: `步驟 1（35 ℃ 時之表壓力）：P₂<sub>gauge</sub> = [(${p1_gauge_10} + 1.033) × 308.15 ÷ 293.15] − 1.033 = `, parts: [{ key: 'c1', answer: p2_gauge_10, options: makeNumOptions(p2_gauge_10, 1) }, ' kg/cm²'] }
+            { label: `步驟 1（代入 P₁ = ${p1_gauge_10}、T₁ = 20、T₂ = 35）：P₂<sub>gauge</sub> = [(${p1_gauge_10} + 1.033) × (273.15 + 35) ÷ (273.15 + 20)] − 1.033 = `, parts: [{ key: 'c1', answer: p2_gauge_10, options: makeNumOptions(p2_gauge_10, 1) }, ' kg/cm²'] }
           ],
           lawRef: `標準算式：P₂_abs = (${p1_gauge_10} + 1.033) × 308.15 ÷ 293.15，再減 1.033 得表壓力 ${p2_gauge_10} kg/cm²（達 10 kg/cm² 以上即屬高壓氣體）。`
         },
         {
           id: 'D23-11', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 11：可燃性毒性氣體防液堤外側安全距離', score: '動態題', type: 'calc',
           stem: `儲存能力為 ${ton_11} 公噸之液化溴甲烷儲槽（可燃性毒性氣體），其防液堤外側至第一類保護物之安全距離 L 為多少公尺？`,
-          formulaHtml: 'L = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(4 ÷ 995) × (X − 5) + 6</span>',
-          symbols: ['X：儲槽儲存能力（公噸，5 < X < 1,000）', 'L：安全距離（公尺）'],
+          formulaHtml: 'L = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(4 ÷ 995) × (X − 5) + 6</span>',
+          symbols: [
+            'L：防液堤外側至保護物之法定安全距離（公尺，m）',
+            'X：儲槽儲存能力（公噸，適用範圍 5 < X < 1,000 公噸）'
+          ],
           steps: [
-            { label: `步驟 1（代入儲存能力計算距離 L）：L = (4 ÷ 995) × (${ton_11} − 5) + 6 = `, parts: [{ key: 'c1', answer: l_11, options: makeNumOptions(l_11, 1) }, ' 公尺'] }
+            { label: `步驟 1（代入儲存能力 X = ${ton_11} 噸）：L = (4 ÷ 995) × (${ton_11} − 5) + 6 = `, parts: [{ key: 'c1', answer: l_11, options: makeNumOptions(l_11, 1) }, ' 公尺'] }
           ],
           lawRef: `標準算式：L = (4 ÷ 995) × (${ton_11} − 5) + 6 = ${l_11} 公尺。`
         },
         {
           id: 'D23-12', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 12：吸收式冷凍設備冷凍能力換算', score: '動態題', type: 'calc',
           stem: `吸收式冷凍設備每小時加熱於發生器之入熱量為 ${kcal_12} kcal，其法定一日冷凍能力為多少公噸？`,
-          formulaHtml: '冷凍能力 R (公噸) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">每小時入熱量 (kcal/hr) ÷ 6,640</span>',
-          symbols: ['6,640 kcal/hr：吸收式冷凍設備法定 1 公噸冷凍能力基準入熱量'],
+          formulaHtml: '冷凍能力 R (公噸) = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">Q<sub>入熱</sub> ÷ 6,640</span>',
+          symbols: [
+            'R：吸收式冷凍設備法定一日冷凍能力（公噸）',
+            'Q<sub>入熱</sub>：每小時加熱於發生器之入熱量（kcal/hr）',
+            '6,640 kcal/hr：吸收式冷凍設備法定 1 公噸冷凍能力基準入熱量'
+          ],
           steps: [
-            { label: `步驟 1（法定基準入熱量）：R = ${kcal_12} ÷ `, parts: [{ key: 'c1', answer: '6640', options: ['3320', '6640', '7968', '10000'] }] },
-            { label: '步驟 2（計算冷凍能力）：R = ', parts: [{ key: 'c2', answer: ton_12, options: makeNumOptions(ton_12, 1) }, ' 公噸'] }
+            { label: `步驟 1（代入法定基準入熱量）：R = ${kcal_12} ÷ `, parts: [{ key: 'c1', answer: '6640', options: ['3320', '6640', '7968', '10000'] }] },
+            { label: `步驟 2（代入數值計算冷凍能力）：R = ${kcal_12} ÷ 6,640 = `, parts: [{ key: 'c2', answer: ton_12, options: makeNumOptions(ton_12, 1) }, ' 公噸'] }
           ],
           lawRef: `標準算式：R = ${kcal_12} ÷ 6,640 = ${ton_12} 公噸。`
         },
         {
           id: 'D23-13', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 13：衝剪機械雙手操作安全距離計算', score: '動態題', type: 'calc',
           stem: `手指離開操作部至離合器啟動 Tl = ${tl_13} ms，滑塊完全停止 Ts = ${ts_13} ms。試求雙手操作式安全裝置最小安全距離 D（mm）。`,
-          formulaHtml: 'D = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">1.6 × (Tl + Ts)</span>',
-          symbols: ['1.6：人體手部移動速度常數（1.6 m/s = 1.6 mm/ms）', 'Tl + Ts：最大停止時間（毫秒 ms）'],
+          formulaHtml: 'D = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">1.6 × (Tl + Ts)</span>',
+          symbols: [
+            'D：操作按鈕至危險界限之最小安全距離（毫米，mm）',
+            '1.6：人體手部移動速度常數（1.6 m/s = 1.6 mm/ms）',
+            'Tl：手指離開操作部至離合器啟動之時間（毫秒，ms）',
+            'Ts：滑塊自開始動作至完全停止之時間（毫秒，ms）'
+          ],
           steps: [
-            { label: '步驟 1（手速常數）：D = ', parts: [{ key: 'c1', answer: '1.6', options: ['1.2', '1.6', '2.0', '2.5'] }, ` × (${tl_13} + ${ts_13})`] },
-            { label: '步驟 2（最小安全距離 D）：D = ', parts: [{ key: 'c2', answer: dist_13, options: makeNumOptions(dist_13, 0) }, ' mm'] }
+            { label: '步驟 1（代入法定手速常數）：D = ', parts: [{ key: 'c1', answer: '1.6', options: ['1.2', '1.6', '2.0', '2.5'] }, ` × (${tl_13} + ${ts_13})`] },
+            { label: `步驟 2（代入 Tl = ${tl_13}、Ts = ${ts_13} 計算距離）：D = 1.6 × (${tl_13} + ${ts_13}) = `, parts: [{ key: 'c2', answer: dist_13, options: makeNumOptions(dist_13, 0) }, ' mm'] }
           ],
           lawRef: `標準算式：D = 1.6 × (${tl_13} + ${ts_13}) = ${dist_13} mm。`
         },
         {
           id: 'D23-14', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 14：研磨輪旋轉周邊速度計算', score: '動態題', type: 'calc',
           stem: `研磨輪外徑直徑 D = ${dia_14} 公尺，主軸轉速 N = ${rpm_14} rpm（π 取 3.1416）。試求研磨輪周邊速度 V（m/min，取整數）。`,
-          formulaHtml: 'V = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">π × D × N</span>',
-          symbols: ['D：研磨輪直徑（m）', 'N：主軸每分鐘轉數（rpm）'],
+          formulaHtml: 'V = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">π × D × N</span>',
+          symbols: [
+            'V：研磨輪旋轉周邊速度（公尺/分鐘，m/min）',
+            'π：圓周率（3.1416）',
+            'D：研磨輪外徑直徑（公尺，m）',
+            'N：主軸每分鐘轉速（rpm）'
+          ],
           steps: [
-            { label: `步驟 1（計算周邊速度 V）：V = 3.1416 × ${dia_14} × ${rpm_14} = `, parts: [{ key: 'c1', answer: vel_14, options: makeNumOptions(vel_14, 0) }, ' m/min'] }
+            { label: `步驟 1（代入 π = 3.1416、D = ${dia_14} m、N = ${rpm_14} rpm）：V = 3.1416 × ${dia_14} × ${rpm_14} = `, parts: [{ key: 'c1', answer: vel_14, options: makeNumOptions(vel_14, 0) }, ' m/min'] }
           ],
           lawRef: `標準算式：V = 3.1416 × ${dia_14} × ${rpm_14} = ${vel_14} m/min。`
         },
         {
           id: 'D23-15', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 15：載貨升降機搬器積載荷重計算', score: '動態題', type: 'calc',
           stem: `一般載貨升降機搬器內淨長 ${a_len_15} 公尺、淨寬 ${a_wid_15} 公尺（底面積 ${area_15} m²），其法定最低積載荷重為多少公斤？`,
-          formulaHtml: '積載荷重 W = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">250 × 底面積 A</span>',
-          symbols: ['250 kg/m²：一般載貨升降機每平方公尺最低積載荷重基準'],
+          formulaHtml: '積載荷重 W = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">250 × A</span>',
+          symbols: [
+            'W：載貨升降機法定最低積載荷重（公斤，kg）',
+            '250 kg/m²：一般載貨升降機每平方公尺最低積載荷重基準',
+            'A：搬器底面積（m²，長 × 寬）'
+          ],
           steps: [
-            { label: '步驟 1（單位面積荷重基準）：W = ', parts: [{ key: 'c1', answer: '250', options: ['150', '200', '250', '350'] }, ` × ${area_15}`] },
-            { label: '步驟 2（設計積載荷重）：W = ', parts: [{ key: 'c2', answer: load_15, options: makeNumOptions(load_15, 0) }, ' 公斤'] }
+            { label: '步驟 1（代入單位面積荷重基準）：W = ', parts: [{ key: 'c1', answer: '250', options: ['150', '200', '250', '350'] }, ` × ${area_15}`] },
+            { label: `步驟 2（代入底面積 A = ${area_15} m² 計算荷重）：W = 250 × ${area_15} = `, parts: [{ key: 'c2', answer: load_15, options: makeNumOptions(load_15, 0) }, ' 公斤'] }
           ],
           lawRef: `標準算式：W = 250 × ${area_15} = ${load_15} 公斤。`
         },
         {
           id: 'D23-16', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 16：起重機鋼索斷裂荷重與最大容許荷重', score: '動態題', type: 'calc',
           stem: `吊掛鋼索直徑 d = ${d_16} mm，吊掛作業法定安全係數為 6。試求鋼索估算斷裂荷重及最大容許荷重（公噸）。`,
-          formulaHtml: '斷裂荷重 = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">d² ÷ 20</span>　；　最大容許荷重 = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">斷裂荷重 ÷ 安全係數</span>',
-          symbols: ['d：鋼索直徑（mm）', '安全係數：吊掛用鋼索法定不得小於 6'],
+          formulaHtml: '斷裂荷重 W<sub>b</sub> = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">d² ÷ 20</span>　；　最大容許荷重 W<sub>max</sub> = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">W<sub>b</sub> ÷ 安全係數</span>',
+          symbols: [
+            'W<sub>b</sub>：鋼索估算斷裂荷重（公噸）',
+            'd：吊掛鋼索直徑（毫米，mm）',
+            'W<sub>max</sub>：安全係數下之最大容許荷重（公噸）',
+            '安全係數：起重機具吊掛用鋼索法定安全係數不得小於 6'
+          ],
           steps: [
-            { label: `步驟 1（斷裂荷重）：(${d_16}²) ÷ 20 = `, parts: [{ key: 'c1', answer: break_16, options: makeNumOptions(break_16, 1) }, ' 噸'] },
-            { label: `步驟 2（安全係數 6 下最大荷重）：${break_16} ÷ 6 = `, parts: [{ key: 'c2', answer: max_load_16, options: makeNumOptions(max_load_16, 2) }, ' 噸'] }
+            { label: `步驟 1（代入直徑 d = ${d_16} mm 計算斷裂荷重）：W<sub>b</sub> = (${d_16}²) ÷ 20 = `, parts: [{ key: 'c1', answer: break_16, options: makeNumOptions(break_16, 1) }, ' 噸'] },
+            { label: `步驟 2（代入 W<sub>b</sub> = ${break_16} 噸與安全係數 6）：W<sub>max</sub> = ${break_16} ÷ 6 = `, parts: [{ key: 'c2', answer: max_load_16, options: makeNumOptions(max_load_16, 2) }, ' 噸'] }
           ],
           lawRef: `標準算式：斷裂荷重 = ${d_16}² ÷ 20 = ${break_16} 噸；最大容許荷重 = ${break_16} ÷ 6 = ${max_load_16} 噸。`
         },
         {
           id: 'D23-17', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 17：架空起重機額定荷重與荷重試驗', score: '動態題', type: 'calc',
           stem: `架空固定式起重機吊升荷重為 ${lift_17} 公噸，吊具重 ${hook_17} 公噸。試求額定荷重及竣工荷重試驗配重（>200噸加50噸；≤200噸乘1.25）。`,
-          formulaHtml: '額定荷重 = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">吊升荷重 − 吊具重</span>',
-          symbols: ['額定荷重 > 200 噸時，試驗荷重 = 額定荷重 + 50 噸；≤ 200 噸時，試驗荷重 = 額定荷重 × 1.25'],
+          formulaHtml: '額定荷重 = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">吊升荷重 − 吊具重</span>　；　試驗荷重 = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">額定荷重 × 1.25（≤200噸）或 額定荷重 + 50 噸（>200噸）</span>',
+          symbols: [
+            '吊升荷重：起重機構造上所能吊升之最大荷重（公噸）',
+            '額定荷重：吊升荷重扣除吊鉤、抓斗等吊具重量後之荷重（公噸）',
+            '試驗荷重：額定荷重 ≤ 200 噸乘以 1.25 倍；超過 200 噸則為額定荷重加 50 噸'
+          ],
           steps: [
-            { label: `步驟 1（額定荷重）：${lift_17} − ${hook_17} = `, parts: [{ key: 'c1', answer: String(rated_17), options: makeNumOptions(String(rated_17), 0) }, ' 噸'] },
-            { label: '步驟 2（荷重試驗值）：試驗配重 = ', parts: [{ key: 'c2', answer: test_17, options: makeNumOptions(test_17, rated_17 > 200 ? 0 : 1) }, ' 噸'] }
+            { label: `步驟 1（代入吊升荷重 ${lift_17} 噸與吊具重 ${hook_17} 噸）：額定荷重 = ${lift_17} − ${hook_17} = `, parts: [{ key: 'c1', answer: String(rated_17), options: makeNumOptions(String(rated_17), 0) }, ' 噸'] },
+            { label: `步驟 2（代入額定荷重 ${rated_17} 噸計算試驗配重）：試驗荷重 = ${rated_17 > 200 ? `${rated_17} + 50` : `${rated_17} × 1.25`} = `, parts: [{ key: 'c2', answer: test_17, options: makeNumOptions(test_17, rated_17 > 200 ? 0 : 1) }, ' 噸'] }
           ],
           lawRef: `標準算式：額定荷重 = ${lift_17} − ${hook_17} = ${rated_17} 噸；荷重試驗值 = ${test_17} 噸。`
         },
         {
           id: 'D23-18', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 18：化學有害物濃度換算（mg/m³ 轉 ppm）', score: '動態題', type: 'calc',
           stem: `於 25 ℃、1 atm 下，測得甲苯（分子量 M = 92）濃度為 ${mg_18} mg/m³，換算為 ppm 濃度為何？`,
-          formulaHtml: 'C(ppm) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">24.45 × C(mg/m³) ÷ M</span>',
-          symbols: ['24.45 L/mol：25 ℃、1 atm 下理想氣體克莫耳體積'],
+          formulaHtml: 'C(ppm) = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">24.45 × C(mg/m³) ÷ M</span>',
+          symbols: [
+            'C(ppm)：氣態有害物體積濃度（百萬分點，ppm）',
+            'C(mg/m³)：氣態有害物質量濃度（毫克/立方公尺，mg/m³）',
+            'M：化學物質分子量（甲苯 M = 92）',
+            '24.45：25 ℃、1 atm（常溫常壓）下理想氣體克莫耳體積（L/mol）'
+          ],
           steps: [
-            { label: '步驟 1（常溫常壓氣體莫耳體積）：C(ppm) = ', parts: [{ key: 'c1', answer: '24.45', options: ['22.40', '24.45', '25.00', '27.30'] }, ` × ${mg_18} ÷ 92`] },
-            { label: '步驟 2（計算 ppm 濃度）：C(ppm) = ', parts: [{ key: 'c2', answer: ppm_18, options: makeNumOptions(ppm_18, 1) }, ' ppm'] }
+            { label: '步驟 1（代入常溫常壓氣體莫耳體積）：C(ppm) = ', parts: [{ key: 'c1', answer: '24.45', options: ['22.40', '24.45', '25.00', '27.30'] }, ` × ${mg_18} ÷ 92`] },
+            { label: `步驟 2（代入數值計算 ppm 濃度）：C(ppm) = (24.45 × ${mg_18}) ÷ 92 = `, parts: [{ key: 'c2', answer: ppm_18, options: makeNumOptions(ppm_18, 1) }, ' ppm'] }
           ],
           lawRef: `標準算式：C(ppm) = (24.45 × ${mg_18}) ÷ 92 = ${ppm_18} ppm。`
         },
         {
           id: 'D23-19', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 19：有機溶劑法定換氣量計算', score: '動態題', type: 'calc',
           stem: `作業場所使用第二種有機溶劑，每小時消費量 W = ${w_19} 公克，其法定每分鐘換氣量 Q 為多少 m³/min？`,
-          formulaHtml: 'Q (m³/min) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">0.04 × W</span>',
-          symbols: ['0.04：第二種有機溶劑法定換氣係數（第一種為 0.3；第三種為 0.01）'],
+          formulaHtml: 'Q (m³/min) = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">0.04 × W</span>',
+          symbols: [
+            'Q：法定每分鐘必要換氣量（立方公尺/分鐘，m³/min）',
+            'W：作業場所每小時有機溶劑消費量（公克/小時，g/hr）',
+            '0.04：第二種有機溶劑法定換氣係數（第一種為 0.3；第二種為 0.04；第三種為 0.01）'
+          ],
           steps: [
-            { label: `步驟 1（第二種有機溶劑係數）：Q = ${w_19} × `, parts: [{ key: 'c1', answer: '0.04', options: ['0.01', '0.04', '0.10', '0.30'] }] },
-            { label: '步驟 2（每分鐘法定換氣量）：Q = ', parts: [{ key: 'c2', answer: q_min_19, options: makeNumOptions(q_min_19, 0) }, ' m³/min'] }
+            { label: `步驟 1（代入第二種有機溶劑換氣係數）：Q = ${w_19} × `, parts: [{ key: 'c1', answer: '0.04', options: ['0.01', '0.04', '0.10', '0.30'] }] },
+            { label: `步驟 2（代入 W = ${w_19} g/hr 計算換氣量）：Q = ${w_19} × 0.04 = `, parts: [{ key: 'c2', answer: q_min_19, options: makeNumOptions(q_min_19, 0) }, ' m³/min'] }
           ],
           lawRef: `標準算式：Q = ${w_19} × 0.04 = ${q_min_19} m³/min。`
         },
         {
           id: 'D23-20', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 20：局部排氣導管動壓與輸送風速', score: '動態題', type: 'calc',
           stem: `圓形排氣導管內測得動壓 Pv = ${pv_20} mmH₂O（標準空氣密度 1.2 kg/m³），試求導管內輸送風速 V（m/s）。`,
-          formulaHtml: 'V (m/s) = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">4.04 × √Pv</span>',
-          symbols: ['Pv：導管內氣流動壓（mmH₂O）', '4.04：標準空氣條件下動壓與風速換算常數'],
+          formulaHtml: 'V (m/s) = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">4.04 × √Pv</span>',
+          symbols: [
+            'V：導管內氣流輸送風速（公尺/秒，m/s）',
+            'Pv：導管內測得之氣流動壓（毫米水柱，mmH₂O）',
+            '4.04：標準空氣密度（1.2 kg/m³）條件下動壓換算風速常數'
+          ],
           steps: [
-            { label: '步驟 1（動壓換算風速常數）：V = ', parts: [{ key: 'c1', answer: '4.04', options: ['1.20', '2.02', '4.04', '9.80'] }, ` × √(${pv_20})`] },
-            { label: '步驟 2（導管輸送風速）：V = ', parts: [{ key: 'c2', answer: v_20, options: makeNumOptions(v_20, 2) }, ' m/s'] }
+            { label: '步驟 1（代入動壓換算風速常數）：V = ', parts: [{ key: 'c1', answer: '4.04', options: ['1.20', '2.02', '4.04', '9.80'] }, ` × √(${pv_20})`] },
+            { label: `步驟 2（代入 Pv = ${pv_20} mmH₂O 計算風速）：V = 4.04 × √(${pv_20}) = `, parts: [{ key: 'c2', answer: v_20, options: makeNumOptions(v_20, 2) }, ' m/s'] }
           ],
           lawRef: `標準算式：V = 4.04 × √(${pv_20}) = ${v_20} m/s。`
         },
         {
           id: 'D23-21', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 21：可燃性氣體爆炸範圍與危險度指數', score: '動態題', type: 'calc',
           stem: `可燃性氣體爆炸下限 LEL = ${lel_21} %，爆炸上限 UEL = ${uel_21} %。試求爆炸危險度指數 H（取小數第二位）。`,
-          formulaHtml: 'H = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(UEL − LEL) ÷ LEL</span>',
-          symbols: ['UEL：爆炸上限（%）', 'LEL：爆炸下限（%）'],
+          formulaHtml: 'H = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(UEL − LEL) ÷ LEL</span>',
+          symbols: [
+            'H：可燃性氣體爆炸危險度指數（無因次，數值越大代表爆炸危險性越高）',
+            'UEL：爆炸上限（Upper Explosive Limit，%）',
+            'LEL：爆炸下限（Lower Explosive Limit，%）'
+          ],
           steps: [
-            { label: `步驟 1（危險度指數 H）：H = (${uel_21} − ${lel_21}) ÷ ${lel_21} = `, parts: [{ key: 'c1', answer: h_danger_21, options: makeNumOptions(h_danger_21, 2) }] }
+            { label: `步驟 1（代入 UEL = ${uel_21}% 與 LEL = ${lel_21}%）：H = (${uel_21} − ${lel_21}) ÷ ${lel_21} = `, parts: [{ key: 'c1', answer: h_danger_21, options: makeNumOptions(h_danger_21, 2) }] }
           ],
           lawRef: `標準算式：H = (${uel_21} − ${lel_21}) ÷ ${lel_21} = ${h_danger_21}。`
         },
         {
           id: 'D23-22', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 22：職業災害失能傷害頻率（FR）', score: '動態題', type: 'calc',
           stem: `事業單位總經歷工時 1,000,000 工時，年度發生死亡 ${death_22} 人，失能受傷 ${inj_22} 人。試求失能傷害頻率 FR。`,
-          formulaHtml: 'FR = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(失能傷害人次數 × 10⁶) ÷ 總經歷工時</span>',
-          symbols: ['10⁶：百萬經歷工時基準（1,000,000）'],
+          formulaHtml: 'FR = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(失能傷害人次數 × 10⁶) ÷ 總經歷工時</span>',
+          symbols: [
+            'FR：失能傷害頻率（每百萬經歷工時發生之失能傷害人次數，取小數第二位）',
+            '失能傷害人次數：死亡＋永久全失能＋永久部分失能＋暫時全失能人次總和',
+            '10⁶：百萬經歷工時基準（1,000,000 工時）'
+          ],
           steps: [
-            { label: '步驟 1（FR 工時基準常數）：FR = (失能人次 × ', parts: [{ key: 'c1', answer: '1000000', options: ['1000', '10000', '100000', '1000000'] }, ' ) ÷ 總經歷工時'] },
-            { label: '步驟 2（失能傷害頻率 FR）：FR = ', parts: [{ key: 'c2', answer: fr_22, options: makeNumOptions(fr_22, 2) }] }
+            { label: '步驟 1（代入 FR 工時基準常數）：FR = (失能人次 × ', parts: [{ key: 'c1', answer: '1000000', options: ['1000', '10000', '100000', '1000000'] }, ') ÷ 總經歷工時'] },
+            { label: `步驟 2（代入死亡 ${death_22} 人、失能 ${inj_22} 人與總工時）：FR = [(${death_22} + ${inj_22}) × 10⁶] ÷ 1,000,000 = `, parts: [{ key: 'c2', answer: fr_22, options: makeNumOptions(fr_22, 2) }] }
           ],
           lawRef: `標準算式：FR = ((${death_22} + ${inj_22}) × 10⁶) ÷ 10⁶ = ${fr_22}。`
         },
         {
           id: 'D23-23', category: 'practical', unit: 'U7', unitName: U7_NAME, title: '動態計算 23：職業災害失能傷害嚴重率（SR）', score: '動態題', type: 'calc',
           stem: `死亡 1 人法定損失 6,000 日，失能公傷假損失 ${days_lost_23} 日，總經歷工時 1,000,000。試求總損失日數與失能傷害嚴重率 SR。`,
-          formulaHtml: 'SR = <span class="font-mono bg-amber-100 px-2 py-0.5 rounded">(總損失日數 × 10⁶) ÷ 總經歷工時</span>',
-          symbols: ['死亡 1 人法定損失日數為 6,000 日'],
+          formulaHtml: '總損失日數 = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">死亡損失日數 + 失能損失日數</span>　；　SR = <span class="font-mono bg-amber-100 px-2.5 py-1 rounded">(總損失日數 × 10⁶) ÷ 總經歷工時</span>',
+          symbols: [
+            'SR：失能傷害嚴重率（每百萬經歷工時之總損失日數，四捨五入取整數）',
+            '死亡損失日數：法定死亡 1 人以 6,000 日計',
+            '10⁶：百萬經歷工時基準（1,000,000 工時）'
+          ],
           steps: [
-            { label: `步驟 1（總損失日數）：6,000 + ${days_lost_23} = `, parts: [{ key: 'c1', answer: total_days_23, options: makeNumOptions(total_days_23, 0) }, ' 日'] },
-            { label: '步驟 2（失能傷害嚴重率 SR）：SR = ', parts: [{ key: 'c2', answer: sr_23, options: makeNumOptions(sr_23, 0) }] }
+            { label: `步驟 1（代入死亡 6,000 日與公傷假 ${days_lost_23} 日）：總損失日數 = 6,000 + ${days_lost_23} = `, parts: [{ key: 'c1', answer: total_days_23, options: makeNumOptions(total_days_23, 0) }, ' 日'] },
+            { label: `步驟 2（代入總損失日數 ${total_days_23} 日計算 SR）：SR = (${total_days_23} × 10⁶) ÷ 1,000,000 = `, parts: [{ key: 'c2', answer: sr_23, options: makeNumOptions(sr_23, 0) }] }
           ],
           lawRef: `標準算式：總損失日數 = 6,000 + ${days_lost_23} = ${total_days_23} 日；SR = (${total_days_23} × 10⁶) ÷ 10⁶ = ${sr_23}。`
         }
@@ -2171,25 +2268,38 @@
           ? `<div class="mb-4">${PITOT_SVGS[q.diagramKey]}</div>`
           : '';
         bodyHtml = `
-          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-4">${q.stem}</p>
+          <p class="text-base sm:text-lg font-medium text-slate-800 leading-relaxed mb-5">${q.stem}</p>
           ${extraDiagram}
-          <div class="bg-amber-50/90 border-l-4 border-amber-500 rounded-r-xl p-4 mb-5 shadow-sm">
-            <div class="text-xs font-black uppercase tracking-wider text-amber-800 mb-1">📐 計算公式與代號說明</div>
-            <div class="text-base sm:text-lg font-bold text-slate-900 my-2">${q.formulaHtml}</div>
-            <ul class="text-xs sm:text-sm text-slate-700 space-y-1 mt-2 border-t border-amber-200/80 pt-2">
-              ${q.symbols.map(s => `<li class="flex items-start gap-1.5"><span class="text-amber-600 font-bold">•</span><span>${s}</span></li>`).join('')}
-            </ul>
+          <!-- Step A: Complete Formula & Large Symbol Explanations -->
+          <div class="bg-amber-50 border-2 border-amber-400 border-l-8 border-l-amber-500 rounded-xl p-5 sm:p-6 mb-5 shadow-sm">
+            <div class="flex items-center gap-2 text-sm sm:text-base font-black tracking-wide text-amber-900 mb-3">
+              <span class="text-lg sm:text-xl">📐</span>
+              <span>第一步：完整計算公式與代號說明</span>
+            </div>
+            <div class="text-lg sm:text-2xl font-black text-slate-950 bg-white/95 border border-amber-200 rounded-lg px-4 py-3.5 my-2 leading-relaxed shadow-inner overflow-x-auto">
+              ${q.formulaHtml}
+            </div>
+            <div class="mt-3.5 pt-3 border-t border-amber-200">
+              <div class="text-sm sm:text-base font-bold text-amber-900 mb-1.5">【公式代號與參數說明】</div>
+              <ul class="text-sm sm:text-base text-slate-800 space-y-1.5 leading-relaxed">
+                ${q.symbols.map(s => `<li class="flex items-start gap-2"><span class="text-amber-600 font-black mt-0.5">•</span><span>${s}</span></li>`).join('')}
+              </ul>
+            </div>
           </div>
 
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
-            <div class="text-xs font-black text-cyan-900">✏️ 公式套入與計算作答（請由下拉選單選擇正確數值）：</div>
+          <!-- Step B: Guided Numerical Substitution -->
+          <div class="bg-cyan-50/60 border-2 border-cyan-200 rounded-xl p-5 sm:p-6 space-y-3.5">
+            <div class="flex items-center gap-2 text-sm sm:text-base font-black text-cyan-950">
+              <span class="text-lg sm:text-xl">✏️</span>
+              <span>第二步：代入題目數值並完成計算（請依公式將數值代入下拉選單）：</span>
+            </div>
             ${q.steps.map(step => {
               const partsHtml = step.parts.map(part => {
-                if (typeof part === 'string') return `<span class="font-bold text-slate-800">${part}</span>`;
+                if (typeof part === 'string') return `<span class="font-bold text-slate-900">${part}</span>`;
                 return buildSelectHtml(part.key, part.options, userMap[part.key] || '', isSubmitted, part.answer);
               }).join('');
-              return `<div class="bg-white p-3 rounded-lg border border-slate-200 text-sm sm:text-base leading-loose">
-                <span class="font-bold text-slate-700">${step.label}</span>${partsHtml}
+              return `<div class="bg-white p-3.5 sm:p-4 rounded-xl border border-slate-200 text-base sm:text-lg leading-loose shadow-sm">
+                <span class="font-bold text-slate-800">${step.label}</span>${partsHtml}
               </div>`;
             }).join('')}
           </div>
