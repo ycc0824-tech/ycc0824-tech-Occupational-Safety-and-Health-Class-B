@@ -139,7 +139,7 @@ details{border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 
    <div class="field"><label>密碼（至少 8 碼）</label><input id="accountPassword" type="password" autocomplete="current-password" placeholder="輸入密碼"></div>
   </div>
   <div class="actions"><button class="primary" id="accountSignUp">建立帳號</button><button id="accountSignIn">登入</button><button id="accountSignOut">登出</button><button id="accountReset">寄送重設密碼信</button></div>
-  <p class="small muted">雲端同步需要設定 Supabase 專案網址與公開 anon key，並先在 Supabase SQL Editor 執行資料表設定 SQL（<a href="https://github.com/ycc0824-tech/ycc0824-tech-Occupational-Safety-and-Health-Class-B/blob/main/supabase/oshb_learning_data.sql" target="_blank" rel="noopener">開啟資料表設定 SQL</a>）。尚未設定時，學習資料仍保存在目前裝置。</p>
+  <p class="small muted">Supabase 專案網址與公開金鑰已內建，手機、平板及電腦開啟網站時會自動載入連線設定；首次使用仍須先完成雲端帳號登入。資料表設定請確認已執行（<a href="https://github.com/ycc0824-tech/ycc0824-tech-Occupational-Safety-and-Health-Class-B/blob/main/supabase/oshb_learning_data.sql" target="_blank" rel="noopener">查看資料表設定 SQL</a>）。</p>
  </div>
 </section>
 </main>
@@ -158,7 +158,21 @@ let answerHistory=store.get("answerHistory",[]);
 let mockHistory=store.get("mockHistory",[]);
 let reviewHistory=store.get("reviewHistory",[]);
 let cloudClient=null,cloudUser=null,cloudSaveTimer=null,cloudReady=false;
-const CLOUD_CONFIG=(()=>{try{return JSON.parse(localStorage.getItem("oshb_cloud_config"))||{url:"",anonKey:""}}catch(e){return {url:"",anonKey:""}}})();
+// 全裝置共用的 Supabase 前端連線設定；publishable/anon key 可公開於瀏覽器，
+ // 資料安全由 Supabase Auth 與 RLS 政策控管，絕不可在此放入 service_role/secret key。
+const DEFAULT_CLOUD_CONFIG={
+ url:"https://rnmejbxncqxwvshvgbvp.supabase.co",
+ anonKey:"sb_publishable_xrmw5CT9PwCZ2vibAbjhag_42PCCcgL"
+};
+const CLOUD_CONFIG=(()=>{
+ try{
+  const saved=JSON.parse(localStorage.getItem("oshb_cloud_config"))||{};
+  return {
+   url:(saved.url||"").trim()||DEFAULT_CLOUD_CONFIG.url,
+   anonKey:(saved.anonKey||"").trim()||DEFAULT_CLOUD_CONFIG.anonKey
+  };
+ }catch(e){return {...DEFAULT_CLOUD_CONFIG}}
+})();
 function learningPayload(){
  return {wrong,done,lastMock,answerHistory,mockHistory,reviewHistory,updatedAt:new Date().toISOString()};
 }
