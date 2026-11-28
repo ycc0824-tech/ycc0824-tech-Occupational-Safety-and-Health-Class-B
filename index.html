@@ -159,7 +159,7 @@ details{border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 
    <h3 style="margin:0">學生學習資料</h3><button id="teacherRefresh" type="button">重新整理資料</button>
   </div>
   <div id="teacherStudentList" class="muted">尚未載入。</div>
-  <p class="small muted" style="margin-top:16px">管理者帳號：vcc0824@gmail.com。後台權限由 Supabase 資料庫函式再次驗證；僅隱藏介面不代表安全控管。</p>
+  <p class="small muted" style="margin-top:16px">管理者帳號：ycc0824@gmail.com。後台權限由 Supabase 資料庫函式再次驗證；僅隱藏介面不代表安全控管。</p>
  </div>
 </section>
 </main>
@@ -226,7 +226,7 @@ async function initCloud(){
  cloudClient.auth.onAuthStateChange((_event,session)=>{if(session)onCloudLogin(session.user);else{cloudUser=null;cloudReady=false;updateTeacherAccess(null);setCloudStatus("目前已登出。")}})
 }
 function updateTeacherAccess(user){
- const allowed=!!user&&String(user.email||"").toLowerCase()==="vcc0824@gmail.com";
+ const allowed=!!user&&String(user.email||"").toLowerCase()==="ycc0824@gmail.com";
  const tab=document.getElementById("teacherTab");
  if(tab)tab.classList.toggle("hidden",!allowed);
  if(!allowed){
@@ -241,7 +241,7 @@ async function renderTeacherDashboard(){
  const status=document.getElementById("teacherStatus");
  const summary=document.getElementById("teacherSummary");
  const list=document.getElementById("teacherStudentList");
- if(!cloudUser||String(cloudUser.email||"").toLowerCase()!=="vcc0824@gmail.com"){
+ if(!cloudUser||String(cloudUser.email||"").toLowerCase()!=="ycc0824@gmail.com"){
   if(status)status.textContent="此帳號沒有教師後台權限。";
   return;
  }
