@@ -22,6 +22,34 @@ create table if not exists private.teacher_audit_logs (
 revoke all on all tables in schema private from public, anon, authenticated;
 revoke all on all sequences in schema private from public, anon, authenticated;
 
+-- 學生端資料隔離：每個登入帳號只能讀寫自己的學習資料。
+alter table public.oshb_learning_data enable row level security;
+
+drop policy if exists "students_select_own_learning_data" on public.oshb_learning_data;
+create policy "students_select_own_learning_data"
+on public.oshb_learning_data
+for select
+to authenticated
+using (auth.uid() = user_id);
+
+drop policy if exists "students_insert_own_learning_data" on public.oshb_learning_data;
+create policy "students_insert_own_learning_data"
+on public.oshb_learning_data
+for insert
+to authenticated
+with check (auth.uid() = user_id);
+
+drop policy if exists "students_update_own_learning_data" on public.oshb_learning_data;
+create policy "students_update_own_learning_data"
+on public.oshb_learning_data
+for update
+to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id);
+
+revoke all on table public.oshb_learning_data from anon;
+grant select, insert, update on table public.oshb_learning_data to authenticated;
+
 -- 僅在部署時以管理者執行：將指定帳號轉成 UUID 白名單。
 do $$
 declare
