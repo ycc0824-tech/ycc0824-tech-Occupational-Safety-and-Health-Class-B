@@ -25,6 +25,22 @@ revoke all on all sequences in schema private from public, anon, authenticated;
 -- 學生端資料隔離：每個登入帳號只能讀寫自己的學習資料。
 alter table public.oshb_learning_data enable row level security;
 
+-- 移除該資料表既有政策，避免舊的寬鬆政策與新政策以 OR 合併造成越權。
+do $
+declare
+  policy_row record;
+begin
+  for policy_row in
+    select policyname
+    from pg_policies
+    where schemaname = 'public'
+      and tablename = 'oshb_learning_data'
+  loop
+    execute format('drop policy if exists %I on public.oshb_learning_data', policy_row.policyname);
+  end loop;
+end;
+$;
+
 drop policy if exists "students_select_own_learning_data" on public.oshb_learning_data;
 create policy "students_select_own_learning_data"
 on public.oshb_learning_data
