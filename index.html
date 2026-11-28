@@ -129,17 +129,23 @@ details{border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 
  <div class="panel"><h2>個人雲端帳號</h2>
   <p class="muted">以電子郵件建立個人帳號，登入後同步作答紀錄、歷次成績、錯題與複習狀態。此區不含教師後台。</p>
   <div id="cloudStatus" class="auth-status">尚未登入。完成雲端設定後即可使用跨裝置同步。</div>
-  <div class="row" style="margin-top:12px">
-   <div class="field"><label>Supabase 專案網址</label><input id="supabaseUrl" type="url" placeholder="https://你的專案代碼.supabase.co"></div>
-   <div class="field"><label>Supabase anon/public key</label><input id="supabaseAnonKey" type="text" placeholder="貼上 Supabase 公開 anon key"></div>
-  </div>
-  <div class="actions"><button class="primary" id="saveCloudConfig">儲存雲端設定並連線</button></div>
+  <details open style="margin-top:14px">
+   <summary><b>雲端帳號同步使用說明</b></summary>
+   <div class="small muted" style="line-height:1.9;margin-top:10px">
+    <p><b>一、第一次使用：建立帳號</b><br>1. 輸入常用電子郵件及自訂密碼（至少 8 碼）。<br>2. 點選「建立帳號」。<br>3. 開啟電子郵件，依照系統寄出的驗證信完成電子郵件驗證。<br>4. 回到本頁，使用相同電子郵件及密碼點選「登入」。</p>
+    <p><b>二、在其他手機、平板或電腦同步</b><br>1. 開啟同一個學習系統網站並連上網路。<br>2. 進入「雲端帳號同步」。<br>3. 使用原本註冊的同一組電子郵件及密碼登入。<br>4. 系統會讀取該帳號的雲端學習資料；登入後新增的作答、成績及錯題紀錄會自動同步。<br>5. 請確認上方狀態顯示「學習資料同步完成」，再關閉網頁或切換裝置。</p>
+    <p><b>三、登出與再次登入</b><br>使用完畢可點選「登出」。下次使用時，在任何裝置以相同帳號登入即可繼續同步。</p>
+    <p><b>四、忘記密碼</b><br>輸入註冊電子郵件，點選「寄送重設密碼信」，再依照信件指示設定新密碼。</p>
+    <p><b>五、同步狀態確認</b><br>「雲端帳號已連線／學習資料同步完成」代表已完成登入及資料讀取；「雲端同步完成」代表最新學習資料已上傳。若顯示同步失敗，請先確認網路，再重新登入並查看狀態訊息。</p>
+    <p><b>重要提醒</b><br>請在所有裝置使用同一個電子郵件帳號。登入時系統會載入該帳號的雲端資料；不同裝置尚未同步的本機紀錄不會自動合併，重要資料請先使用「作答歷程」中的「匯出個人學習備份」保存。</p>
+   </div>
+  </details>
   <div class="row" style="margin-top:12px">
    <div class="field"><label>電子郵件</label><input id="accountEmail" type="email" autocomplete="email" placeholder="輸入電子郵件"></div>
    <div class="field"><label>密碼（至少 8 碼）</label><input id="accountPassword" type="password" autocomplete="current-password" placeholder="輸入密碼"></div>
   </div>
   <div class="actions"><button class="primary" id="accountSignUp">建立帳號</button><button id="accountSignIn">登入</button><button id="accountSignOut">登出</button><button id="accountReset">寄送重設密碼信</button></div>
-  <p class="small muted">Supabase 專案網址與公開金鑰已內建，手機、平板及電腦開啟網站時會自動載入連線設定；首次使用仍須先完成雲端帳號登入。資料表設定請確認已執行（<a href="https://github.com/ycc0824-tech/ycc0824-tech-Occupational-Safety-and-Health-Class-B/blob/main/supabase/oshb_learning_data.sql" target="_blank" rel="noopener">查看資料表設定 SQL</a>）。</p>
+  <p class="small muted">雲端連線設定已內建並自動載入，無須手動輸入專案網址或公開金鑰。首次使用請依照上方說明建立帳號並登入。</p>
  </div>
 </section>
 </main>
@@ -217,7 +223,7 @@ async function onCloudLogin(user){
  }catch(e){setCloudStatus("已登入，但讀取雲端資料失敗："+(e.message||"請確認已執行 SQL"))}
 }
 async function accountAction(action){
- if(!cloudClient){alert("尚未設定 Supabase。請先填入專案網址與 anon key，並重新部署網站。");return}
+ if(!cloudClient){alert("雲端服務尚未連線，請重新整理頁面並確認網路連線。");return}
  const email=$("accountEmail").value.trim(),password=$("accountPassword").value;
  if(action!=="signout"&&!email){alert("請輸入電子郵件。");return}
  try{
@@ -555,14 +561,6 @@ document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
 });
 $("startPractice").onclick=startPractice;$("startMock").onclick=startMock;
 $("startPracticalMock").onclick=startPracticalMock;
-$("saveCloudConfig").onclick=async()=>{
- const url=$("supabaseUrl").value.trim().replace(/\/$/,""),anonKey=$("supabaseAnonKey").value.trim();
- if(!(url.startsWith("https://")&&url.endsWith(".supabase.co"))||!anonKey){alert("請輸入正確的 Supabase 專案網址與 anon/public key。");return}
- CLOUD_CONFIG.url=url;CLOUD_CONFIG.anonKey=anonKey;localStorage.setItem("oshb_cloud_config",JSON.stringify(CLOUD_CONFIG));
- await initCloud();
-};
-if(CLOUD_CONFIG.url)$("supabaseUrl").value=CLOUD_CONFIG.url;
-if(CLOUD_CONFIG.anonKey)$("supabaseAnonKey").value=CLOUD_CONFIG.anonKey;
 $("accountSignUp").onclick=()=>accountAction("signup");
 $("accountSignIn").onclick=()=>accountAction("signin");
 $("accountSignOut").onclick=()=>accountAction("signout");
