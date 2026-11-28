@@ -159,7 +159,12 @@ details{border:1px solid var(--line);border-radius:10px;padding:12px;margin:9px 
    <h3 style="margin:0">學生學習資料</h3><button id="teacherRefresh" type="button">重新整理資料</button>
   </div>
   <div id="teacherStudentList" class="muted">尚未載入。</div>
-  <p class="small muted" style="margin-top:16px">管理者帳號：ycc0824@gmail.com。後台權限由 Supabase 資料庫函式再次驗證；僅隱藏介面不代表安全控管。</p>
+  <div style="margin-top:22px">
+   <h3>管理操作稽核紀錄</h3>
+   <p class="small muted">記錄管理者登入、登出、查詢學生資料及重新整理等操作。</p>
+   <div id="teacherAuditLog" class="muted">尚未載入。</div>
+  </div>
+  <p class="small muted" style="margin-top:16px">管理者權限以 Supabase Auth 使用者 UUID 核對，並由資料庫端再次驗證。</p>
  </div>
 </section>
 </main>
@@ -225,8 +230,17 @@ async function initCloud(){
  if(session)await onCloudLogin(session.user);
  cloudClient.auth.onAuthStateChange((_event,session)=>{if(session)onCloudLogin(session.user);else{cloudUser=null;cloudReady=false;updateTeacherAccess(null);setCloudStatus("目前已登出。")}})
 }
-function updateTeacherAccess(user){
- const allowed=!!user&&String(user.email||"").toLowerCase()==="ycc0824@gmail.com";
+let teacherAdminAuthorized=false;
+let teacherLoginAuditUserId=null;
+async function updateTeacherAccess(user){
+ let allowed=false;
+ if(user&&cloudClient){
+  try{
+   const {data,error}=await cloudClient.rpc("is_teacher_admin");
+   allowed=!error&&data===true;
+  }catch(e){allowed=false}
+ }
+ teacherAdminAuthorized=allowed;
  const tab=document.getElementById("teacherTab");
  if(tab)tab.classList.toggle("hidden",!allowed);
  if(!allowed){
@@ -236,18 +250,40 @@ function updateTeacherAccess(user){
    document.querySelector('.tabs button[data-tab="account"]')?.click();
   }
  }
+ return allowed;
+}
+async function renderTeacherAuditLog(){
+ const target=document.getElementById("teacherAuditLog");
+ if(!target)return;
+ try{
+  const {data,error}=await cloudClient.rpc("teacher_audit_logs");
+  if(error)throw error;
+  const rows=Array.isArray(data)?data:[];
+  target.innerHTML=rows.length?rows.map(row=>`<div class="small" style="padding:9px 0;border-bottom:1px solid var(--border,rgba(150,170,200,.2))"><b>${escapeHTML(row.action||"操作")}</b>｜${escapeHTML(row.actor_email||"管理者")}<br><span class="muted">${row.created_at?new Date(row.created_at).toLocaleString("zh-TW"):""}｜${escapeHTML(JSON.stringify(row.details||{}))}</span></div>`).join(""):"目前沒有管理操作紀錄。";
+ }catch(e){target.textContent="稽核紀錄讀取失敗："+(e.message||"請確認資料庫設定。")}
 }
 async function renderTeacherDashboard(){
  const status=document.getElementById("teacherStatus");
  const summary=document.getElementById("teacherSummary");
  const list=document.getElementById("teacherStudentList");
- if(!cloudUser||String(cloudUser.email||"").toLowerCase()!=="ycc0824@gmail.com"){
-  if(status)status.textContent="此帳號沒有教師後台權限。";
+ if(!cloudUser||!cloudClient){
+  if(status)status.textContent="請先登入管理者帳號。";
   return;
  }
- if(status)status.textContent="正在安全讀取學生學習資料…";
+ if(status)status.textContent="正在驗證管理者 UUID 權限…";
  if(list)list.textContent="資料載入中…";
  try{
+  const authCheck=await cloudClient.rpc("is_teacher_admin");
+  if(authCheck.error)throw authCheck.error;
+  if(authCheck.data!==true){
+   teacherAdminAuthorized=false;
+   if(status)status.textContent="此帳號沒有教師後台權限，資料庫已拒絕存取。";
+   if(summary)summary.innerHTML="";
+   if(list)list.textContent="無權讀取學生資料。";
+   return;
+  }
+  teacherAdminAuthorized=true;
+  await cloudClient.rpc("teacher_log_event",{p_action:"dashboard_view",p_details:{source:"teacher_dashboard"}});
   const {data,error}=await cloudClient.rpc("teacher_dashboard_data");
   if(error)throw error;
   const rows=Array.isArray(data)?data:[];
@@ -268,13 +304,19 @@ async function renderTeacherDashboard(){
    return `<details><summary><b>${escapeHTML(row.student_email||("學生 "+(i+1)))}</b>｜作答 ${a.length} 次｜正確率 ${a.length?Math.round(c/a.length*100):0}%</summary><div class="small muted" style="line-height:1.9;margin-top:8px">帳號識別碼：${escapeHTML(row.student_id||"")}<br>模擬考次數：${m.length}<br>模擬考平均：${avg}<br>錯題待複習：${Array.isArray(p.wrong)?p.wrong.length:0}<br>最近更新：${row.updated_at?new Date(row.updated_at).toLocaleString("zh-TW"):"尚無紀錄"}</div></details>`;
   }).join(""):"目前尚無學生雲端學習資料。";
   if(status)status.textContent="資料讀取完成。共 "+rows.length+" 個學生帳號。";
+  await renderTeacherAuditLog();
  }catch(e){
-  if(status)status.textContent="教師資料讀取失敗："+(e.message||"請確認已在 Supabase 執行教師後台 SQL 設定檔。");
-  if(list)list.textContent="請先在 Supabase SQL Editor 執行專案中的 supabase-teacher-admin.sql，再重新整理。";
+  if(status)status.textContent="教師資料讀取失敗："+(e.message||"請確認已在 Supabase 執行新版教師後台 SQL。");
+  if(list)list.textContent="請確認已執行最新版本的 supabase-teacher-admin.sql，並以授權管理者帳號重新登入。";
  }
 }
 async function onCloudLogin(user){
- cloudUser=user;updateTeacherAccess(user);cloudReady=false;setCloudStatus("已登入："+user.email+"，正在同步學習紀錄…");
+ cloudUser=user;cloudReady=false;setCloudStatus("已登入："+user.email+"，正在同步學習紀錄…");
+ const isAdmin=await updateTeacherAccess(user);
+ if(isAdmin&&teacherLoginAuditUserId!==user.id){
+  teacherLoginAuditUserId=user.id;
+  await cloudClient.rpc("teacher_log_event",{p_action:"login",p_details:{source:"supabase_auth"}});
+ }
  try{
   const {data,error}=await cloudClient.from("oshb_learning_data").select("data").eq("user_id",user.id).maybeSingle();
   if(error)throw error;
@@ -292,7 +334,7 @@ async function accountAction(action){
   let result;
   if(action==="signup")result=await cloudClient.auth.signUp({email,password});
   if(action==="signin")result=await cloudClient.auth.signInWithPassword({email,password});
-  if(action==="signout")result=await cloudClient.auth.signOut();
+  if(action==="signout"){if(teacherAdminAuthorized)await cloudClient.rpc("teacher_log_event",{p_action:"logout",p_details:{source:"user_action"}});result=await cloudClient.auth.signOut();teacherLoginAuditUserId=null;teacherAdminAuthorized=false;}
   if(action==="reset")result=await cloudClient.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
   if(result?.error)throw result.error;
   if(action==="signup")setCloudStatus("註冊申請已送出，請至電子郵件完成驗證後登入。");
@@ -623,7 +665,7 @@ document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{
 });
 $("startPractice").onclick=startPractice;$("startMock").onclick=startMock;
 $("startPracticalMock").onclick=startPracticalMock;
-$("teacherRefresh").onclick=renderTeacherDashboard;
+$("teacherRefresh").onclick=async()=>{if(teacherAdminAuthorized)await cloudClient.rpc("teacher_log_event",{p_action:"refresh",p_details:{source:"refresh_button"}});await renderTeacherDashboard();};
 $("accountSignUp").onclick=()=>accountAction("signup");
 $("accountSignIn").onclick=()=>accountAction("signin");
 $("accountSignOut").onclick=()=>accountAction("signout");
